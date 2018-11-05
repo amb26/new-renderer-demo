@@ -1,0 +1,20 @@
+{
+    "name": "fluid-textfield-controls",
+    "description": "A collection of UI widgets that synchronize a control with a textfield.",    
+    "infusion": {
+        "bundleType": "fluid-renderer-module",
+        "cssFiles": [
+            "./css/TextfieldSlider.css",
+            "./css/TextfieldStepper.css"
+        ],
+        "jsFiles": [
+            "./js/Textfield.js",
+            "./js/TextfieldSlider.js",
+            "./js/TextfieldStepper.js"
+        ],
+        "htmlFiles": [
+            "./html/TextfieldSlider.html",
+            "./html/TextfieldStepper.html"
+        ]
+    }
+}
