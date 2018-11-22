@@ -79,6 +79,11 @@ var fluid_3_0_0 = fluid_3_0_0 || {};
         return obj && obj.jquery ? obj[0] : obj;
     };
 
+    // FLUID-6148: Patched for server
+    fluid.isDOMNode = function (obj) {
+        return obj && obj.tagName;
+    };
+
     /**
      * Fetches a single container element and returns it as a jQuery.
      *
@@ -99,8 +104,8 @@ var fluid_3_0_0 = fluid_3_0_0 || {};
         if (fallible && (!container || container.length === 0)) {
             return null;
         }
-
-        if (!container || !container.jquery || container.length !== 1) {
+        // FLUID-6148: TODO: This should really apply fluid.isJQuery but in the long term we don't want such pollution
+        if (!container || container.length !== 1) {
             if (typeof (containerSpec) !== "string") {
                 containerSpec = container.selector;
             }
@@ -121,92 +126,10 @@ var fluid_3_0_0 = fluid_3_0_0 || {};
         // if it is possible to infer them. This feature is rarely used but is crucial for the prefs framework infrastructure
         // in Panels.js fluid.prefs.subPanel.resetDomBinder
         container.selector = selector;
-        container.context = container.context || containerSpec.ownerDocument || document;
+        // FLUID-6148: Patched to fetch document from server's jQuery
+        container.context = container.context || containerSpec.ownerDocument || (userJQuery || $).preferredDoc || document;
 
         return container;
-    };
-
-    /**
-     * Creates a new DOM Binder instance, used to locate elements in the DOM by name.
-     *
-     * @param {Object} container - the root element in which to locate named elements
-     * @param {Object} selectors - a collection of named jQuery selectors
-     * @return {Object} - The new DOM binder.
-     */
-    fluid.createDomBinder = function (container, selectors) {
-        var that = {
-            id: fluid.allocateGuid(),
-            cache: {}
-        };
-        var userJQuery = container.constructor;
-
-        function cacheKey(name, thisContainer) {
-            return fluid.allocateSimpleId(thisContainer) + "-" + name;
-        }
-
-        function record(name, thisContainer, result) {
-            that.cache[cacheKey(name, thisContainer)] = result;
-        }
-
-        that.locate = function (name, localContainer) {
-            var selector, thisContainer, togo;
-
-            selector = selectors[name];
-            if (selector === undefined) {
-                return undefined;
-            }
-            thisContainer = localContainer ? $(localContainer) : container;
-            if (!thisContainer) {
-                fluid.fail("DOM binder invoked for selector " + name + " without container");
-            }
-            if (selector === "") {
-                togo = thisContainer;
-            }
-            else if (!selector) {
-                togo = userJQuery();
-            }
-            else {
-                if (typeof (selector) === "function") {
-                    togo = userJQuery(selector.call(null, fluid.unwrap(thisContainer)));
-                } else {
-                    togo = userJQuery(selector, thisContainer);
-                }
-            }
-
-            if (!togo.selector) {
-                togo.selector = selector;
-                togo.context = thisContainer;
-            }
-            togo.selectorName = name;
-            record(name, thisContainer, togo);
-            return togo;
-        };
-        that.fastLocate = function (name, localContainer) {
-            var thisContainer = localContainer ? localContainer : container;
-            var key = cacheKey(name, thisContainer);
-            var togo = that.cache[key];
-            return togo ? togo : that.locate(name, localContainer);
-        };
-        that.clear = function () {
-            that.cache = {};
-        };
-        that.refresh = function (names, localContainer) {
-            var thisContainer = localContainer ? localContainer : container;
-            if (typeof names === "string") {
-                names = [names];
-            }
-            if (thisContainer.length === undefined) {
-                thisContainer = [thisContainer];
-            }
-            for (var i = 0; i < names.length; ++i) {
-                for (var j = 0; j < thisContainer.length; ++j) {
-                    that.locate(names[i], thisContainer[j]);
-                }
-            }
-        };
-        that.resolvePathSegment = that.locate;
-
-        return that;
     };
 
     /* Expect that jQuery selector query has resulted in a non-empty set of
@@ -236,9 +159,27 @@ var fluid_3_0_0 = fluid_3_0_0 || {};
     // Note that whilst this is not a properly public function, it has been bound to in a few stray places such as Undo.js and
     // Panels.js - until we can finally reform these sites we need to keep this signature stable as well as the bizarre side-effects
     fluid.initDomBinder = function (that, selectors/*, container */) {
+        console.log("initDomBinder faultily called for " + fluid.pathForComponent(that).join("."));
         that.dom = fluid.createDomBinder(that.container, selectors || that.options.selectors || {});
         that.locate = that.dom.locate;
         return that.dom;
+    };
+
+    /*
+     * Allocate an id to the supplied element if it has none already, by a simple
+     * scheme resulting in ids "fluid-id-nnnn" where nnnn is an increasing integer.
+     */
+    fluid.allocateSimpleId = function (element) {
+        element = fluid.unwrap(element);
+        if (!element || fluid.isPrimitive(element)) {
+            return null;
+        }
+
+        if (!element.attrs.id) {
+            var simpleId = "fluid-id-" + fluid.allocateGuid();
+            element.attrs.id = simpleId;
+        }
+        return element.attrs.id;
     };
 
 })(jQuery, fluid_3_0_0);

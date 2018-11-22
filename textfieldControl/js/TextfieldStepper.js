@@ -20,7 +20,7 @@ var fluid_3_0_0 = fluid_3_0_0 || {};
      *********************/
 
     fluid.defaults("fluid.textfieldStepper", {
-        gradeNames: ["fluid.newViewComponent"],
+        gradeNames: ["fluid.newRendererComponent"],
         resources: {
             template: {
                 path: "%fluid-textfield-controls/html/TextfieldStepper.html"
@@ -219,7 +219,8 @@ var fluid_3_0_0 = fluid_3_0_0 || {};
     };
 
     fluid.defaults("fluid.textfieldStepper.button", {
-        gradeNames: ["fluid.newViewComponent"],
+        gradeNames: ["fluid.newRendererComponent"],
+        parentMarkup: true,
         strings: {
             // to be specified by an implementor.
             // to provide a label for the button.

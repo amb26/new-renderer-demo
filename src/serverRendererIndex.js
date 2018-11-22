@@ -10,6 +10,10 @@
  * https://github.com/fluid-project/kettle/blob/master/LICENSE.txt
  */
 
+/* eslint-env node */
+
+"use strict";
+
 var fluid = require("infusion");
 
 fluid.loadFrameworkPatch = function (path) {
@@ -18,12 +22,12 @@ fluid.loadFrameworkPatch = function (path) {
 };
 
 
-fluid.loadInContext("../framework/core/js/NewViewSupport.js");
 fluid.loadFrameworkPatch("%new-renderer-demo/src/js/server/jquery.standalone.js");
 fluid.loadFrameworkPatch("%new-renderer-demo/src/js/server/jquery.standalone.renderer.js");
 fluid.loadFrameworkPatch("%new-renderer-demo/src/js/core/FluidView.js");
 fluid.loadFrameworkPatch("%new-renderer-demo/src/js/core/fluidNewRenderer.js");
 fluid.loadFrameworkPatch("%new-renderer-demo/src/js/core/htmlParser.js");
+fluid.loadFrameworkPatch("%new-renderer-demo/src/js/core/fastXmlPull.js");
 
 require("./js/server/PageHandler.js");
 require("./js/server/RendererModuleLoader.js");

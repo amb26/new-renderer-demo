@@ -10,10 +10,11 @@
  * https://github.com/fluid-project/kettle/blob/master/LICENSE.txt
  */
 
+/* eslint-env node */
+
 "use strict";
 
-var fluid = require("infusion"),
-    kettle = fluid.require("%kettle");
+var fluid = require("infusion");
 
 fluid.registerNamespace("fluid.renderer");
 
@@ -21,10 +22,10 @@ fluid.renderer.loadModule = function (path) {
     var basePath = fluid.module.resolvePath(path);
     var pkg = require(basePath + "/package.json");
     if (!pkg) {
-        fluid.fail("Cannot find package.json file at path " + basePath);  
+        fluid.fail("Cannot find package.json file at path " + basePath);
     } else {
         var moduleName = pkg.name;
-        fluid.module.register(moduleName, basePath)
+        fluid.module.register(moduleName, basePath);
         var jsFiles = fluid.get(pkg, ["infusion", "jsFiles"]);
         fluid.each(jsFiles, function (jsFile) {
             fluid.loadInContext(basePath + "/" + jsFile, true);

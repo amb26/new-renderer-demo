@@ -9,10 +9,13 @@ You may obtain a copy of the ECL 2.0 License and BSD License at
 https://github.com/fluid-project/infusion/raw/master/Infusion-LICENSE.txt
 */
 
+/* eslint-env node */
+
+"use strict";
+
 var fluid = require("infusion"),
-    kettle = fluid.require("%kettle"),
     fs = require("fs");
-    
+
 fluid.registerNamespace("fluid.resourceLoader.loaders");
 
 // Quick synchronous mockup of file resource fetcher before we have FLUID-4982

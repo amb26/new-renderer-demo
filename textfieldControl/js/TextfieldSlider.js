@@ -19,7 +19,7 @@ var fluid_3_0_0 = fluid_3_0_0 || {};
      ********************/
 
     fluid.defaults("fluid.textfieldSlider", {
-        gradeNames: ["fluid.newViewComponent"],
+        gradeNames: ["fluid.newRendererComponent"],
         resources: {
             template: {
                 path: "%fluid-textfield-controls/html/TextfieldSlider.html"
@@ -109,7 +109,8 @@ var fluid_3_0_0 = fluid_3_0_0 || {};
     });
 
     fluid.defaults("fluid.slider", {
-        gradeNames: ["fluid.newViewComponent"],
+        gradeNames: ["fluid.newRendererComponent"],
+        parentMarkup: true,
         modelRelay: {
             target: "value",
             singleTransform: {

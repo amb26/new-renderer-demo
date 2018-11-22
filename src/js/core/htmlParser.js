@@ -12,11 +12,14 @@ You may obtain a copy of the ECL 2.0 License and BSD License at
 https://github.com/fluid-project/infusion/raw/master/Infusion-LICENSE.txt
 */
 
-// Taken from %fluid-authoring/src/shared/js/fastXmlPull.js 
+// Taken from %fluid-authoring/src/shared/js/fastXmlPull.js
+
+var fluid_3_0_0 = fluid_3_0_0 || {};
 
 (function ($, fluid) {
     "use strict";
     fluid.registerNamespace("fluid.htmlParser");
+
     // options:
     //    selectors: String [selectorName] -> String/Array of String [selectors]
     fluid.htmlParser.parse = function (template, options) {
@@ -27,10 +30,12 @@ https://github.com/fluid-project/infusion/raw/master/Infusion-LICENSE.txt
             template: template,
             options: fluid.extend({}, defaults, options),
             nodeStack: [],
-            rootNode: {},
+            rootNode: {
+                tagName: "/"
+            },
             parsedSelectors: {}, // hash of selectorName to {tree, selector, selectorName, partialParse} (last is volatile during parse)
-            matchedSelectors: {},
-            simpleClassSelectors: {},
+            matchedSelectors: {}, // hash of selectorName to {node, childIndices}
+            simpleClassSelectors: {}, // map of simple class selectors to selectorName - an optimisation
             defstart: -1, // character pointers for default processing
             defend: -1,
             parser: fluid.XMLP(template)
@@ -38,6 +43,17 @@ https://github.com/fluid-project/infusion/raw/master/Infusion-LICENSE.txt
         fluid.htmlParser.parseSelectors(that);
         that.nodeStack[0] = that.rootNode;
         fluid.htmlParser.beginParse(that);
+        if (!that.matchedSelectors.container) {
+            that.matchedSelectors.container = [
+                that.options.selectors.container === "/" ? {
+                    node: that.rootNode,
+                    childIndices: []
+                } : {
+                    node: that.rootNode.children[0],
+                    childIndices: [0]
+                }
+            ];
+        }
         return that;
     };
 
@@ -48,19 +64,23 @@ https://github.com/fluid-project/infusion/raw/master/Infusion-LICENSE.txt
     fluid.htmlParser.parseSelectors = function (that) {
         fluid.each(that.options.selectors, function (selRHS, selectorName) {
             var selectors = fluid.makeArray(selRHS);
-            fluid.each(selectors, function (selector) {
-                var tree = fluid.parseSelector(selector, fluid.simpleCSSMatcher);
-                var clazz = fluid.htmlParser.isSimpleClassSelector(tree);
-                if (clazz) {
-                    fluid.pushArray(that.simpleClassSelectors, clazz, selectorName);
-                }
-                else {
-                    that.parsedSelectors[selectorName] = {
-                        tree: tree,
-                        selector: selector,
-                        selectorName: selectorName,
-                        partialParse: []
-                    };
+            fluid.each(selectors, function (selector, name) {
+                if (typeof(selector) !== "string") {
+                    fluid.fail("Could not parse selector " , selector , " with name " + name + " for component " + fluid.pathForComponent(that).join(".") + " which is not a string");
+                } else if (selector !== "/") { // TODO: special syntax representing virtual root node
+                    var tree = fluid.parseSelector(selector, fluid.simpleCSSMatcher);
+                    var clazz = fluid.htmlParser.isSimpleClassSelector(tree);
+                    if (clazz) {
+                        fluid.pushArray(that.simpleClassSelectors, clazz, selectorName);
+                    }
+                    else {
+                        that.parsedSelectors[selectorName] = {
+                            tree: tree,
+                            selector: selector,
+                            selectorName: selectorName,
+                            partialParse: []
+                        };
+                    }
                 }
             });
         });
@@ -86,15 +106,42 @@ https://github.com/fluid-project/infusion/raw/master/Infusion-LICENSE.txt
         }
     };
 
+    fluid.htmlParser.navigateChildIndices = function (root, childIndices) {
+        var togo = {
+            parentNode: null,
+            childIndex: -1,
+            node: root
+        };
+        for (var i = 0; i < childIndices.length; ++i) {
+            togo.parentNode = togo.node;
+            togo.childIndex = childIndices[i];
+            togo.node = togo.node.children[togo.childIndex];
+        }
+        return togo;
+    };
+
+    fluid.htmlParser.pushMatchedSelector = function (that, selectorName, node) {
+        var childIndices = [];
+        for (var i = 0; i < that.nodeStack.length - 1; ++i) {
+            childIndices.push(that.nodeStack[i].children.length - 1);
+        }
+        var record = {
+            node: node,
+            childIndices: childIndices
+        };
+        fluid.pushArray(that.matchedSelectors, selectorName, record);
+    };
+
     fluid.htmlParser.beginMatchSelector = function (that, node) {
         var headclazz = node.attrs ? node.attrs["class"] : null,
             nodeStack = that.nodeStack;
         if (headclazz) {
             var split = headclazz.split(" ");
+            console.log("Parsing node ", node, " with classes ", split);
             for (var i = 0; i < split.length; ++i) {
-                var simpleCut = that.simpleClassSelectors[split[i].trim()];
-                if (simpleCut) {
-                    return simpleCut;
+                var simpleClassName = that.simpleClassSelectors[split[i].trim()];
+                if (simpleClassName) {
+                    fluid.htmlParser.pushMatchedSelector(that, simpleClassName, node);
                 }
             }
         }
@@ -115,7 +162,7 @@ https://github.com/fluid-project/infusion/raw/master/Infusion-LICENSE.txt
                 if (isMatch) {
                     partial[partial.length] = node;
                     if (partial.length === tree.length) {
-                        fluid.pushArray(that.matchedSelectors, parsedSelector.selectorName, node);
+                        fluid.htmlParser.pushMatchedSelector(that, parsedSelector.selectorName, node);
                     }
                 }
             }
@@ -255,7 +302,7 @@ parseloop: // eslint-disable-line indent
     };
 
     fluid.htmlParser.dumpNode = function (node, t) {
-        if (node.text) {
+        if (fluid.isValue(node.text)) {
             t.text += node.text;
         } else {
             fluid.htmlParser.dumpTagOpen(node, t);

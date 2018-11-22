@@ -25,9 +25,9 @@
 // Visit the XML for <SCRIPT> home page at http://xmljs.sourceforge.net
 
 
-
 // NOTE: This is (hopefully) just a linted version of the implementation in %infusion/src/lib/fastXmlPull/js/fastXmlPull.js,
-// in turn taken from %fluid-authoring/src/shared/js/fastXmlPull.js 
+// in turn taken from %fluid-authoring/src/shared/js/fastXmlPull.js
+// No, it has (at least) one fix for properly setting m_cB when parsing a doctype
 
 /*
 The zlib/libpng License

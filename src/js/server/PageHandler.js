@@ -10,10 +10,12 @@
  * https://github.com/fluid-project/kettle/blob/master/LICENSE.txt
  */
 
+/* eslint-env node */
+
 "use strict";
 
-var fluid = require("infusion"),
-    kettle = fluid.require("%kettle");
+var fluid = require("infusion");
+fluid.require("%kettle");
 
 fluid.registerNamespace("fluid.renderer.pageHandler");
 
@@ -34,20 +36,37 @@ fluid.defaults("fluid.renderer.pageHandler", {
     }
 });
 
+fluid.defaults("fluid.renderer", {
+    gradeNames: "fluid.component"
+});
+
 fluid.defaults("fluid.renderer.server", {
-    gradeNames: "fluid.viewComponent",
-    workflows: {
-       // We are here. The component tree starting at "page" will be instantiated for real, but against the 
-       // "standalone" jQuery virtual DOM. This will be "woven into existence" as each component constructs,
-       // with its root ending up in "markupTree". The "renderer workflow" will wait for the total model of the
-       // tree to stabilise and then locate all markup templates, parse them into subtrees with the
-       // "placeholder markers" where selectors bite, and then instantiate them, binding to the container
-       // nodes. "onCreate" will then fire and perhaps make some last-minute adjustments.
+    gradeNames: "fluid.renderer",
+    invokers: {
+        render: {
+            funcName: "fluid.renderer.server.render",
+            args: ["{that}", "{arguments}.0"]
+        }
     }
 });
 
+fluid.renderer.server.render = function (renderer, components) {
+    console.log("About to render " + components.length + " components to renderer " + fluid.dumpComponentPath(renderer));
+    var rootComponent = components[0];
+    if (!fluid.componentHasGrade(rootComponent, "fluid.rootPage")) {
+        fluid.fail("Must render at least one component, the first of which should be descended from fluid.rootPage - "
+           + " the head component was ", rootComponent);
+    }
+    components.forEach(function (component) {
+        fluid.getForComponent(component, "container");
+        console.log("Considering component at " + fluid.dumpComponentPath(component));
+        console.log("Container option is " + component.options.container);
+    });
+    renderer.markupTree = components[0].container[0];
+};
+
 fluid.renderer.pageHandler.handleGet = function (request) {
-    var text = fluid.htmlParser.render(request.markupTree);
+    var text = fluid.htmlParser.render(request.markupTree.children);
     request.res.type("html");
     request.events.onSuccess.fire(text);
 };

@@ -69,6 +69,6 @@ client.get().then(function (markup) {
     console.log("Received markup ", markup);
     server.destroy();
 }, function (error) {
-    console.log("Received *ERROUR* ", error);
+    console.log("Received *ERROUR* ");
     server.destroy();
 });

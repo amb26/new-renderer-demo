@@ -24,7 +24,8 @@ var fluid_3_0_0 = fluid_3_0_0 || {};
      * button steppers or slider.
      */
     fluid.defaults("fluid.textfield", {
-        gradeNames: ["fluid.newViewComponent"],
+        gradeNames: ["fluid.newRendererComponent"],
+        parentMarkup: true,
         attrs: {
             // Specified by implementor
             // ID of an external label to refer to with aria-labelledby

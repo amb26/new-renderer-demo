@@ -39,9 +39,10 @@ var fluid = fluid || fluid_3_0_0;
     var jQuery = fluid.jQueryStandalone = function (/* arguments */) {
         return jQuery.constructor.apply(null, arguments);
     };
-    
+
     // Define all the members in a fresh object, so that they can later be copied onto the function
     var jQueryMembers = {
+        globalScope: globalScope,
 
         // A placeholder for the jQuery constructor function, which will be described elsewhere
         constructor: function () {
@@ -155,7 +156,7 @@ var fluid = fluid || fluid_3_0_0;
             return target;
         }
     };
-    
+
     jQueryMembers.extend(jQuery, jQueryMembers);
 
 })(fluid_3_0_0);
