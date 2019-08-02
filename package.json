@@ -10,7 +10,7 @@
     },
     "dependencies": {
         "infusion": "amb26/infusion#FLUID-6148",
-        "kettle": "1.8.1",
+        "kettle": "amb26/kettle#KETTLE-78",
         "gpii-nexus": "0.2.0"
     },
     "devDependencies": {

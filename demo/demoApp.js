@@ -10,24 +10,37 @@
  * https://github.com/fluid-project/kettle/blob/master/LICENSE.txt
  */
 
+/* eslint-env node */
+
 "use strict";
 
-var fluid = require("infusion"),
-    kettle = fluid.require("%kettle");
+var fluid = require("infusion");
+
+fluid.require("%kettle");
 
 require("../src/serverRendererIndex.js");
 
 fluid.renderer.loadModule("%new-renderer-demo/textfieldControl");
+fluid.renderer.loadModule("%new-renderer-demo/demo");
 
 require("./DemoPage.js");
-    
+
 fluid.defaults("fluid.demos.demoApp", {
-    gradeNames: "kettle.app",
+    gradeNames: ["kettle.app", "fluid.renderer.autoMountRendererModulesApp"],
     requestHandlers: {
         getHandler: {
             type: "fluid.demos.demoPageHandler",
             route: "/demoApp",
             method: "get"
+        }
+    },
+    components: {
+        newRendererSrc: {
+            type: "kettle.staticRequestHandlers.static",
+            options: {
+                root: "%new-renderer-demo/src/js",
+                prefix: "/newRendererSrc"
+            }
         }
     }
 });
@@ -63,12 +76,14 @@ fluid.defaults("fluid.demos.client", {
     }
 });
 
-var client = fluid.demos.client();
+if (process.argv[1] === "autoTest") {
+    var client = fluid.demos.client();
 
-client.get().then(function (markup) {
-    console.log("Received markup ", markup);
-    server.destroy();
-}, function (error) {
-    console.log("Received *ERROUR* ");
-    server.destroy();
-});
+    client.get().then(function (markup) {
+        console.log("Received markup ", markup);
+        server.destroy();
+    }, function (error) {
+        console.log("Received *ERROUR* ", error);
+        server.destroy();
+    });
+}

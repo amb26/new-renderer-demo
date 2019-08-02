@@ -19,8 +19,20 @@ var fluid_3_0_0 = fluid_3_0_0 || {};
         gradeNames: ["fluid.modelComponent"],
         members: {
             // 3rd argument is throwaway to force evaluation of container
+            // TODO: initDOMBinder needs to be axed/bypassed
             dom: "@expand:fluid.initDomBinder({that}, {that}.options.selectors, {that}.container)",
-            container: "@expand:fluid.container({that}.options.container)"
+            container: "@expand:fluid.container({that}.options.container)",
+            // Several problems here - note that we can't resolve "locate" via IoC since because of the
+            // blasted "resolvePathSegment" - but even if we move this into an aligned schema, what happens when we
+            // introduce proxies? We'll need a separate "domBinder" with the actual machine, and then "dom" for the mirrored area.
+            // "resolvePathSegment" and all of fluid.get/set/trundlers etc. needs to be removed and replaced with
+            // a proper immutable routing system
+            locate: {
+                expander: {
+                    funcName: "fluid.getImmediate",
+                    args: ["{that}.dom", "locate"]
+                }
+            }
         },
         mergePolicy: {
             "members.dom": "replace",
@@ -28,43 +40,76 @@ var fluid_3_0_0 = fluid_3_0_0 || {};
         }
     });
 
+    fluid.createRendererDomBinder = function (that, parentMarkup, createTemplateDomBinder, createBrowserDomBinder) {
+        return parentMarkup ? createBrowserDomBinder() : createTemplateDomBinder();
+    };
+
     fluid.defaults("fluid.newRendererComponent", {
-        gradeNames: "fluid.newViewComponent",
+        gradeNames: ["fluid.newViewComponent", "fluid.resourceLoader"],
         members: {
-            // Hack to load resources synchronously given we still don't have FLUID-4982
-            resources: "@expand:fluid.loadResourcesQuick({that}.options.resources, {that}.options.selectors)",
             container: "@expand:fluid.resolveTemplateContainer({that}, {that}.options.container)",
             // TODO: use an options distribution or so to distinguish between server and client DOM binders
             dom: {
                 expander: {
-                    funcName: "fluid.createTemplateDomBinder",
-                    args: ["{that}", "{that}.options.selectors", "{that}.container", "{that}.resources.template.parsed"]
+                    funcName: "fluid.createRendererDomBinder",
+                    args: ["{that}", "{that}.options.parentMarkup", "{that}.createTemplateDomBinder", "{that}.createBrowserDomBinder"]
                 }
+            }
+        },
+        invokers: {
+            createTemplateDomBinder: {
+                funcName: "fluid.createTemplateDomBinder",
+                args: ["{that}", "{that}.options.selectors", "{that}.container", "{that}.resources.template.parsed"]
+            },
+            createBrowserDomBinder: {
+                funcName: "fluid.initDomBinder",
+                args: ["{that}", "{that}.options.selectors", "{that}.container"]
             }
         },
         resources: {
             template: {
-                dataType: "html"
+                dataType: "html",
+                resourceText: "Default text: no template was configured",
+                parseOptions: {
+                    selectors: "{that}.options.selectors"
+                }
             }
         },
+        // Configure a map here of all templates which should be pre-fetched during fetchTemplates so that they are
+        // ready for renderMarkup
+        rendererTemplates: {
+            template: true
+        },
+        // Set to `true` if there is no template and/or the component expects to render into markup provided by parent
+        parentMarkup: false,
         workflows: {
             global: {
-                renderMarkup: {
-                    funcName: "fluid.renderMarkup",
+                fetchTemplates: {
+                    funcName: "fluid.renderer.fetchTemplates",
                     priority: "after:resolveModelSkeleton"
+                },
+                renderMarkup: {
+                    funcName: "fluid.renderer.renderMarkup",
+                    priority: "after:fetchTemplates",
+                    waitIO: true
                 }
             }
         }
     });
 
     fluid.resolveTemplateContainer = function (that, containerSpec) {
-        if (!containerSpec.selectorName || !containerSpec.childIndex) {
-            fluid.fail("Cannot resolve container " + that.options.container + " from " + fluid.dumpComponentPath(that)
-               + " which did not resolve to a DOM binder resolved element");
+        var fail = function (extraMessage) {
+            fluid.fail("Cannot resolve container ", containerSpec, " from " + fluid.dumpComponentPath(that) + extraMessage);
+        };
+        if (!containerSpec.selectorName) {
+            fail(" which did not resolve to a DOM binder resolved element");
         }
         if (fluid.getForComponent(that, "options.parentMarkup")) {
             return containerSpec;
         } else if (that.resources.template) {
+            if (!containerSpec.childIndex) {
+                fail(" which is not a template matchedSelector");
+            }
             // Find the target location in the parent's document where we might write our own template to
             // form our own container
             var parentNode = containerSpec.parentNode;
@@ -87,7 +132,6 @@ var fluid_3_0_0 = fluid_3_0_0 || {};
      * @param {ParsedTemplate} parsedTemplate - a parsed HTML template as returned from fluid.htmlParser.parse
      * @return {Object} - The new DOM binder.
      */
-
     fluid.createTemplateDomBinder = function (parentThat, selectors, container, parsedTemplate) {
         var that = {
             id: fluid.allocateGuid()
@@ -97,17 +141,24 @@ var fluid_3_0_0 = fluid_3_0_0 || {};
                 + " - failed to resolve ", parentThat.options.container);
         }
         that.locate = function (name) {
-            var matched = parsedTemplate.matchedSelectors[name][0];
-            if (!matched) {
+            var matches = parsedTemplate.matchedSelectors[name];
+            if (!matches) {
                 fluid.fail("Could not match selector " + name + " for template component " + fluid.dumpThat(parentThat)
                    + " at path " + fluid.pathForComponent(parentThat).join(".") + ": available selectors are "
                    + fluid.keys(parsedTemplate.matchedSelectors));
             }
-            var navigate = fluid.htmlParser.navigateChildIndices(container[0], matched.childIndices);
-            var togo = $(navigate.node);
+            var parentNode, childIndex;
+            var togo = $(fluid.transform(matches, function (matched) {
+                var navigate = fluid.htmlParser.navigateChildIndices(container[0], matched.childIndices);
+                parentNode = navigate.parentNode;
+                childIndex = navigate.childIndex;
+                return navigate.node;
+            }));
             togo.selectorName = name;
-            togo.parentNode = navigate.parentNode;
-            togo.childIndex = navigate.childIndex;
+            if (matches.length === 1) {
+                togo.parentNode = parentNode;
+                togo.childIndex = childIndex;
+            }
             return togo;
         };
         that.resolvePathSegment = that.locate;
@@ -117,41 +168,56 @@ var fluid_3_0_0 = fluid_3_0_0 || {};
 
     fluid.defaults("fluid.rootPage", {
         gradeNames: "fluid.newRendererComponent",
-        container: "/",
-        selectors: {
-            container: "{that}.options.container"
-        },
-        members: {
-            container: "@expand:fluid.buildRootContainer({that})"
-        }
+        container: "/"
     });
-
-    fluid.buildRootContainer = function (that) {
-        var matchedSelectors = that.resources.template.parsed.matchedSelectors;
-        var matchedContainer = matchedSelectors.container[0];
-        var containerTree = matchedContainer.node;
-        var containerCopy = fluid.copy(containerTree);
-        var rootDepth = matchedContainer.childIndices.length;
-        // TODO: Create a separate area for these rather than bashing the parsed template in place
-        fluid.each(matchedSelectors, function (matchedSelector) {
-            matchedSelector.forEach(function (oneMatch) {
-                oneMatch.childIndices = oneMatch.childIndices.slice(rootDepth);
-            });
-        });
-        return fluid.container(containerCopy);
-    };
 
     fluid.dumpComponentPath = function (component) {
         return "component at path " + fluid.pathForComponent(component).join(".");
     };
 
-    fluid.renderMarkup = function (shadows) {
+
+    fluid.registerNamespace("fluid.resourceLoader.parsers");
+
+    fluid.resourceLoader.parsers.html = function (resourceText, options) {
+        return fluid.htmlParser.parse(resourceText, options.resourceSpec.parseOptions);
+    };
+
+    fluid.defaults("fluid.renderer", {
+        gradeNames: "fluid.component",
+        distributeOptions: {
+            rendererRootPageLinkage: {
+                source: "{that}.options.rootPageGrade",
+                target: "{that fluid.rootPage}.options.gradeNames"
+            }
+        }
+    });
+
+    /** Global workflow function for fluid.newRendererComponent **/
+
+    fluid.renderer.fetchTemplates = function (shadows) {
+        shadows.forEach(function (shadow) {
+            var that = shadow.that;
+            if (fluid.componentHasGrade(that, "fluid.newRendererComponent")) {
+                var parentMarkup = fluid.getForComponent(that, ["options", "parentMarkup"]);
+                if (!parentMarkup) {
+                    var rendererTemplates = fluid.getForComponent(that, ["options", "rendererTemplates"]);
+                    fluid.each(rendererTemplates, function (value, key) {
+                        if (value) {
+                            fluid.getForComponent(that, ["resources", key]);
+                        }
+                    });
+                }
+            }
+        });
+    };
+
+
+
+    fluid.renderer.renderMarkup = function (shadows) {
+        // Map of parent renderer's id to list of nested renderer components
         var rendererToComponents = {};
         shadows.forEach(function (shadow) {
             if (fluid.componentHasGrade(shadow.that, "fluid.newRendererComponent")) {
-                // TODO: hacked loading of resources here
-                console.log("Loading resources for " + fluid.dumpComponentPath(shadow.that));
-                fluid.getForComponent(shadow.that, "resources");
                 var rendererComponent = shadow.that;
                 var parentRenderer = fluid.resolveContext("fluid.renderer", rendererComponent, true);
                 if (!parentRenderer) {
@@ -165,41 +231,6 @@ var fluid_3_0_0 = fluid_3_0_0 || {};
             fluid.getForComponent(renderer, "render");
             renderer.render(rendererComponents);
         });
-    };
-
-    fluid.loadResourcesQuick = function (resources, selectors) {
-        return fluid.transform(resources, function (resource) {
-            return fluid.loadOneResourceQuick(resource, selectors);
-        });
-    };
-
-    fluid.resolveResourceLoader = function (resourceSpec) {
-        var loader = fluid.find(fluid.resourceLoader.loaders, function (loader, key) {
-            if (resourceSpec[key]) {
-                return loader;
-            }
-        });
-        var dataTypeOnly = $.isEmptyObject(fluid.censorKeys(resourceSpec, ["dataType"]));
-        if (!loader && !dataTypeOnly) {
-            fluid.fail("Couldn't locate resource loader for resource spec ", resourceSpec);
-        }
-        return loader;
-    };
-
-    fluid.loadOneResourceQuick = function (resourceSpec, selectors) {
-        var loader = fluid.resolveResourceLoader(resourceSpec);
-        var togo = fluid.extend({}, resourceSpec);
-        var parseOptions = {
-            selectors: selectors
-        };
-        if (loader) {
-            togo.resourceText = loader(resourceSpec);
-            if (resourceSpec.dataType === "html") {
-                togo.parsed = fluid.htmlParser.parse(togo.resourceText, parseOptions);
-                console.log("Parsed templates to ", togo.parsed);
-            }
-            return togo;
-        }
     };
 
 })(jQuery, fluid_3_0_0);

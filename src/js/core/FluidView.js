@@ -80,8 +80,19 @@ var fluid_3_0_0 = fluid_3_0_0 || {};
     };
 
     // FLUID-6148: Patched for server
+    // TODO: fudged - it should really be able to expect to know whether it expects a real DOM container or a template
+    // one, but this requires propagating pretty fine-grained expectations through fluid.container and probably
+    // unifying it with the DOM binder, etc.
     fluid.isDOMNode = function (obj) {
+        return fluid.isTemplateDOMNode(obj) || fluid.isBrowserDOMNode(obj);
+    };
+
+    fluid.isTemplateDOMNode = function (obj) {
         return obj && obj.tagName;
+    };
+
+    fluid.isBrowserDOMNode = function (obj) {
+        return obj && typeof (obj.nodeType) === "number";
     };
 
     /**
@@ -100,7 +111,7 @@ var fluid_3_0_0 = fluid_3_0_0 || {};
         if (userJQuery) {
             containerSpec = fluid.unwrap(containerSpec);
         }
-        var container = fluid.wrap(containerSpec, userJQuery);
+        var container = fluid.wrap(containerSpec === "/" ? "html" : containerSpec, userJQuery);
         if (fallible && (!container || container.length === 0)) {
             return null;
         }
@@ -154,7 +165,7 @@ var fluid_3_0_0 = fluid_3_0_0 || {};
      *
      * @param {Object} that - The component instance to attach the new DOM Binder to.
      * @param {Object} selectors - a collection of named jQuery selectors
-     * @return {Object} - The DOM for the component.
+     * @return {DOM binder} - The DOM binder for the component.
      */
     // Note that whilst this is not a properly public function, it has been bound to in a few stray places such as Undo.js and
     // Panels.js - until we can finally reform these sites we need to keep this signature stable as well as the bizarre side-effects
@@ -165,11 +176,18 @@ var fluid_3_0_0 = fluid_3_0_0 || {};
         return that.dom;
     };
 
+    fluid.allocateSimpleIdBrowser = fluid.allocateSimpleId;
+
+    fluid.allocateSimpleId = function (element) {
+        return fluid.isTemplateDOMNode(element) ?
+           fluid.allocateSimpleIdTemplate(element) : fluid.allocateSimpleIdBrowser(element);
+    };
+
     /*
      * Allocate an id to the supplied element if it has none already, by a simple
      * scheme resulting in ids "fluid-id-nnnn" where nnnn is an increasing integer.
      */
-    fluid.allocateSimpleId = function (element) {
+    fluid.allocateSimpleIdTemplate = function (element) {
         element = fluid.unwrap(element);
         if (!element || fluid.isPrimitive(element)) {
             return null;

@@ -29,6 +29,7 @@ fluid.loadFrameworkPatch("%new-renderer-demo/src/js/core/fluidNewRenderer.js");
 fluid.loadFrameworkPatch("%new-renderer-demo/src/js/core/htmlParser.js");
 fluid.loadFrameworkPatch("%new-renderer-demo/src/js/core/fastXmlPull.js");
 
+require("./js/server/IncludeRewriting.js");
 require("./js/server/PageHandler.js");
 require("./js/server/RendererModuleLoader.js");
-require("./js/server/ServerResourceLoader.js");
+require("./js/server/ServerRenderer.js");

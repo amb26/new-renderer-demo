@@ -1,0 +1,18 @@
+{
+    "name": "fluid-renderer-demo",
+    "description": "A demonstration of Infusion server-side rendering.",
+    "version": "1.0.0",
+    "license": "BSD-3-Clause",
+    "infusion": {
+        "bundleType": "fluid-renderer-module",
+        "cssFiles": [
+        ],
+        "jsFiles": [
+            "./DemoPage.js"
+        ],
+        "htmlFiles": [
+            "./DemoPage.html"
+        ],
+        "staticMountBase": "./"
+    }
+}

@@ -1,5 +1,5 @@
 /**
- * Renderer Markup Handler
+ * Renderer Markup Page Handler
  *
  * Copyright 2018 Raising The Floor - International
  *
@@ -17,8 +17,6 @@
 var fluid = require("infusion");
 fluid.require("%kettle");
 
-fluid.registerNamespace("fluid.renderer.pageHandler");
-
 fluid.defaults("fluid.renderer.pageHandler", {
     gradeNames: ["kettle.request.http", "fluid.renderer.server"],
     invokers: {
@@ -27,44 +25,18 @@ fluid.defaults("fluid.renderer.pageHandler", {
         }
     },
     member: {
+        // The renderer workflow accumulates the virtual DOM tree into this member during component construction
         markupTree: null
     },
     components: {
-        page: { // TODO: overridden by clients
+        page: { // TODO: overridden by clients with something derived from fluid.rootPage
             type: "fluid.emptySubcomponent"
         }
     }
 });
 
-fluid.defaults("fluid.renderer", {
-    gradeNames: "fluid.component"
-});
-
-fluid.defaults("fluid.renderer.server", {
-    gradeNames: "fluid.renderer",
-    invokers: {
-        render: {
-            funcName: "fluid.renderer.server.render",
-            args: ["{that}", "{arguments}.0"]
-        }
-    }
-});
-
-fluid.renderer.server.render = function (renderer, components) {
-    console.log("About to render " + components.length + " components to renderer " + fluid.dumpComponentPath(renderer));
-    var rootComponent = components[0];
-    if (!fluid.componentHasGrade(rootComponent, "fluid.rootPage")) {
-        fluid.fail("Must render at least one component, the first of which should be descended from fluid.rootPage - "
-           + " the head component was ", rootComponent);
-    }
-    components.forEach(function (component) {
-        fluid.getForComponent(component, "container");
-        console.log("Considering component at " + fluid.dumpComponentPath(component));
-        console.log("Container option is " + component.options.container);
-    });
-    renderer.markupTree = components[0].container[0];
-};
-
+/** @param {fluid.renderer.pageHandler} request - The pageHandler request in progress in the server
+ */
 fluid.renderer.pageHandler.handleGet = function (request) {
     var text = fluid.htmlParser.render(request.markupTree.children);
     request.res.type("html");

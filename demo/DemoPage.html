@@ -1,48 +1,51 @@
 <!DOCTYPE html>
 <html lang="en">
-
 <head>
     <meta http-equiv="Content-Type" content="text/html; charset=utf-8">
     <meta content="width=device-width, initial-scale=1.0" name="viewport">
 
-    <link rel="stylesheet" type="text/css" href="%fluid-infusion/src/lib/normalize/css/normalize.css" />
-    <link rel="stylesheet" type="text/css" href="../shared/css/demo.css" />
-    <link rel="stylesheet" type="text/css" href="%fluid-infusion/src/framework/core/css/fluid.css" />
-    <link rel="stylesheet" type="text/css" href="%fluid-infusion/src/components/textfieldControl/css/TextfieldSlider.css" />
-    <link rel="stylesheet" type="text/css" href="../../src/components/textfieldControl/css/TextfieldStepper.css" />
-    <link rel="stylesheet" type="text/css" href="../../src/components/overviewPanel/css/OverviewPanel.css" />
-    <link rel="stylesheet" type="text/css" href="css/textfieldControlDemo.css" />
+    <link rel="stylesheet" type="text/css" href="%infusion/src/lib/normalize/css/normalize.css" />
+    <link rel="stylesheet" type="text/css" href="%infusion/src/framework/core/css/fluid.css" />
+    <link rel="stylesheet" type="text/css" href="%infusion/src/framework/core/css/fluid.css" />
+    <link rel="stylesheet" type="text/css" href="%fluid-textfield-controls/css/TextfieldSlider.css" />
+    <link rel="stylesheet" type="text/css" href="%fluid-renderer-demo/demo.css" />
 
-    <script type="text/javascript" src="%fluid-infusion/src/lib/jquery/core/js/jquery.js"></script>
-    <script type="text/javascript" src="%fluid-infusion/src/framework/core/js/Fluid.js"></script>
-    <script type="text/javascript" src="%fluid-infusion/src/framework/core/js/FluidDocument.js"></script>
-    <script type="text/javascript" src="%fluid-infusion/src/framework/core/js/FluidIoC.js"></script>
-    <script type="text/javascript" src="%fluid-infusion/src/framework/core/js/ModelTransformation.js"></script>
-    <script type="text/javascript" src="%fluid-infusion/src/framework/core/js/ModelTransformationTransforms.js"></script>
-    <script type="text/javascript" src="%fluid-infusion/src/framework/core/js/DataBinding.js"></script>
-    <script type="text/javascript" src="%fluid-infusion/src/framework/core/js/FluidView.js"></script>
-    <script type="text/javascript" src="%fluid-infusion/src/components/tooltip/js/Tooltip.js"></script>
-    <script type="text/javascript" src="%fluid-infusion/src/components/textfieldControl/js/Textfield.js"></script>
-    <script type="text/javascript" src="%fluid-infusion/src/components/textfieldControl/js/TextfieldSlider.js"></script>
-    <script type="text/javascript" src="%fluid-infusion/src/components/textfieldControl/js/TextfieldStepper.js"></script>
-
-    <!-- required for the Overview Panel -->
-    <script type="text/javascript" src="../../src/framework/core/js/FluidDOMUtilities.js"></script>
-    <script type="text/javascript" src="../../src/framework/core/js/FluidRequests.js"></script>
-    <script type="text/javascript" src="../../src/lib/fastXmlPull/js/fastXmlPull.js"></script>
-    <script type="text/javascript" src="../../src/framework/renderer/js/fluidParser.js"></script>
-    <script type="text/javascript" src="../../src/framework/core/js/MessageResolver.js"></script>
-    <script type="text/javascript" src="../../src/framework/renderer/js/fluidRenderer.js"></script>
-    <script type="text/javascript" src="../../src/framework/renderer/js/RendererUtilities.js"></script>
+    <script type="text/javascript" src="%infusion/src/lib/jquery/core/js/jquery.js"></script>
+    <script type="text/javascript" src="%infusion/src/framework/core/js/Fluid.js"></script>
+    <script type="text/javascript" src="%infusion/src/framework/core/js/FluidPromises.js"></script>
+    <script type="text/javascript" src="%infusion/src/framework/core/js/FluidDocument.js"></script>
+    <script type="text/javascript" src="%infusion/src/framework/core/js/FluidIoC.js"></script>
+    <script type="text/javascript" src="%infusion/src/framework/core/js/DataSource.js"></script>
+    <script type="text/javascript" src="%infusion/src/framework/core/js/ResourceLoader.js"></script>
+    <script type="text/javascript" src="%infusion/src/framework/core/js/ResourceLoader-browser.js"></script>
+    <script type="text/javascript" src="%infusion/src/framework/core/js/ModelTransformation.js"></script>
+    <script type="text/javascript" src="%infusion/src/framework/core/js/ModelTransformationTransforms.js"></script>
+    <script type="text/javascript" src="%infusion/src/framework/core/js/DataBinding.js"></script>
+    <script type="text/javascript" src="%infusion/src/framework/core/js/FluidView.js"></script>
+    <script type="text/javascript" src="%infusion/src/components/tooltip/js/Tooltip.js"></script>
+    <script type="text/javascript" src="%fluid-textfield-controls/js/Textfield.js"></script>
+    <script type="text/javascript" src="%fluid-textfield-controls/js/TextfieldSlider.js"></script>
+    <script type="text/javascript" src="%fluid-textfield-controls/js/TextfieldStepper.js"></script>
+<!-- Special patched includes that will eventually go into base framework -->
+    <script type="text/javascript" src="%new-renderer-demo/src/js/core/fastXmlPull.js"></script>
+    <script type="text/javascript" src="%new-renderer-demo/src/js/core/fluidView.js"></script>
+    <script type="text/javascript" src="%new-renderer-demo/src/js/core/fluidNewRenderer.js"></script>
+    <script type="text/javascript" src="%new-renderer-demo/src/js/core/htmlParser.js"></script>
+    <script type="text/javascript" src="%new-renderer-demo/src/js/client/ClientRenderer.js"></script>
+<!-- Includes for our own application - will eventually be auto-generated -->    
+    <script type="text/javascript" src="%fluid-renderer-demo/DemoPage.js"></script>
+    <script type="text/javascript" src="%fluid-renderer-demo/MutationChecker.js"></script>
 
     <title>Textfield Controls Demo</title>
 </head>
-<!-- The structure of this demo was taken from %infusion/demos/textfieldControl -->
-<body>
+<!-- The structure of this demo was taken from %fluid-infusion/demos/textfieldControl -->
+<body onload="fluid.demos.checkMutations()">
     <section class="fl-demo-container">
         <div>
             <h2>Textfield Slider</h2>
             <div class="flc-textfieldSlider">
+            <!-- static markup template - on successful server-side rendering, this markup will be replaced, eliminating the
+            letter As -->
                 <span class="demo-smallIcon">A</span>
                 <input class="flc-textfieldSlider-slider fl-slider">
                 <span class="demo-largeIcon">A</span>

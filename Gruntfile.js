@@ -16,7 +16,7 @@ module.exports = function (grunt) {
     grunt.initConfig({
         lintAll: {
             sources: {
-                js: ["./src/**/*.js", "./textfieldControl/**/*.js", "./demo/**.*.js", "./*.js"],
+                js: ["./src/**/*.js", "./textfieldControl/**/*.js", "./demo/**/*.js", "./*.js"],
                 json: ["./*.json"],
                 md: ["./*.md"],
                 other: ["./.*"]

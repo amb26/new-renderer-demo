@@ -48,7 +48,7 @@ var fluid_3_0_0 = fluid_3_0_0 || {};
                 that.options.selectors.container === "/" ? {
                     node: that.rootNode,
                     childIndices: []
-                } : {
+                } : { // TODO: this branch is most likely to be wrong and should be removed
                     node: that.rootNode.children[0],
                     childIndices: [0]
                 }

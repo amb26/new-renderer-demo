@@ -2,7 +2,7 @@ fluid.defaults("fluid.demos.demoPage", {
     gradeNames: "fluid.rootPage",
     resources: {
         template: {
-             path: "%new-renderer-demo/demo/DemoPage.html"
+            path: "%fluid-renderer-demo/DemoPage.html"
         }
     },
     selectors: {
@@ -15,7 +15,7 @@ fluid.defaults("fluid.demos.demoPage", {
             container: "{demoPage}.dom.textfieldSlider",
             options: {
                 attrs: {
-                    "aria-label": "{that}.options.strings.label",
+                    "aria-label": "{that}.options.strings.label"
                 },
                 strings: {
                     "label": "Textfield Slider"
@@ -36,13 +36,13 @@ fluid.defaults("fluid.demos.demoPage", {
             container: "{demoPage}.dom.textfieldStepper",
             options: {
                 attrs: {
-                    "aria-label": "{that}.options.strings.label",
+                    "aria-label": "{that}.options.strings.label"
                 },
                 strings: {
                     "label": "Textfield Stepper"
                 },
                 model: {
-                    value: 1,
+                    value: 2,
                     step: 0.1,
                     range: {
                         min: 1,
