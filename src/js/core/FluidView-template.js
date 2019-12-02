@@ -21,63 +21,6 @@ var fluid_3_0_0 = fluid_3_0_0 || {};
 (function ($, fluid) {
     "use strict";
 
-    fluid.defaults("fluid.viewComponent", {
-        gradeNames: ["fluid.modelComponent"],
-        argumentMap: {
-            container: 0,
-            options: 1
-        },
-        members: {
-            container: "@expand:fluid.containerForViewComponent({that}, {that}.options.container)",
-            dom: "@expand:fluid.initDomBinder({that}, {that}.options.selectors, {that}.container)"
-        },
-        mergePolicy: {
-            "members.container": "replace"
-        }
-    });
-
-    // unsupported, NON-API function
-    fluid.dumpSelector = function (selectable) {
-        return typeof (selectable) === "string" ? selectable :
-            selectable.selector ? selectable.selector : "";
-    };
-
-    fluid.checkTryCatchParameter = function () {
-        var location = window.location || { search: "", protocol: "file:" };
-        var GETparams = location.search.slice(1).split("&");
-        return fluid.find(GETparams, function (param) {
-            if (param.indexOf("notrycatch") === 0) {
-                return true;
-            }
-        }) === true;
-    };
-
-    fluid.notrycatch = fluid.checkTryCatchParameter();
-
-
-    /**
-     * Wraps an object in a jQuery if it isn't already one. This function is useful since
-     * it ensures to wrap a null or otherwise falsy argument to itself, rather than the
-     * often unhelpful jQuery default of returning the overall document node.
-     *
-     * @param {Object} obj - the object to wrap in a jQuery
-     * @param {jQuery} [userJQuery] - the jQuery object to use for the wrapping, optional - use the current jQuery if absent
-     * @return {jQuery} - The wrapped object.
-     */
-    fluid.wrap = function (obj, userJQuery) {
-        userJQuery = userJQuery || $;
-        return ((!obj || obj.jquery) ? obj : userJQuery(obj));
-    };
-
-    /**
-     * If obj is a jQuery, this function will return the first DOM element within it. Otherwise, the object will be returned unchanged.
-     *
-     * @param {jQuery} obj - The jQuery instance to unwrap into a pure DOM element.
-     * @return {Object} - The unwrapped object.
-     */
-    fluid.unwrap = function (obj) {
-        return obj && obj.jquery ? obj[0] : obj;
-    };
 
     // FLUID-6148: Patched for server
     // TODO: fudged - it should really be able to expect to know whether it expects a real DOM container or a template
@@ -143,37 +86,10 @@ var fluid_3_0_0 = fluid_3_0_0 || {};
         return container;
     };
 
-    /* Expect that jQuery selector query has resulted in a non-empty set of
-     * results. If none are found, this function will fail with a diagnostic message,
-     * with the supplied message prepended.
-     */
-    fluid.expectFilledSelector = function (result, message) {
-        if (result && result.length === 0 && result.jquery) {
-            fluid.fail(message + ": selector \"" + result.selector + "\" with name " + result.selectorName +
-                       " returned no results in context " + fluid.dumpEl(result.context));
-        }
-    };
-
     fluid.containerForViewComponent = function (that, containerSpec) {
         var container = fluid.container(containerSpec);
         fluid.expectFilledSelector(container, "Error instantiating viewComponent at path \"" + fluid.pathForComponent(that));
         return container;
-    };
-
-    /**
-     * Creates a new DOM Binder instance for the specified component and mixes it in.
-     *
-     * @param {Object} that - The component instance to attach the new DOM Binder to.
-     * @param {Object} selectors - a collection of named jQuery selectors
-     * @return {DOM binder} - The DOM binder for the component.
-     */
-    // Note that whilst this is not a properly public function, it has been bound to in a few stray places such as Undo.js and
-    // Panels.js - until we can finally reform these sites we need to keep this signature stable as well as the bizarre side-effects
-    fluid.initDomBinder = function (that, selectors/*, container */) {
-        console.log("initDomBinder faultily called for " + fluid.pathForComponent(that).join("."));
-        that.dom = fluid.createDomBinder(that.container, selectors || that.options.selectors || {});
-        that.locate = that.dom.locate;
-        return that.dom;
     };
 
     fluid.allocateSimpleIdBrowser = fluid.allocateSimpleId;

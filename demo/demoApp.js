@@ -76,7 +76,7 @@ fluid.defaults("fluid.demos.client", {
     }
 });
 
-if (process.argv[1] === "autoTest") {
+if (process.argv[2] === "autoTest") {
     var client = fluid.demos.client();
 
     client.get().then(function (markup) {

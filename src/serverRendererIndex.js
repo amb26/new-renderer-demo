@@ -22,9 +22,9 @@ fluid.loadFrameworkPatch = function (path) {
 };
 
 
-fluid.loadFrameworkPatch("%new-renderer-demo/src/js/server/jquery.standalone.js");
+// fluid.loadFrameworkPatch("%new-renderer-demo/src/js/server/jquery.standalone.js");
 fluid.loadFrameworkPatch("%new-renderer-demo/src/js/server/jquery.standalone.renderer.js");
-fluid.loadFrameworkPatch("%new-renderer-demo/src/js/core/FluidView.js");
+fluid.loadFrameworkPatch("%new-renderer-demo/src/js/core/FluidView-template.js");
 fluid.loadFrameworkPatch("%new-renderer-demo/src/js/core/fluidNewRenderer.js");
 fluid.loadFrameworkPatch("%new-renderer-demo/src/js/core/htmlParser.js");
 fluid.loadFrameworkPatch("%new-renderer-demo/src/js/core/fastXmlPull.js");

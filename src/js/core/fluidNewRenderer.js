@@ -14,32 +14,6 @@ var fluid_3_0_0 = fluid_3_0_0 || {};
 (function ($, fluid) {
     "use strict";
 
-    // Version of core framework's "newViewComponent" with extra mergePolicy for FLUID-5668
-    fluid.defaults("fluid.newViewComponent", {
-        gradeNames: ["fluid.modelComponent"],
-        members: {
-            // 3rd argument is throwaway to force evaluation of container
-            // TODO: initDOMBinder needs to be axed/bypassed
-            dom: "@expand:fluid.initDomBinder({that}, {that}.options.selectors, {that}.container)",
-            container: "@expand:fluid.container({that}.options.container)",
-            // Several problems here - note that we can't resolve "locate" via IoC since because of the
-            // blasted "resolvePathSegment" - but even if we move this into an aligned schema, what happens when we
-            // introduce proxies? We'll need a separate "domBinder" with the actual machine, and then "dom" for the mirrored area.
-            // "resolvePathSegment" and all of fluid.get/set/trundlers etc. needs to be removed and replaced with
-            // a proper immutable routing system
-            locate: {
-                expander: {
-                    funcName: "fluid.getImmediate",
-                    args: ["{that}.dom", "locate"]
-                }
-            }
-        },
-        mergePolicy: {
-            "members.dom": "replace",
-            "members.container": "replace"
-        }
-    });
-
     fluid.createRendererDomBinder = function (that, parentMarkup, createTemplateDomBinder, createBrowserDomBinder) {
         return parentMarkup ? createBrowserDomBinder() : createTemplateDomBinder();
     };
@@ -48,7 +22,7 @@ var fluid_3_0_0 = fluid_3_0_0 || {};
         gradeNames: ["fluid.newViewComponent", "fluid.resourceLoader"],
         members: {
             container: "@expand:fluid.resolveTemplateContainer({that}, {that}.options.container)",
-            // TODO: use an options distribution or so to distinguish between server and client DOM binders
+            // TODO: use an options distribution/contextAwareness to distinguish between server and client DOM binders
             dom: {
                 expander: {
                     funcName: "fluid.createRendererDomBinder",
@@ -62,8 +36,8 @@ var fluid_3_0_0 = fluid_3_0_0 || {};
                 args: ["{that}", "{that}.options.selectors", "{that}.container", "{that}.resources.template.parsed"]
             },
             createBrowserDomBinder: {
-                funcName: "fluid.initDomBinder",
-                args: ["{that}", "{that}.options.selectors", "{that}.container"]
+                funcName: "fluid.createDomBinder",
+                args: ["{that}.container", "{that}.options.selectors"]
             }
         },
         resources: {
