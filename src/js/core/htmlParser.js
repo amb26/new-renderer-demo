@@ -35,7 +35,7 @@ var fluid_3_0_0 = fluid_3_0_0 || {};
             },
             parsedSelectors: {}, // hash of selectorName to {tree, selector, selectorName, partialParse} (last is volatile during parse)
             matchedSelectors: {}, // hash of selectorName to {node, childIndices}
-            simpleClassSelectors: {}, // map of simple class selectors to selectorName - an optimisation
+            simpleClassSelectors: {}, // map of simple class selectors to array of selectorName - an optimisation
             defstart: -1, // character pointers for default processing
             defend: -1,
             parser: fluid.XMLP(template)
@@ -43,16 +43,11 @@ var fluid_3_0_0 = fluid_3_0_0 || {};
         fluid.htmlParser.parseSelectors(that);
         that.nodeStack[0] = that.rootNode;
         fluid.htmlParser.beginParse(that);
-        if (!that.matchedSelectors.container) {
-            that.matchedSelectors.container = [
-                that.options.selectors.container === "/" ? {
-                    node: that.rootNode,
-                    childIndices: []
-                } : { // TODO: this branch is most likely to be wrong and should be removed
-                    node: that.rootNode.children[0],
-                    childIndices: [0]
-                }
-            ];
+        if (!that.matchedSelectors.container && that.options.selectors.container === "/") {
+            that.matchedSelectors.container = [{
+                node: that.rootNode,
+                childIndices: []
+            }];
         }
         return that;
     };
@@ -137,12 +132,11 @@ var fluid_3_0_0 = fluid_3_0_0 || {};
             nodeStack = that.nodeStack;
         if (headclazz) {
             var split = headclazz.split(" ");
-            console.log("Parsing node ", node, " with classes ", split);
             for (var i = 0; i < split.length; ++i) {
-                var simpleClassName = that.simpleClassSelectors[split[i].trim()];
-                if (simpleClassName) {
+                var simpleClassNames = that.simpleClassSelectors[split[i].trim()];
+                fluid.each(simpleClassNames, function (simpleClassName) {
                     fluid.htmlParser.pushMatchedSelector(that, simpleClassName, node);
-                }
+                });
             }
         }
         // Note that, as for IoCSS selectors, this is a primitive implementation that does no backtracking
@@ -302,13 +296,17 @@ parseloop: // eslint-disable-line indent
     };
 
     fluid.htmlParser.dumpNode = function (node, t) {
+        if (node.tagName) {
+            fluid.htmlParser.dumpTagOpen(node, t);
+        }
         if (fluid.isValue(node.text)) {
             t.text += node.text;
         } else {
-            fluid.htmlParser.dumpTagOpen(node, t);
             fluid.each(node.children, function (child) {
                 fluid.htmlParser.dumpNode(child, t);
             });
+        }
+        if (node.tagName) {
             fluid.htmlParser.dumpTagClose(node, t);
         }
     };

@@ -14,8 +14,9 @@ var fluid_3_0_0 = fluid_3_0_0 || {};
 (function ($, fluid) {
     "use strict";
 
-    fluid.createRendererDomBinder = function (that, parentMarkup, createTemplateDomBinder, createBrowserDomBinder) {
-        return parentMarkup ? createBrowserDomBinder() : createTemplateDomBinder();
+    fluid.createRendererDomBinder = function (createDomBinderMethod, that, createTemplateDomBinder, createBrowserDomBinder) {
+        var method = fluid.getForComponent(that, createDomBinderMethod);
+        return method();
     };
 
     fluid.defaults("fluid.newRendererComponent", {
@@ -26,11 +27,11 @@ var fluid_3_0_0 = fluid_3_0_0 || {};
             dom: {
                 expander: {
                     funcName: "fluid.createRendererDomBinder",
-                    args: ["{that}", "{that}.options.parentMarkup", "{that}.createTemplateDomBinder", "{that}.createBrowserDomBinder"]
+                    args: ["{fluid.renderer}.options.createDomBinderMethod", "{that}", "{that}.createTemplateDomBinder", "{that}.createBrowserDomBinder"]
                 }
             }
         },
-        invokers: {
+        invokers: { // TODO: Shift these methods into the renderer itself
             createTemplateDomBinder: {
                 funcName: "fluid.createTemplateDomBinder",
                 args: ["{that}", "{that}.options.selectors", "{that}.container", "{that}.resources.template.parsed"]
@@ -49,13 +50,20 @@ var fluid_3_0_0 = fluid_3_0_0 || {};
                 }
             }
         },
+        selectors: {
+            container: "/"
+        },
         // Configure a map here of all templates which should be pre-fetched during fetchTemplates so that they are
         // ready for renderMarkup
-        rendererTemplates: {
+        rendererTemplateResources: {
             template: true
         },
         // Set to `true` if there is no template and/or the component expects to render into markup provided by parent
         parentMarkup: false,
+        // Set to `true` if the root node of the template is to be written into the markup
+        // otherwise it will be elided and its children joined to the parent node directly
+        includeTemplateRoot: false,
+        replaceParent: true,
         workflows: {
             global: {
                 fetchTemplates: {
@@ -71,25 +79,56 @@ var fluid_3_0_0 = fluid_3_0_0 || {};
         }
     });
 
+    /** Construct the virtual DOM container for the component out of its parsed template structure.
+     * NOTE: Currently mutates the parsed template in place in order to rebase its matched selectors
+     * @param {fluid.newRendererComponent} that - The root page container for which the container is to be constructed
+     * @return {ljQuery} The container node.
+     */
+    fluid.buildTemplateContainer = function (that) {
+        var includeTemplateRoot = fluid.getForComponent(that, "options.includeTemplateRoot");
+        var matchedSelectors = that.resources.template.parsed.matchedSelectors;
+        if (!matchedSelectors.container) {
+            fluid.fail("Failure in template for " + fluid.dumpComponentAndPath(that) + " at " + (that.resources.template.path || that.resources.template.url) + ": template selector " + that.options.selectors.container + " was not matched");
+        }
+        var matchedContainer = matchedSelectors.container[0];
+        var containerTree = matchedContainer.node;
+        var containerCopy = fluid.copy(containerTree);
+        var rootDepth = matchedContainer.childIndices.length - (includeTemplateRoot ? 1 : 0);
+        // TODO: Create a separate area for these rather than bashing the parsed template in place
+        fluid.each(matchedSelectors, function (matchedSelector) {
+            matchedSelector.forEach(function (oneMatch) {
+                oneMatch.childIndices = oneMatch.childIndices.slice(rootDepth);
+            });
+        });
+        return fluid.container(containerCopy);
+    };
+
     fluid.resolveTemplateContainer = function (that, containerSpec) {
         var fail = function (extraMessage) {
-            fluid.fail("Cannot resolve container ", containerSpec, " from " + fluid.dumpComponentPath(that) + extraMessage);
+            fluid.fail("Cannot resolve container ", containerSpec, " from " + fluid.dumpComponentAndPath(that) + extraMessage);
         };
-        if (!containerSpec.selectorName) {
-            fail(" which did not resolve to a DOM binder resolved element");
+        if (!containerSpec) {
+            fail(" which was empty");
         }
-        if (fluid.getForComponent(that, "options.parentMarkup")) {
-            return containerSpec;
+        var outerContainer = fluid.container(containerSpec);
+        if (fluid.getForComponent(that, ["options", "parentMarkup"])) {
+            return outerContainer;
         } else if (that.resources.template) {
-            if (!containerSpec.childIndex) {
-                fail(" which is not a template matchedSelector");
-            }
+            var innerContainer = fluid.buildTemplateContainer(that);
             // Find the target location in the parent's document where we might write our own template to
             // form our own container
-            var parentNode = containerSpec.parentNode;
-            var container = fluid.buildRootContainer(that);
-            parentNode.children[containerSpec.childIndex] = container[0];
-            return container;
+            var parentNode = outerContainer.parentNode;
+            if (parentNode && fluid.getForComponent(that, ["options", "replaceParent"])) {
+                if (!outerContainer.childIndex) {
+                    fail(" which is not a template matchedSelector");
+                }
+                parentNode.children = parentNode.children || [];
+                parentNode.children[outerContainer.childIndex] = innerContainer[0];
+            } else {
+                fluid.pushArray(outerContainer[0], "children", innerContainer[0]);
+                console.log("It must be a root page!");
+            }
+            return innerContainer;
         } else {
             fluid.fail("Cannot resolve container for renderer " + fluid.dumpComponentPath(that)
                 + " which has no markup template and has not set `parentMarkup` to `true` - container argument was ",
@@ -141,8 +180,7 @@ var fluid_3_0_0 = fluid_3_0_0 || {};
     };
 
     fluid.defaults("fluid.rootPage", {
-        gradeNames: "fluid.newRendererComponent",
-        container: "/"
+        gradeNames: "fluid.newRendererComponent"
     });
 
     fluid.dumpComponentPath = function (component) {
@@ -163,10 +201,46 @@ var fluid_3_0_0 = fluid_3_0_0 || {};
                 source: "{that}.options.rootPageGrade",
                 target: "{that fluid.rootPage}.options.gradeNames"
             }
+        },
+        invokers: {
+            render: {
+                funcName: "fluid.renderer.render",
+                args: ["{that}", "{arguments}.0"]
+            }
         }
     });
 
-    /** Global workflow function for fluid.newRendererComponent **/
+    fluid.defaults("fluid.renderer.browser", {
+        gradeNames: "fluid.renderer",
+        createDomBinderMethod: "createBrowserDomBinder"
+    });
+
+    fluid.defaults("fluid.renderer.template", {
+        gradeNames: "fluid.renderer",
+        createDomBinderMethod: "createTemplateDomBinder"
+    });
+
+    fluid.renderer.render = function (renderer, components) {
+        // Note that this appears to be the core workflow of every renderer - note that fluid.renderer.server.render is so
+        // effectful that we could just deliver all of this as a prefix before the tree gets munged
+        console.log("About to render " + components.length + " components to renderer " + fluid.dumpComponentPath(renderer));
+        var rootComponent = components[0];
+        /*
+        if (!fluid.componentHasGrade(rootComponent, "fluid.rootPage")) {
+            fluid.fail("Must render at least one component, the first of which should be descended from fluid.rootPage - "
+               + " the head component was ", rootComponent);
+        }*/
+        components.forEach(function (component) {
+            // Evaluating the container of each component will force it to evaluate and render into it
+            var container = fluid.getForComponent(component, "container");
+            if (fluid.componentHasGrade(component, "fluid.leafRendererComponent")) {
+                fluid.getForComponent(component, "updateTemplateMarkup")(container[0], component.model);
+            }
+        });
+        return rootComponent.container[0];
+    };
+
+    /** Global workflow functions for fluid.newRendererComponent **/
 
     fluid.renderer.fetchTemplates = function (shadows) {
         shadows.forEach(function (shadow) {
@@ -174,8 +248,8 @@ var fluid_3_0_0 = fluid_3_0_0 || {};
             if (fluid.componentHasGrade(that, "fluid.newRendererComponent")) {
                 var parentMarkup = fluid.getForComponent(that, ["options", "parentMarkup"]);
                 if (!parentMarkup) {
-                    var rendererTemplates = fluid.getForComponent(that, ["options", "rendererTemplates"]);
-                    fluid.each(rendererTemplates, function (value, key) {
+                    var rendererTemplateResources = fluid.getForComponent(that, ["options", "rendererTemplateResources"]);
+                    fluid.each(rendererTemplateResources, function (value, key) {
                         if (value) {
                             fluid.getForComponent(that, ["resources", key]);
                         }
@@ -184,7 +258,6 @@ var fluid_3_0_0 = fluid_3_0_0 || {};
             }
         });
     };
-
 
 
     fluid.renderer.renderMarkup = function (shadows) {

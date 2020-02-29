@@ -86,6 +86,7 @@ var fluid_3_0_0 = fluid_3_0_0 || {};
         return container;
     };
 
+    // TODO: identical to core framework version
     fluid.containerForViewComponent = function (that, containerSpec) {
         var container = fluid.container(containerSpec);
         fluid.expectFilledSelector(container, "Error instantiating viewComponent at path \"" + fluid.pathForComponent(that));

@@ -26,6 +26,7 @@ fluid.module.registerModuleBundle = function (pkg) {
         fluid.filterKeys(pkg, ["name", "version", "infusion"]));
 };
 
+// TODO: support relative paths from point of view of requestor
 fluid.renderer.loadModule = function (path) {
     var basePath = fluid.module.resolvePath(path);
     var pkg = require(basePath + "/package.json");

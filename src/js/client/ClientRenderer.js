@@ -14,8 +14,11 @@ var fluid_3_0_0 = fluid_3_0_0 || {};
 (function ($, fluid) {
     "use strict";
 
+    // Full-page "client renderer" which accepts an init block as rendered from the server, which insists that the
+    // page's markup should correspond to that required, and constructs a matching model skeleton
+
     fluid.defaults("fluid.renderer.client", {
-        gradeNames: "fluid.renderer",
+        gradeNames: "fluid.renderer.browser",
         rootPageGrade: "fluid.clientRootPage",
         invokers: {
             render: {
@@ -34,12 +37,11 @@ var fluid_3_0_0 = fluid_3_0_0 || {};
 
 
     fluid.defaults("fluid.clientRootPage", {
+        // No reason why this can't specify "html" directly to avoid hard-coding fluid.container.
+        // container: "html",
         members: {
             // Re-override container definition from newRendererComponent with one from fluid.newViewComponent again
-            // TODO: Somehow this definition needs to be properly contextual, and also time-dependent! For nested
-            // components, will resolve to template resolver during initial render, and then live DOM during
-            // mature state - unless we enhance our virtual DOM to always be real (which I guess we must, if it is
-            // to be a usable virtual DOM for diffing - but this should be an optional decision).
+            // This will interpret the container spec of "/" in fluid.rootPage as a designation of an <html> root element
             container: "@expand:fluid.container({that}.options.container)"
         }
     });
@@ -64,6 +66,10 @@ var fluid_3_0_0 = fluid_3_0_0 || {};
 
     fluid.renderer.clientRendererPath = "clientRenderer";
 
+
+    // Client side initBlock "driver" function which accepts the "care package" from the server and uses it to
+    // reconstruct whatever component tree needs to be built against the already-correct markup. It sets
+    // "parentMarkup" to true for every component to prevent it from attempting to render again.
     fluid.renderer.initClientRenderer = function (config) {
         var rendererPotentia = {
             path: fluid.renderer.clientRendererPath,
@@ -100,20 +106,21 @@ var fluid_3_0_0 = fluid_3_0_0 || {};
     };
 
     fluid.renderer.client.render = function (renderer, components) {
-        // TODO: we are here!
+        // Note that this appears to be the core workflow of every renderer - note that fluid.renderer.server.render is so
+        // effectful that we could just deliver all of this as a prefix before the tree gets munged
         console.log("About to render " + components.length + " components to renderer " + fluid.dumpComponentPath(renderer));
         var rootComponent = components[0];
+        /*
         if (!fluid.componentHasGrade(rootComponent, "fluid.rootPage")) {
             fluid.fail("Must render at least one component, the first of which should be descended from fluid.rootPage - "
                + " the head component was ", rootComponent);
-        }
+        }*/
         components.forEach(function (component) {
             // Evaluating the container of each component will force it to evaluate and render into it
             fluid.getForComponent(component, "container");
         });
-        // Now we have some interesting problem here - if the tree actually renders, we go through one pass where the
-        // containers are bound to the virtual DOM and then another pass where we rebind them to the real one?!
-        renderer.markupTree = rootComponent.container[0];
+        return rootComponent.container[0];
+        // renderer.markupTree = rootComponent.container[0];
     };
 
 })(jQuery, fluid_3_0_0);

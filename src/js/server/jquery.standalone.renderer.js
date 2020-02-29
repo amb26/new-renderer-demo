@@ -35,14 +35,15 @@ fluid_3_0_0 = fluid_3_0_0 || {};
         return togo;
     };
 
-    fluid.jQueryStandalone.search = function (/* selector, context */) {
-        fluid.fail("Search is unimplemented");
+    fluid.jQueryStandalone.search = function (selector, context) {
+        return context; // TODO QUICK HACK
+        //fluid.fail("Search is unimplemented");
     };
 
     fluid.jQueryStandalone.constructor = function (arg0, arg1) {
         if (fluid.isDOMNode(arg0) || fluid.isArrayable(arg0)) {
             return fluid.jQueryStandalone.wrapNode(arg0);
-        } else if (typeof(arg0) === "string" && fluid.isDOMNode(arg1)) {
+        } else if (typeof(arg0) === "string" && fluid.isDOMNode(arg1) || fluid.isArrayable(arg1)) {
             return fluid.jQueryStandalone.search(arg0, arg1);
         } else if (fluid.isJQuery(arg0)) {
             return arg0;

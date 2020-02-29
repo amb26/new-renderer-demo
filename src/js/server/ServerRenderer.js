@@ -18,7 +18,8 @@
 var fluid = require("infusion");
 fluid.require("%kettle");
 
-
+// TODO: Factor "server renderer" into genuine server full-page renderer and one which merely applies a template
+// representation
 fluid.defaults("fluid.renderer.server", {
     gradeNames: "fluid.renderer",
     rootPageGrade: "fluid.serverRootPage",
@@ -34,26 +35,6 @@ fluid.defaults("fluid.renderer.server", {
     }
 });
 
-/** Construct the virtual DOM container for the `fluid.rootPage` component out of its parsed template structure.
- * NOTE: Currently mutates the parsed root page template in place in order to rebase its matched selectors
- * @param {fluid.rootPage} that - The root page container for which the container is to be constructed
- * @return {jQuery} The container node.
- */
-fluid.buildRootContainer = function (that) {
-    var matchedSelectors = that.resources.template.parsed.matchedSelectors;
-    var matchedContainer = matchedSelectors.container[0];
-    var containerTree = matchedContainer.node;
-    var containerCopy = fluid.copy(containerTree);
-    var rootDepth = matchedContainer.childIndices.length;
-    // TODO: Create a separate area for these rather than bashing the parsed template in place
-    fluid.each(matchedSelectors, function (matchedSelector) {
-        matchedSelector.forEach(function (oneMatch) {
-            oneMatch.childIndices = oneMatch.childIndices.slice(rootDepth);
-        });
-    });
-    return fluid.container(containerCopy);
-};
-
 fluid.defaults("fluid.serverRootPage", {
     selectors: {
         container: "{that}.options.container",
@@ -65,7 +46,7 @@ fluid.defaults("fluid.serverRootPage", {
         script: "head script"
     },
     members: {
-        container: "@expand:fluid.buildRootContainer({that})"
+        container: "@expand:fluid.buildTemplateContainer({that})"
     }
 });
 
