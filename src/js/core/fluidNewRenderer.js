@@ -31,7 +31,7 @@ var fluid_3_0_0 = fluid_3_0_0 || {};
                 }
             }
         },
-        invokers: { // TODO: Shift these methods into the renderer itself
+        invokers: { // TODO: Shift these methods up into the renderer itself
             createTemplateDomBinder: {
                 funcName: "fluid.createTemplateDomBinder",
                 args: ["{that}", "{that}.options.selectors", "{that}.container", "{that}.resources.template.parsed"]
@@ -88,7 +88,8 @@ var fluid_3_0_0 = fluid_3_0_0 || {};
         var includeTemplateRoot = fluid.getForComponent(that, "options.includeTemplateRoot");
         var matchedSelectors = that.resources.template.parsed.matchedSelectors;
         if (!matchedSelectors.container) {
-            fluid.fail("Failure in template for " + fluid.dumpComponentAndPath(that) + " at " + (that.resources.template.path || that.resources.template.url) + ": template selector " + that.options.selectors.container + " was not matched");
+            fluid.fail("Failure in template for " + fluid.dumpComponentAndPath(that) + " at "
+               + (that.resources.template.path || that.resources.template.url) + ": template selector " + that.options.selectors.container + " was not matched");
         }
         var matchedContainer = matchedSelectors.container[0];
         var containerTree = matchedContainer.node;

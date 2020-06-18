@@ -9,7 +9,7 @@
             "./css/TextfieldSlider.css",
             "./css/TextfieldStepper.css"
         ],
-        "jsFiles": [
+        "jsCommonFiles": [
             "./js/Textfield.js",
             "./js/TextfieldSlider.js",
             "./js/TextfieldStepper.js"

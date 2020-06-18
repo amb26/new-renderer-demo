@@ -21,8 +21,8 @@ fluid.require("%kettle");
 // TODO: Factor "server renderer" into genuine server full-page renderer and one which merely applies a template
 // representation
 fluid.defaults("fluid.renderer.server", {
-    gradeNames: "fluid.renderer",
-    rootPageGrade: "fluid.serverRootPage",
+    gradeNames: "fluid.renderer.template",
+    rootPageGrade: "fluid.serverRootPage", // Gets distributed onto the rootPage via linkage
     invokers: {
         render: {
             funcName: "fluid.renderer.server.render",
@@ -37,7 +37,7 @@ fluid.defaults("fluid.renderer.server", {
 
 fluid.defaults("fluid.serverRootPage", {
     selectors: {
-        container: "{that}.options.container",
+        // container: "{that}.options.container",
         // This selector is used to determine where to dump the <script> tag holding the initBlock for the client's
         // component tree - it will be deposited as the final child
         body: "body",
@@ -69,6 +69,7 @@ fluid.renderer.server.render = function (renderer, staticMountIndexer, component
         fluid.fail("Must render at least one component, the first of which should be descended from fluid.rootPage - "
            + " the head component was ", rootComponent);
     }
+
     components.forEach(function (component) {
         // Evaluating the container of each component will force it to evaluate and render into it
         fluid.getForComponent(component, "container");
@@ -76,41 +77,44 @@ fluid.renderer.server.render = function (renderer, staticMountIndexer, component
         console.log("Container option is " + component.options.container);
     });
 
-    var pageShadow = fluid.globalInstantiator.idToShadow[renderer.page.id];
-    var pagePotentia = pageShadow.potentia;
-    //console.log("Got PAGE POTENTIA ", fluid.prettyPrintJSON(fluid.censorKeys(pagePotentia, ["localRecord", "parentThat"])));
-    var toMerges = pagePotentia.lightMerge.toMerge.filter(function (oneToMerge) {
-        return oneToMerge.recordType !== "defaults" && oneToMerge.type !== "fluid.emptySubcomponent";
-    }).map(function (oneToMerge) {
-        return fluid.filterKeys(oneToMerge, ["type", "options"]);
-    });
-
-    var rootPath = fluid.pathForComponent(rootComponent);
-    var models = components.map(function (component) {
-        return {
-            path: fluid.removePrefix(rootPath, fluid.pathForComponent(component)),
-            model: component.model
-        };
-    });
-    var initBlock = fluid.stringTemplate(initBlockTemplate, {
-        lightMerge: JSON.stringify(toMerges, null, 2),
-        models: JSON.stringify(models, null, 2)
-    });
-
     var rootComponentDom = fluid.getForComponent(rootComponent, "dom");
     // Rewrite any module-relative includes
     var selectorsToRewrite = fluid.getForComponent(renderer, ["options", "includeSelectorsToRewrite"]);
     fluid.includeRewriting.rewriteTemplate(rootComponentDom, staticMountIndexer, selectorsToRewrite);
-    var bodyNode = rootComponentDom.locate("body")[0];
-    var scriptNode = {
-        tagName: "script",
-        children: [{
-            text: initBlock
-        }]
-    };
-    if (!bodyNode) {
-        fluid.fail("Unable to render to root page template since no body tag was present");
+
+    if (components.length > 0) {
+        var pageShadow = fluid.globalInstantiator.idToShadow[renderer.page.id];
+        var pagePotentia = pageShadow.potentia;
+        //console.log("Got PAGE POTENTIA ", fluid.prettyPrintJSON(fluid.censorKeys(pagePotentia, ["localRecord", "parentThat"])));
+        var toMerges = pagePotentia.lightMerge.toMerge.filter(function (oneToMerge) {
+            return oneToMerge.recordType !== "defaults" && oneToMerge.type !== "fluid.emptySubcomponent";
+        }).map(function (oneToMerge) {
+            return fluid.filterKeys(oneToMerge, ["type", "options"]);
+        });
+
+        var rootPath = fluid.pathForComponent(rootComponent);
+        var models = components.map(function (component) {
+            return {
+                path: fluid.removePrefix(rootPath, fluid.pathForComponent(component)),
+                model: component.model
+            };
+        });
+        var initBlock = fluid.stringTemplate(initBlockTemplate, {
+            lightMerge: JSON.stringify(toMerges, null, 2),
+            models: JSON.stringify(models, null, 2)
+        });
+
+        var bodyNode = rootComponentDom.locate("body")[0];
+        var scriptNode = {
+            tagName: "script",
+            children: [{
+                text: initBlock
+            }]
+        };
+        if (!bodyNode) {
+            fluid.fail("Unable to render to root page template since no body tag was present");
+        }
+        bodyNode.children.push(scriptNode);
     }
-    bodyNode.children.push(scriptNode);
     renderer.markupTree = rootComponent.container[0];
 };

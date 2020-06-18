@@ -17,28 +17,52 @@
 var fluid = require("infusion");
 fluid.require("%kettle");
 
+// Core grade managing rendering functionality, independent of delivery scheme
 fluid.defaults("fluid.renderer.pageHandler", {
-    gradeNames: ["kettle.request.http", "fluid.renderer.server"],
-    invokers: {
-        handleRequest: {
-            funcName: "fluid.renderer.pageHandler.handleGet"
-        }
-    },
+    gradeNames: "fluid.renderer.server",
     member: {
         // The renderer workflow accumulates the virtual DOM tree into this member during component construction
         markupTree: null
     },
     components: {
         page: { // TODO: overridden by clients with something derived from fluid.rootPage
-            type: "fluid.emptySubcomponent"
+            type: "fluid.rootPage"
         }
     }
 });
 
-/** @param {fluid.renderer.pageHandler} request - The pageHandler request in progress in the server
+// The handler as middleware
+fluid.defaults("fluid.renderer.pageMiddleware", {
+    gradeNames: ["kettle.middleware", "fluid.renderer.pageHandler"],
+    invokers: {
+        handle: {
+            funcName: "kettle.plainMiddleware.resolve"
+        }
+    }
+});
+
+/**
+ * @param {fluid.renderer.pageHandler} request - The pageHandler request in progress in the server
+ * @return {fluid.promise} A promise resolving the rendered markup as a String
  */
-fluid.renderer.pageHandler.handleGet = function (request) {
+fluid.renderer.pageHandler.handle = function (request) {
     var text = fluid.htmlParser.render(request.markupTree.children);
     request.res.type("html");
-    request.events.onSuccess.fire(text);
+    return fluid.promise().resolve(text);
+
+};
+
+// The handler as a requestHandler - we should really abolish this silly distinction in next Kettle
+fluid.defaults("fluid.renderer.pageRequestHandler", {
+    gradeNames: ["kettle.request.http", "fluid.renderer.pageHandler"],
+    invokers: {
+        handleRequest: {
+            funcName: "fluid.renderer.pageHandler.handleGet"
+        }
+    }
+});
+
+fluid.renderer.pageHandler.handleGet = function (request) {
+    var togo = fluid.renderer.pageHandler.handle(request);
+    togo.then(request.events.onSuccess.fire);
 };

@@ -23,10 +23,11 @@ require("../src/serverRendererIndex.js");
 fluid.renderer.loadModule("%new-renderer-demo/textfieldControl");
 fluid.renderer.loadModule("%new-renderer-demo/demo");
 
+//? Unnecessary, right? the module loader should have loaded it
 require("./DemoPage.js");
 
 fluid.defaults("fluid.demos.demoApp", {
-    gradeNames: ["kettle.app", "fluid.renderer.autoMountRendererModulesApp"],
+    gradeNames: "fluid.renderer.autoMountRendererModulesApp",
     requestHandlers: {
         getHandler: {
             type: "fluid.demos.demoPageHandler",
@@ -46,7 +47,7 @@ fluid.defaults("fluid.demos.demoApp", {
 });
 
 fluid.defaults("fluid.demos.demoPageHandler", {
-    gradeNames: "fluid.renderer.pageHandler",
+    gradeNames: "fluid.renderer.pageRequestHandler",
     components: {
         page: {
             type: "fluid.demos.demoPage"
