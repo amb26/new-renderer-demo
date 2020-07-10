@@ -7,8 +7,8 @@
     <link rel="stylesheet" type="text/css" href="%infusion/src/lib/normalize/css/normalize.css" />
     <link rel="stylesheet" type="text/css" href="%infusion/src/framework/core/css/fluid.css" />
     <link rel="stylesheet" type="text/css" href="%infusion/src/framework/core/css/fluid.css" />
-    <link rel="stylesheet" type="text/css" href="%fluid-textfield-controls/css/TextfieldSlider.css" />
-    <link rel="stylesheet" type="text/css" href="%fluid-renderer-demo/demo.css" />
+    <link rel="stylesheet" type="text/css" href="%fluid-table-of-contents/src/css/TableOfContents.js" />
+    <link rel="stylesheet" type="text/css" href="%fluid-toc-demo/demo.css" />
 
     <script type="text/javascript" src="%infusion/src/lib/jquery/core/js/jquery.js"></script>
     <script type="text/javascript" src="%infusion/src/framework/core/js/Fluid.js"></script>
@@ -24,44 +24,32 @@
     <script type="text/javascript" src="%infusion/src/framework/core/js/FluidView.js"></script>
     <script type="text/javascript" src="%infusion/src/framework/core/js/FluidView-browser.js"></script>
     <script type="text/javascript" src="%infusion/src/components/tooltip/js/Tooltip.js"></script>
-    <script type="text/javascript" src="%fluid-textfield-controls/js/Textfield.js"></script>
-    <script type="text/javascript" src="%fluid-textfield-controls/js/TextfieldSlider.js"></script>
-    <script type="text/javascript" src="%fluid-textfield-controls/js/TextfieldStepper.js"></script>
+    <script type="text/javascript" src="%fluid-table-of-contents/src/js/TableOfContents-new.js"></script>
 <!-- Special patched includes that will eventually go into base framework -->
+    <script type="text/javascript" src="%new-renderer-demo/src/js/core/jquery.standalone.renderer.js"></script>
     <script type="text/javascript" src="%new-renderer-demo/src/js/core/fastXmlPull.js"></script>
     <script type="text/javascript" src="%new-renderer-demo/src/js/core/fluidView-template.js"></script>
     <script type="text/javascript" src="%new-renderer-demo/src/js/core/fluidNewRenderer.js"></script>
     <script type="text/javascript" src="%new-renderer-demo/src/js/core/fluidNewRendererComponents.js"></script>
     <script type="text/javascript" src="%new-renderer-demo/src/js/core/htmlParser.js"></script>
+    <script type="text/javascript" src="%new-renderer-demo/src/js/core/ResourceRewriter.js"></script>
     <script type="text/javascript" src="%new-renderer-demo/src/js/client/ClientRenderer.js"></script>
 <!-- Includes for our own application - will eventually be auto-generated -->    
-    <script type="text/javascript" src="%fluid-renderer-demo/DemoPage.js"></script>
-    <script type="text/javascript" src="%fluid-renderer-demo/MutationChecker.js"></script>
+    <script type="text/javascript" src="%fluid-toc-demo/DemoPage.js"></script>
 
-    <title>Textfield Controls Demo</title>
+    <title>Table Of Contents Demo</title>
 </head>
-<!-- The structure of this demo was taken from %fluid-infusion/demos/textfieldControl -->
-<body onload="fluid.demos.checkMutations()">
-    <section class="fl-demo-container">
-        <div>
-            <h2>Textfield Slider</h2>
-            <div class="flc-textfieldSlider">
-            <!-- static markup template - on successful server-side rendering, this markup will be replaced, eliminating the
-            letter As -->
-                <span class="demo-smallIcon">A</span>
-                <input class="flc-textfieldSlider-slider fl-slider">
-                <span class="demo-largeIcon">A</span>
-                <input class="flc-textfieldSlider-field fl-textfieldSlider-textField" type="text">
+    <body>
+        <section class="flc-overviewPanel fl-overviewPanel-container"></section>
+        <main class="fl-demo-container">
+            <div class="fl-demo-content">
+                <nav class="flc-toc-tocContainer demo-toc"></nav>
             </div>
-
-            <h2>Textfield Stepper</h2>
-            <div class="flc-textfieldStepper">
-                <span class="demo-smallIcon">A</span>
-                <span class="flc-textfieldStepper-focusContainer fl-textfieldStepper-focusContainer">
-                </span>
-                <span class="demo-largeIcon">A</span>
-            </div>
-        </div>
-    </section>
-</body>
+        </main>
+        <script>
+            fluid.tableOfContents.ui(".flc-toc-tocContainer", {
+                model: fluid.tests.tableOfContents.linearHeadings.model
+            });
+        </script>
+    </body>
 </html>

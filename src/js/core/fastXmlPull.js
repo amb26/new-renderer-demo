@@ -165,7 +165,8 @@ var fluid_3_0_0 = fluid_3_0_0 || {};
         if (iE === -1) {
             return fluid.XMLP._setErr(that, fluid.XMLP.ERR_CLOSE_COMMENT);
         }
-        fluid.XMLP._setContent(that, fluid.XMLP._CONT_XML, iB - 4, iE + 3);
+        // FLUID-5047: Adjusted range to just report comment text
+        fluid.XMLP._setContent(that, fluid.XMLP._CONT_XML, iB, iE);
         that.m_iP = iE + 3;
         return fluid.XMLP._COMMENT;
     };

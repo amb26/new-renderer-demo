@@ -68,6 +68,17 @@ fluid.renderer.hyphenToCamelCase = function (hyphenName) {
     return hyphenName.replace(/-([a-z])/g, function (g) { return g[1].toUpperCase(); });
 };
 
+fluid.renderer.normaliseSimplePath = function (suffix) {
+    // We could try to use path.normalize here but it will make a mess on Windows
+    if (suffix.startsWith(".")) {
+        return suffix.substring(1);
+    } else if (!suffix.startsWith("/")) {
+        return "/" + suffix;
+    } else {
+        return suffix;
+    }
+};
+
 // Generates dynamic component material with one "kettle.staticRequestHandlers.static" component for every
 // loaded "fluid-renderer-module" Infusion module, which hosts its static content, and one
 // "fluid.renderer.rewriting.request" requestHandler for every such module whose entry in the supplied
@@ -80,11 +91,13 @@ fluid.renderer.generateMountOptions = function (moduleConfiguration) {
     fluid.each(fluid.module.modulesByBundleType["fluid-renderer-module"], function (pkg, moduleName) {
         var camelName = fluid.renderer.hyphenToCamelCase(moduleName);
         var staticMountBase = pkg.infusion.staticMountBase || "./";
-        // We could try to use path.normalize here but it will make a mess on Windows
-        var suffix = staticMountBase === "./" || staticMountBase === "." ? "" : staticMountBase;
+        var suffix = fluid.renderer.normaliseSimplePath(staticMountBase);
         var pkgPreferred = pkg.infusion.preferredMountPath;
         pkgPreferred = pkgPreferred === "/" ? "" : pkgPreferred;
         var preferredMountPath = fluid.isValue(pkgPreferred) ? pkgPreferred : "/" + camelName + "Static";
+        if (preferredMountPath.endsWith("/")) {
+            preferredMountPath = preferredMountPath.slice(0, -1);
+        }
         var isRoot = preferredMountPath === "";
         var baseStaticHandlerOptions = {
             root: "%" + moduleName + suffix,

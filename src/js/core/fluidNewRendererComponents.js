@@ -116,7 +116,9 @@ var fluid_3_0_0 = fluid_3_0_0 || {};
         var linkAttr = fluid.uiLink.attributeMap[tagName] || "href";
         fluid.model.setSimple(node, ["attrs", linkAttr], encodedTarget);
         if (typeof(model.linktext) === "string") {
-            node.text = fluid.XMLEncode(model.linktext);
+            node.children = [{
+                text: fluid.XMLEncode(model.linktext)
+            }];
         }
     };
 

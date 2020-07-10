@@ -31,7 +31,7 @@ var fluid_3_0_0 = fluid_3_0_0 || {};
     };
 
     fluid.isTemplateDOMNode = function (obj) {
-        return obj && obj.tagName;
+        return fluid.isPlainObject(obj) && obj.tagName;
     };
 
     fluid.isBrowserDOMNode = function (obj) {
@@ -51,14 +51,16 @@ var fluid_3_0_0 = fluid_3_0_0 || {};
             fluid.fail("fluid.container argument is empty");
         }
         var selector = containerSpec.selector || containerSpec;
-        if (userJQuery) {
+        if (userJQuery) { // TODO: Why on earth?
             containerSpec = fluid.unwrap(containerSpec);
         }
+        // FLUID-5047: Patched here to support "/" container
         var container = fluid.wrap(containerSpec === "/" ? "html" : containerSpec, userJQuery);
         if (fallible && (!container || container.length === 0)) {
             return null;
         }
-        // FLUID-6148: TODO: This should really apply fluid.isJQuery but in the long term we don't want such pollution
+        // FLUID-5047: Removed check for container.jquery
+        // TODO: This should really apply fluid.isJQuery but in the long term we don't want such pollution
         if (!container || container.length !== 1) {
             if (typeof (containerSpec) !== "string") {
                 containerSpec = container.selector;
@@ -80,7 +82,8 @@ var fluid_3_0_0 = fluid_3_0_0 || {};
         // if it is possible to infer them. This feature is rarely used but is crucial for the prefs framework infrastructure
         // in Panels.js fluid.prefs.subPanel.resetDomBinder
         container.selector = selector;
-        // FLUID-6148: Patched to fetch document from server's jQuery
+        // FLUID-5047: Patched to fetch document from server's jQuery and its "preferredDoc"
+        // TODO: doesn't seem to be written anywhere
         container.context = container.context || containerSpec.ownerDocument || (userJQuery || $).preferredDoc || document;
 
         return container;

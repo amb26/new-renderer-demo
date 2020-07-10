@@ -1,6 +1,6 @@
 {
     "name": "fluid-table-of-contents",
-    "description": "Present an automatic table of contents from any HTML page.",   
+    "description": "Presents an automatic table of contents from any HTML page.",   
     "version": "1.0.0",
     "license": "BSD-3-Clause",
     "infusion": {
@@ -8,16 +8,12 @@
         "cssFiles": [
             "./src/css/TableOfContents.css"
         ],
-        "jsFiles": [
-            "./src/js/TableOfContents.js"
+        "jsCommonFiles": [
+            "./src/js/TableOfContents-new.js"
         ],
         "htmlFiles": [
             "./src/html/TableOfContents.html"
         ],
-        "testFiles": [
-            "./test/html/TableOfContents-test.html"
-        ],
-        "testStaticMountBase": "./test",
         "staticMountBase": "./src/"
     }
 }

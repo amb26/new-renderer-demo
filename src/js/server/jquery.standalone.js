@@ -161,4 +161,5 @@ var fluid = fluid || fluid_3_0_0;
 
 })(fluid_3_0_0);
 
-var jQuery = fluid.jQueryStandalone;
+// FLUID-5047: Never overwrite the real jQuery with ours
+var jQuery = typeof(jQuery) === "undefined" ? fluid.jQueryStandalone : jQuery;

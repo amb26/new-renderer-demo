@@ -18,6 +18,13 @@ https://github.com/fluid-project/infusion/raw/master/Infusion-LICENSE.txt
 
     fluid.registerNamespace("fluid.tests.tableOfContents");
 
+    fluid.tests.tableOfContents.emptyHeadings = {
+        headingTags: [],
+        anchorInfo: [],
+        headingInfo: [],
+        model: []
+    };
+
     fluid.tests.tableOfContents.linearHeadings = {
         headingTags: ["h1", "h2", "h3", "h4", "h5", "h6"],
         anchorInfo: [{url: "#h1"}, {url: "#h2"}, {url: "#h3"}, {url: "#h4"}, {url: "#h5"}, {url: "#h6"}],
@@ -63,9 +70,55 @@ https://github.com/fluid-project/infusion/raw/master/Infusion-LICENSE.txt
         }
     };
 
-    var levels = fluid.tableOfContents.levels({
-        model: fluid.tests.tableOfContents.linearHeadings.model
-    });
+    fluid.tests.tableOfContents.skippedHeadingsForSkippedIndentationModel = {
+        headingTags: ["h1", "h6"],
+        anchorInfo: [{url: "#h1"}, {url: "#h6"}],
+        headingInfo: [
+            {level: 1, text: "h1", url: "#h1"},
+            {level: 6, text: "h6", url: "#h6"}
+        ],
+        model: [{
+            level: 1,
+            text: "h1",
+            url: "#h1",
+            headings: [{
+                headings: [{
+                    headings: [{
+                        headings: [{
+                            headings: [{
+                                level: 6,
+                                text: "h6",
+                                url: "#h6"
+                            }]
+                        }]
+                    }]
+                }]
+            }]
+        }]
+    };
+
+    fluid.tests.tableOfContents.skippedHeadingsForGradualIndentationModel = {
+        headingTags: ["h1", "h6"],
+        anchorInfo: [{url: "#h1"}, {url: "#h6"}],
+        headingInfo: [
+            {level: 1, text: "h1", url: "#h1"},
+            {level: 6, text: "h6", url: "#h6"}
+        ],
+        model: [{
+            level: 1,
+            text: "h1",
+            url: "#h1",
+            headings: [{
+                level: 2,
+                text: "h6",
+                url: "#h6"
+            }]
+        }]
+    };
+
+    // var levels = fluid.tableOfContents.levels({
+    //     model: fluid.tests.tableOfContents.linearHeadings.model
+    // });
 
     var skippedHeadingsForSkippedIndentationTree = {
         children: [{
@@ -267,7 +320,9 @@ https://github.com/fluid-project/infusion/raw/master/Infusion-LICENSE.txt
                 jqUnit.assertEquals(tagName + " level", i, headingCalc.getHeadingLevel(heading));
             }
         });
-
+        var linearHeadings = fluid.tests.tableOfContents.linearHeadings;
+        var skippedHeadingsForSkippedIndentationModel = fluid.tests.tableOfContents.skippedHeadingsForSkippedIndentationModel;
+        var skippedHeadingsForGradualIndentationModel = fluid.tests.tableOfContents.skippedHeadingsForGradualIndentationModel;
 
         jqUnit.module("Table of Contents: Model Builder Tests");
 
@@ -356,7 +411,7 @@ https://github.com/fluid-project/infusion/raw/master/Infusion-LICENSE.txt
 
         jqUnit.asyncTest("Render toc: empty headings", function () {
             //FLUID-4352
-            renderTOCTests(emptyHeadings);
+            renderTOCTests(fluid.tests.tableOfContents.emptyHeadings);
         });
         jqUnit.asyncTest("Render toc: linear headings", function () {
             renderTOCTests(linearHeadings);

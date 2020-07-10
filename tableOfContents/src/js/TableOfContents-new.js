@@ -21,6 +21,90 @@ var fluid_3_0_0 = fluid_3_0_0 || {};
     *******/
     fluid.registerNamespace("fluid.tableOfContents");
 
+
+/*** NEW STUF ****/
+
+    fluid.defaults("fluid.tableOfContents.withLevels", {
+        gradeNames: ["fluid.newRendererComponent", "fluid.resourceLoader"],
+        dynamicComponents: {
+            levels: {
+                sources: "{that}.model.headings",
+                type: "fluid.tableOfContents.level",
+                container: "{that}.dom.level",
+                options: {
+                    model: "{source}"
+                }
+            }
+        },
+        resources: {
+            template: {
+                // TODO! Some proper polymorphism between URL and File resources
+                path: "%fluid-table-of-contents/src/html/TableOfContents-new.html"
+            }
+        }
+    });
+
+    fluid.defaults("fluid.tableOfContents.ui", {
+        gradeNames: "fluid.tableOfContents.withLevels",
+        strings: {
+            tocHeader: "Table of Contents"
+        },
+        selectors: {
+            container: "/",
+            tocHeader: ".flc-toc-header",
+            levelContainer: ".flc-toc-level-container"
+        },
+        model: {
+            messages: "{that}.options.strings"
+        },
+        components: {
+            header: {
+                type: "fluid.uiValue",
+                container: "{ui}.dom.tocHeader",
+                options: {
+                    model: {
+                        value:"{ui}.model.messages.tocHeader"
+                    }
+                }
+            }
+        },
+        dynamicComponents: {
+            levels: {
+                container: "{ui}.dom.levelContainer"
+            }
+        }
+        // Shares template and "levels" definition with "fluid.tableOfContents.level"
+    });
+
+    fluid.defaults("fluid.tableOfContents.level", {
+        gradeNames: "fluid.tableOfContents.withLevels",
+        model: {
+            // text: heading, url: linkURL, headings: [ an array of subheadings in the same format ]
+        },
+        selectors: {
+            container: ".flc-toc-level-container",
+            link:  ".flc-toc-link",
+            item: ".flc-toc-item",
+            level: ".flc-toc-level"
+        },
+        components: {
+            link: {
+                type: "fluid.uiLink",
+                options: {
+                    container: "{level}.dom.link",
+                    model: {
+                        target: "{level}.model.url",
+                        linktext: "{level}.model.text"
+                    }
+                }
+            }
+        }
+    });
+
+
+/*** NEW STUF ****/
+
+
     fluid.tableOfContents.headingTextToAnchorInfo = function (heading) {
         var id = fluid.allocateSimpleId(heading);
 
@@ -310,47 +394,5 @@ var fluid_3_0_0 = fluid_3_0_0 || {};
         return levelObj;
     };
 
-    /**
-     * @param {Object} that - The component itself.
-     * @return {Object} - Returned produceTree must be in {headings: [trees]}
-     */
-    fluid.tableOfContents.levels.produceTree = function (that) {
-        var tree = fluid.tableOfContents.levels.generateTree(that.model);
-        // Add the header to the tree
-        tree.children.push({
-            ID: "tocHeader",
-            messagekey: "tocHeader"
-        });
-        return tree;
-    };
-
-    fluid.defaults("fluid.tableOfContents.levels", {
-        gradeNames: ["fluid.tableOfConentes.heading", "fluid.rendererComponent", "fluid.resourceLoader"],
-        strings: {
-            tocHeader: "Table of Contents"
-        },
-        selectors: {
-            tocHeader: ".flc-toc-header",
-            level: ".flc-toc-level",
-            link:  ".flc-toc-link",
-            item: ".flc-toc-item"
-        },
-        resources: {
-            template: {
-                url: "../html/TableOfContents.html"
-            }
-        }
-    });
-
-    fluid.defaults("fluid.tableOfContents.heading", {
-        gradeNames: "fluid.rendererComponent",
-        model: {
-            // [text: heading, url: linkURL, headings: [ an array of subheadings in the same format ]
-        },
-        dynamicComponents: {
-            sources: "{that}.model.headings",
-            type: "fluid.tableOfContents.heading"
-        }
-    });
 
 })(jQuery, fluid_3_0_0);

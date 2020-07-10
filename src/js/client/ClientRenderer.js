@@ -14,16 +14,28 @@ var fluid_3_0_0 = fluid_3_0_0 || {};
 (function ($, fluid) {
     "use strict";
 
+    fluid.setLogging(true);
+
+    // Use the table in fluid.resourceLoader.staticMountTable to rewrite "path" resources to "url" resources and load them -
+    // Presumably this should be eventually made into some more general patten of resource interception
+    fluid.resourceLoader.loaders.path = function (resourceSpec) {
+        var rewritten = fluid.resourceLoader.rewriteUrlWithDiagnostic(fluid.resourceLoader.staticMountTable, resourceSpec.path);
+        var specCopy = fluid.censorKeys(resourceSpec, ["path"]);
+        specCopy.url = rewritten;
+        return fluid.resourceLoader.loaders.XHR(specCopy);
+    };
+
     // Full-page "client renderer" which accepts an init block as rendered from the server, which insists that the
     // page's markup should correspond to that required, and constructs a matching model skeleton
 
     fluid.defaults("fluid.renderer.client", {
-        gradeNames: "fluid.renderer.browser",
+        gradeNames: "fluid.renderer",
         rootPageGrade: "fluid.clientRootPage",
-        invokers: {
-            render: {
+        listeners: {
+            "render.client": {
                 funcName: "fluid.renderer.client.render",
-                args: ["{that}", "{arguments}.0"]
+                args: ["{that}", "{arguments}.0"],
+                priority: "after:render"
             }
         },
         // broadcastParentMarkup: true,
@@ -70,7 +82,7 @@ var fluid_3_0_0 = fluid_3_0_0 || {};
     // Client side initBlock "driver" function which accepts the "care package" from the server and uses it to
     // reconstruct whatever component tree needs to be built against the already-correct markup. It sets
     // "parentMarkup" to true for every component to prevent it from attempting to render again.
-    fluid.renderer.initClientRenderer = function (config) {
+    fluid.renderer.initBlockClientRenderer = function (config) {
         var rendererPotentia = {
             path: fluid.renderer.clientRendererPath,
             type: "create",
@@ -105,22 +117,68 @@ var fluid_3_0_0 = fluid_3_0_0 || {};
         });
     };
 
-    fluid.renderer.client.render = function (renderer, components) {
-        // Note that this appears to be the core workflow of every renderer - note that fluid.renderer.server.render is so
-        // effectful that we could just deliver all of this as a prefix before the tree gets munged
-        console.log("About to render " + components.length + " components to renderer " + fluid.dumpComponentPath(renderer));
-        var rootComponent = components[0];
-        /*
-        if (!fluid.componentHasGrade(rootComponent, "fluid.rootPage")) {
-            fluid.fail("Must render at least one component, the first of which should be descended from fluid.rootPage - "
-               + " the head component was ", rootComponent);
-        }*/
-        components.forEach(function (component) {
-            // Evaluating the container of each component will force it to evaluate and render into it
-            fluid.getForComponent(component, "container");
-        });
-        return rootComponent.container[0];
-        // renderer.markupTree = rootComponent.container[0];
+    fluid.renderer.client.templateToDOM = function (templateIdToDom, parent, node) {
+        var domNode;
+        if (node.tagName) {
+            domNode = document.createElement(node.tagName);
+            fluid.each(node.attrs, function (value, key) {
+                domNode.setAttribute(key, value);
+            });
+            fluid.each(node.children, function (child) {
+                fluid.renderer.client.templateToDOM(templateIdToDom, domNode, child);
+            });
+        } else if (node.comment) {
+            domNode = document.createComment(node.comment);
+        } else {
+            domNode = document.createTextNode(node.text);
+        }
+        if (node.id) {
+            templateIdToDom[node.id] = domNode;
+        }
+        parent.appendChild(domNode);
+        return node;
     };
+
+    fluid.renderer.client.renderFragment = function (templateIdToDom, nodes) {
+        var fragment = new DocumentFragment();
+        nodes.forEach(function (node) {
+            fluid.renderer.client.templateToDOM(templateIdToDom, fragment, node);
+        });
+        return fragment;
+    };
+
+    fluid.renderer.client.render = function (renderer, components) {
+        var rootComponent = components[0];
+        var rootShadow = fluid.shadowForComponent(rootComponent);
+        var rootContainer = rootComponent.container[0];
+        var domRoot = rootShadow.rendererRecords.domContainer;
+        var templateIdToDom = rootShadow.rendererRecords.templateIdToDom = {};
+        templateIdToDom[rootContainer.id] = domRoot;
+        var fragment = fluid.renderer.client.renderFragment(templateIdToDom, rootContainer.children);
+
+        console.log("Got DOM root ", domRoot);
+        console.log("Dumping markup: ");
+        console.log(fluid.htmlParser.render(rootContainer));
+        domRoot.appendChild(fragment);
+        components.forEach(function (component) {
+            var componentShadow = fluid.shadowForComponent(component);
+            // Stash the original container and DOM binder for later use during re-rendering
+            fluid.model.setSimple(componentShadow, ["rendererRecords", "templateContainer"], component.container);
+            fluid.model.setSimple(componentShadow, ["rendererRecords", "templateDomBinder"], component.dom);
+            var nodeId = component.container[0].id;
+            if (!nodeId || !templateIdToDom[nodeId]) {
+                fluid.fail("Unable to remap container for component ", component);
+            }
+            component.container = fluid.container(templateIdToDom[nodeId]);
+            component.dom = fluid.createDomBinder(component.container, component.options.selectors);
+        });
+    };
+
+    fluid.defaults("fluid.renderer.rootBrowserRenderer", {
+        gradeNames: ["fluid.renderer.client", "fluid.resolveRootSingle"],
+        singleRootType: "fluid.renderer"
+    });
+
+    fluid.renderer.rootBrowserRenderer();
 
 })(jQuery, fluid_3_0_0);

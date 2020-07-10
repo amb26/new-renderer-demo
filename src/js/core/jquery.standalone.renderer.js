@@ -21,8 +21,14 @@ var fluid = fluid || fluid_3_0_0;
 
 fluid_3_0_0 = fluid_3_0_0 || {};
 
-(function ($, fluid) {
+(function (fluid) {
     "use strict";
+    // On the client we just include this file until we abolish the real jQuery
+    if (!fluid.jQueryStandalone) {
+        var jQuery = fluid.jQueryStandalone = function (/* arguments */) {
+            return jQuery.constructor.apply(null, arguments);
+        };
+    }
 
     fluid.jQueryStandalone.wrapNode = function (node) {
         var togo = Object.create(fluid.jQueryStandalone.constructor.prototype);
@@ -51,9 +57,11 @@ fluid_3_0_0 = fluid_3_0_0 || {};
             fluid.fail("Unrecognised signature to jQueryStandalone.constructor ", arg0, arg1);
         }
     };
+    var $ = fluid.jQueryStandalone;
 
-    fluid.jQueryStandalone.constructor.prototype.jquery = $.jquery;
+    fluid.jQueryStandalone.constructor.prototype.jquery = $.jquery || "1.6.1-fluidStandalone-renderer";
     // Used only in old-fashioned fluid.container without a context
+    // TODO: Doesn't seem to be written anywhere else so is presumably meaningless
     $.preferredDoc = {};
 
     $.fn = {};
@@ -157,4 +165,4 @@ fluid_3_0_0 = fluid_3_0_0 || {};
             }
         };
     });
-})(jQuery, fluid_3_0_0);
+})(fluid_3_0_0);

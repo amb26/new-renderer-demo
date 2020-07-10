@@ -21,23 +21,24 @@ fluid.require("%kettle");
 // TODO: Factor "server renderer" into genuine server full-page renderer and one which merely applies a template
 // representation
 fluid.defaults("fluid.renderer.server", {
-    gradeNames: "fluid.renderer.template",
+    gradeNames: "fluid.renderer",
     rootPageGrade: "fluid.serverRootPage", // Gets distributed onto the rootPage via linkage
-    invokers: {
-        render: {
+    listeners: {
+        "render.server": {
             funcName: "fluid.renderer.server.render",
-            args: ["{that}", "{kettle.staticMountIndexer}", "{arguments}.0", "{that}.options.markup.initBlockTemplate"]
+            args: ["{that}", "{kettle.staticMountIndexer}", "{arguments}.0", "{that}.options.markup"],
+            priority: "after:render"
         }
     },
     includeSelectorsToRewrite: ["link", "script"],
     markup: {
-        initBlockTemplate: "fluid.renderer.initClientRenderer({\n  lightMerge: %lightMerge, \n  models: %models\n});"
+        initBlockTemplate: "fluid.renderer.initBlockClientRenderer({\n  lightMerge: %lightMerge, \n  models: %models\n});",
+        modulePathToURLTemplate: "fluid.resourceLoader.staticMountTable = %mountTable;\n"
     }
 });
 
 fluid.defaults("fluid.serverRootPage", {
     selectors: {
-        // container: "{that}.options.container",
         // This selector is used to determine where to dump the <script> tag holding the initBlock for the client's
         // component tree - it will be deposited as the final child
         body: "body",
@@ -59,30 +60,50 @@ fluid.removePrefix = function (prefix, segs) {
     return segs.slice(prefix.length);
 };
 
+fluid.renderer.server.scriptToNode = function (script) {
+    return {
+        tagName: "script",
+        children: [{
+            text: script
+        }]
+    };
+};
+
+fluid.renderer.server.addScriptTemplate = function (bodyNode, template, terms, method) {
+    method = method || "push";
+    var script = fluid.stringTemplate(template, fluid.transform(terms, function (term) {
+        return JSON.stringify(term, null, 2);
+    }));
+
+    var scriptNode = fluid.renderer.server.scriptToNode(script);
+    bodyNode.children[method](scriptNode);
+};
+
 // Global workflow function collects together all renderer components nested under a renderer and dispatches them
 // in groups, I/O and parsing will already have been achieved via "waitIO" in the workflow definition and the
 // resource loader
-fluid.renderer.server.render = function (renderer, staticMountIndexer, components, initBlockTemplate) {
-    console.log("About to render " + components.length + " components to renderer " + fluid.dumpComponentPath(renderer));
+fluid.renderer.server.render = function (renderer, staticMountIndexer, components, markup) {
     var rootComponent = components[0];
     if (!fluid.componentHasGrade(rootComponent, "fluid.rootPage")) {
         fluid.fail("Must render at least one component, the first of which should be descended from fluid.rootPage - "
            + " the head component was ", rootComponent);
     }
-
-    components.forEach(function (component) {
-        // Evaluating the container of each component will force it to evaluate and render into it
-        fluid.getForComponent(component, "container");
-        console.log("Considering component at " + fluid.dumpComponentPath(component));
-        console.log("Container option is " + component.options.container);
-    });
-
     var rootComponentDom = fluid.getForComponent(rootComponent, "dom");
     // Rewrite any module-relative includes
     var selectorsToRewrite = fluid.getForComponent(renderer, ["options", "includeSelectorsToRewrite"]);
-    fluid.includeRewriting.rewriteTemplate(rootComponentDom, staticMountIndexer, selectorsToRewrite);
+    fluid.includeRewriting.rewriteTemplate(rootComponentDom, staticMountIndexer.mountTable, selectorsToRewrite);
 
-    if (components.length > 0) {
+    var bodyNode = rootComponentDom.locate("body")[0];
+
+    if (!bodyNode) {
+        fluid.fail("Unable to render to root page template since no body tag was present");
+    }
+
+    fluid.renderer.server.addScriptTemplate(bodyNode, markup.modulePathToURLTemplate, {
+        mountTable: staticMountIndexer.mountTable
+    }, "unshift");
+
+    if (components.length > 1) {
         var pageShadow = fluid.globalInstantiator.idToShadow[renderer.page.id];
         var pagePotentia = pageShadow.potentia;
         //console.log("Got PAGE POTENTIA ", fluid.prettyPrintJSON(fluid.censorKeys(pagePotentia, ["localRecord", "parentThat"])));
@@ -99,22 +120,11 @@ fluid.renderer.server.render = function (renderer, staticMountIndexer, component
                 model: component.model
             };
         });
-        var initBlock = fluid.stringTemplate(initBlockTemplate, {
-            lightMerge: JSON.stringify(toMerges, null, 2),
-            models: JSON.stringify(models, null, 2)
-        });
 
-        var bodyNode = rootComponentDom.locate("body")[0];
-        var scriptNode = {
-            tagName: "script",
-            children: [{
-                text: initBlock
-            }]
-        };
-        if (!bodyNode) {
-            fluid.fail("Unable to render to root page template since no body tag was present");
-        }
-        bodyNode.children.push(scriptNode);
+        fluid.renderer.server.addScriptTemplate(bodyNode, markup.initBlockTemplate, {
+            lightMerge: toMerges,
+            models: models
+        }, "push");
     }
     renderer.markupTree = rootComponent.container[0];
 };

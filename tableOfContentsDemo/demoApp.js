@@ -21,11 +21,12 @@ fluid.require("%kettle");
 require("../src/serverRendererIndex.js");
 
 fluid.renderer.loadModule("%new-renderer-demo");
-fluid.renderer.loadModule("%new-renderer-demo/perftest");
+fluid.renderer.loadModule("%new-renderer-demo/tableOfContents");
+fluid.renderer.loadModule("%new-renderer-demo/tableOfContentsDemo");
 
 fluid.renderer.autoMountRendererModulesServer({
     moduleConfiguration: {
-        "fluid-renderer-perftest": {
+        "fluid-toc-demo": {
             rewriteUrls: true
         }
     }

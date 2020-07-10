@@ -23,12 +23,13 @@ fluid.loadFrameworkPatch = function (path) {
 
 
 // fluid.loadFrameworkPatch("%new-renderer-demo/src/js/server/jquery.standalone.js");
-fluid.loadFrameworkPatch("%new-renderer-demo/src/js/server/jquery.standalone.renderer.js");
+fluid.loadFrameworkPatch("%new-renderer-demo/src/js/core/jquery.standalone.renderer.js");
 fluid.loadFrameworkPatch("%new-renderer-demo/src/js/core/FluidView-template.js");
 fluid.loadFrameworkPatch("%new-renderer-demo/src/js/core/fluidNewRenderer.js");
 fluid.loadFrameworkPatch("%new-renderer-demo/src/js/core/fluidNewRendererComponents.js");
 fluid.loadFrameworkPatch("%new-renderer-demo/src/js/core/htmlParser.js");
 fluid.loadFrameworkPatch("%new-renderer-demo/src/js/core/fastXmlPull.js");
+fluid.loadFrameworkPatch("%new-renderer-demo/src/js/core/ResourceRewriter.js");
 
 require("./js/server/IncludeRewriting.js");
 require("./js/server/PageHandler.js");
