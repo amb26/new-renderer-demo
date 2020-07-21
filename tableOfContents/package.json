@@ -12,8 +12,9 @@
             "./src/js/TableOfContents-new.js"
         ],
         "htmlFiles": [
-            "./src/html/TableOfContents.html"
+            "./src/html/TableOfContents-new.html"
         ],
-        "staticMountBase": "./src/"
+        "staticMountBase": "./src/",
+        "testStaticMountBase": "./test"
     }
 }

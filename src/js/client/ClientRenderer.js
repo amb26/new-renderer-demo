@@ -151,7 +151,7 @@ var fluid_3_0_0 = fluid_3_0_0 || {};
         var rootComponent = components[0];
         var rootShadow = fluid.shadowForComponent(rootComponent);
         var rootContainer = rootComponent.container[0];
-        var domRoot = rootShadow.rendererRecords.domContainer;
+        var domRoot = rootShadow.rendererRecords.domRootContainer;
         var templateIdToDom = rootShadow.rendererRecords.templateIdToDom = {};
         templateIdToDom[rootContainer.id] = domRoot;
         var fragment = fluid.renderer.client.renderFragment(templateIdToDom, rootContainer.children);

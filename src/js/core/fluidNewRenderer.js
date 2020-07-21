@@ -62,6 +62,7 @@ var fluid_3_0_0 = fluid_3_0_0 || {};
         // Set to `true` if the root node of the template is to be written into the markup
         // otherwise it will be elided and its children joined to the parent node directly
         includeTemplateRoot: false,
+        // TODO: Unclear what setting this to "false" would mean - seems to be basic requirement of rendererComponent
         replaceParent: true,
         workflows: {
             global: {
@@ -104,6 +105,17 @@ var fluid_3_0_0 = fluid_3_0_0 || {};
         return fluid.container(containerCopy);
     };
 
+    fluid.getTemplateBindingRecord = function (outerContainer) {
+        var parentShadow = fluid.shadowForComponent(outerContainer.parentThat);
+        var path = ["rendererRecords", "templateBinding", outerContainer.selectorName];
+        var templateBinding = fluid.getImmediate(parentShadow, path);
+        if (!templateBinding) {
+            templateBinding = [];
+            fluid.model.setSimple(parentShadow, path, templateBinding);
+        }
+        return templateBinding;
+    };
+
     fluid.resolveTemplateContainer = function (that, containerSpec) {
         var fail = function (extraMessage) {
             fluid.fail("Cannot resolve container ", containerSpec, " from " + fluid.dumpComponentAndPath(that) + extraMessage);
@@ -123,11 +135,13 @@ var fluid_3_0_0 = fluid_3_0_0 || {};
             // form our own container
             var parentNode = outerContainer.parentNode;
             if (parentNode && fluid.getForComponent(that, ["options", "replaceParent"])) {
-                if (!outerContainer.childIndex) {
-                    fail(" which is not a template matchedSelector");
-                }
-                parentNode.children = parentNode.children || [];
-                parentNode.children[outerContainer.childIndex] = innerContainer[0];
+                var templateBinding = fluid.getTemplateBindingRecord(outerContainer);
+                templateBinding.push({
+                    outerContainer: outerContainer,
+                    innerContainer: innerContainer[0]
+                });
+                // parentNode.children = parentNode.children || [];
+                // parentNode.children.push(innerContainer[0]);
             } else {
                 var outerContainerNode = outerContainer[0];
                 if (fluid.isTemplateDOMNode(outerContainerNode)) {
@@ -135,7 +149,8 @@ var fluid_3_0_0 = fluid_3_0_0 || {};
                     console.log("It must be a server root page!");
                 } else {
                     var shadow = fluid.shadowForComponent(that);
-                    fluid.model.setSimple(shadow, ["rendererRecords", "domContainer"], outerContainerNode);
+                    // Fished out by ClientRenderer in order to splice into the real document
+                    fluid.model.setSimple(shadow, ["rendererRecords", "domRootContainer"], outerContainerNode);
                     console.log("It must be a client root");
                 }
             }
@@ -147,6 +162,43 @@ var fluid_3_0_0 = fluid_3_0_0 || {};
         }
     };
 
+    fluid.mapTemplateSelector = function (parentThat, selectorName, node, matches) {
+        var mapped = matches.map(function (matched) {
+            return {
+                navigate: fluid.htmlParser.navigateChildIndices(node, matched.childIndices),
+                childIndices: matched.childIndices
+            };
+        });
+        // Sort shorter paths to the root, so that we can ignore any deeper matches placed for templating purposes
+        mapped.sort(function (ma, mb) {
+            return ma.childIndices.length - mb.childIndices.length;
+        });
+        var parentNode = mapped[0].navigate.parentNode,
+            nodes = [],
+            initialDepth = mapped[0].childIndices.length,
+            firstChild = Infinity, lastChild = -Infinity;
+        for (var i = 0; i < mapped.length; ++i) {
+            var oneMapped = mapped[i];
+            var depth = oneMapped.childIndices.length;
+            if (depth === initialDepth) {
+                if (oneMapped.navigate.parentNode !== parentNode) {
+                    fluid.fail("Error in template structure - node ", oneMapped.navigate.node, " for selector " + selectorName + " has different parent to previously seen node ", parentNode);
+                } else {
+                    firstChild = Math.min(firstChild, oneMapped.navigate.childIndex);
+                    lastChild = Math.max(lastChild, oneMapped.navigate.childIndex);
+                    nodes.push(oneMapped.navigate.node);
+                }
+            }
+        }
+        return fluid.extend(fluid.jQueryStandalone(nodes), {
+            firstChild: firstChild,
+            lastChild: lastChild,
+            parentNode: parentNode,
+            selectorName: selectorName,
+            parentThat: parentThat
+        });
+    };
+
     /**
      * Creates a new DOM Binder instance bound to a parsed markup template, used to locate elements in the DOM by name.
      * @param {Component} parentThat - the component to which the DOM binder is to be attached
@@ -156,8 +208,6 @@ var fluid_3_0_0 = fluid_3_0_0 || {};
      * @param {ParsedTemplate} parsedTemplate - a parsed HTML template as returned from fluid.htmlParser.parse
      * @return {Object} - The new DOM binder.
      */
-    // TODO: If there is just one matched element, returns a "polluted jQuery" which contains the template navigation indices as direct properties
-    // which are then fished out in resolveTemplateContainer above - seems like a bit of a mess
     fluid.createTemplateDomBinder = function (parentThat, selectors, container, parsedTemplate) {
         var that = {
             id: fluid.allocateGuid()
@@ -166,6 +216,8 @@ var fluid_3_0_0 = fluid_3_0_0 || {};
             fluid.fail("Cannot create DOM binder without container node for " + fluid.dumpComponentPath(parentThat)
                 + " - failed to resolve ", parentThat.options.container);
         }
+        // Returns a "polluted jQuery" including firstChild, lastChild, parentNode and selectorName, parentThat
+        // TODO: need to cache these
         that.locate = function (name) {
             var matches = parsedTemplate.matchedSelectors[name];
             if (!matches) {
@@ -173,19 +225,7 @@ var fluid_3_0_0 = fluid_3_0_0 || {};
                    + " at path " + fluid.pathForComponent(parentThat).join(".") + ": available selectors are "
                    + fluid.keys(parsedTemplate.matchedSelectors));
             }
-            var parentNode, childIndex;
-            var togo = fluid.jQueryStandalone(matches.map(function (matched) {
-                var navigate = fluid.htmlParser.navigateChildIndices(container[0], matched.childIndices);
-                parentNode = navigate.parentNode;
-                childIndex = navigate.childIndex;
-                return navigate.node;
-            }));
-            togo.selectorName = name;
-            if (matches.length === 1) {
-                togo.parentNode = parentNode;
-                togo.childIndex = childIndex;
-            }
-            return togo;
+            return fluid.mapTemplateSelector(parentThat, name, container[0], matches);
         };
         that.resolvePathSegment = that.locate;
 
@@ -238,9 +278,34 @@ var fluid_3_0_0 = fluid_3_0_0 || {};
         }*/
         components.forEach(function (component) {
             // Evaluating the container of each component will force it to evaluate and render into it
-            var container = fluid.getForComponent(component, "container");
+            fluid.getForComponent(component, "container");
+        });
+
+        components.forEach(function (component) {
+            var shadow = fluid.shadowForComponent(component);
+            // Find any template binding records written by fluid.resolveTemplateContainer and splice the actually written
+            // nodes in place of the template nodes.
+            var templateBindingsHash = fluid.getImmediate(shadow, ["rendererRecords", "templateBinding"]);
+            var templateBindings = []; // do not use fluid.hashToArray since it assumes the inner layer is a hash
+            fluid.each(templateBindingsHash, function (templateBinding) {
+                templateBindings.push(templateBinding);
+            });
+            templateBindings.sort(function (ta, tb) {
+                return ta[0].outerContainer.firstChild - tb[0].outerContainer.firstChild;
+            });
+            templateBindings.forEach(function (templateBinding) {
+                var outerContainer = templateBinding[0].outerContainer;
+                var newNodes = fluid.getMembers(templateBinding, "innerContainer");
+                var spliceArgs = [outerContainer.firstChild, 1 + outerContainer.lastChild - outerContainer.firstChild].concat(newNodes);
+                Array.prototype.splice.apply(outerContainer.parentNode.children, spliceArgs);
+            });
+        });
+
+        components.forEach(function (component) {
+            // TODO: Will eventually be "Late materialised model relay" which is possible since transaction is not closed
+            // until notifyInitModel
             if (fluid.componentHasGrade(component, "fluid.leafRendererComponent")) {
-                fluid.getForComponent(component, "updateTemplateMarkup")(container[0], component.model);
+                fluid.getForComponent(component, "updateTemplateMarkup")(component.container[0], component.model);
             }
         });
     };

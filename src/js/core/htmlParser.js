@@ -186,6 +186,7 @@ var fluid_3_0_0 = fluid_3_0_0 || {};
     };
 
     fluid.htmlParser.processTagStart = function (that, isempty) {
+        // Note that nodes also have a private property "id"
         var node = fluid.htmlParser.newNode(that);
         node.tagName = that.parser.getName();
         // NB - attribute names and values are now NOT DECODED!!
