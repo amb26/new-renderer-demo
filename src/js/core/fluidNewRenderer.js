@@ -140,8 +140,6 @@ var fluid_3_0_0 = fluid_3_0_0 || {};
                     outerContainer: outerContainer,
                     innerContainer: innerContainer[0]
                 });
-                // parentNode.children = parentNode.children || [];
-                // parentNode.children.push(innerContainer[0]);
             } else {
                 var outerContainerNode = outerContainer[0];
                 if (fluid.isTemplateDOMNode(outerContainerNode)) {
@@ -266,6 +264,38 @@ var fluid_3_0_0 = fluid_3_0_0 || {};
         }
     });
 
+    // Modifies supplied argument
+    fluid.renderer.lastValue = function (array) {
+        return array.reverse().find(fluid.identity);
+    };
+
+    fluid.renderer.findNullaryComponents = function (shadow, templateBindingsHash) {
+        fluid.each(shadow.modelSourcedDynamicComponents, function (record, key) {
+            var lightMerge = shadow.lightMergeDynamicComponents[key];
+            var containers = fluid.getMembers(lightMerge.toMerge, "container");
+            var lastContainer = fluid.renderer.lastValue(containers);
+            if (lastContainer) {
+                var parsed = fluid.parseContextReference(lastContainer);
+                var segs = fluid.model.parseEL(parsed.path);
+                if (segs.length !== 2 || segs[0] !== "dom") {
+                    fluid.fail("Renderer must have template container reference as direct DOM binder reference: " + lastContainer);
+                }
+                var context = fluid.resolveContext(parsed.context, shadow.that);
+                if (context !== shadow.that) {
+                    fluid.fail("Renderer must have template container reference to direct parent: " + lastContainer);
+                }
+                var selectorName = segs[1];
+                if (!templateBindingsHash[selectorName]) {
+                    var outerContainer = context.dom.locate(selectorName);
+                    templateBindingsHash[selectorName] = [{
+                        outerContainer: outerContainer,
+                        innerContainer: []
+                    }];
+                }
+            }
+        });
+    };
+
     fluid.renderer.render = function (renderer, components) {
         // Note that this appears to be the core workflow of every renderer - note that fluid.renderer.server.render is so
         // effectful that we could just deliver all of this as a prefix before the tree gets munged
@@ -283,9 +313,11 @@ var fluid_3_0_0 = fluid_3_0_0 || {};
 
         components.forEach(function (component) {
             var shadow = fluid.shadowForComponent(component);
+            var templateBindingsHash = fluid.getImmediate(shadow, ["rendererRecords", "templateBinding"]) || {};
+            fluid.renderer.findNullaryComponents(shadow, templateBindingsHash);
             // Find any template binding records written by fluid.resolveTemplateContainer and splice the actually written
             // nodes in place of the template nodes.
-            var templateBindingsHash = fluid.getImmediate(shadow, ["rendererRecords", "templateBinding"]);
+
             var templateBindings = []; // do not use fluid.hashToArray since it assumes the inner layer is a hash
             fluid.each(templateBindingsHash, function (templateBinding) {
                 templateBindings.push(templateBinding);

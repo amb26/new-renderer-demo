@@ -79,6 +79,8 @@ fluid.renderer.normaliseSimplePath = function (suffix) {
     }
 };
 
+fluid.setLogging(true);
+
 // Generates dynamic component material with one "kettle.staticRequestHandlers.static" component for every
 // loaded "fluid-renderer-module" Infusion module, which hosts its static content, and one
 // "fluid.renderer.rewriting.request" requestHandler for every such module whose entry in the supplied
@@ -90,7 +92,8 @@ fluid.renderer.generateMountOptions = function (moduleConfiguration) {
     var options = {};
     fluid.each(fluid.module.modulesByBundleType["fluid-renderer-module"], function (pkg, moduleName) {
         var camelName = fluid.renderer.hyphenToCamelCase(moduleName);
-        var staticMountBase = pkg.infusion.staticMountBase || "./";
+        var mountEntire = fluid.getImmediate(moduleConfiguration, [moduleName, "mountEntire"]);
+        var staticMountBase = !mountEntire && pkg.infusion.staticMountBase || "./";
         var suffix = fluid.renderer.normaliseSimplePath(staticMountBase);
         var pkgPreferred = pkg.infusion.preferredMountPath;
         pkgPreferred = pkgPreferred === "/" ? "" : pkgPreferred;
@@ -111,15 +114,19 @@ fluid.renderer.generateMountOptions = function (moduleConfiguration) {
             type: "kettle.staticRequestHandlers.static",
             options: staticHandlerOptions
         });
-        if (fluid.getImmediate(moduleConfiguration, [moduleName, "rewriteUrls"])) {
+        fluid.log("Mounting module " + moduleName + " at path " + preferredMountPath);
+        var rewriteUrls = fluid.getImmediate(moduleConfiguration, [moduleName, "rewriteUrls"]);
+        if (rewriteUrls) {
+            // var prefix = typeof (rewriteUrls) === "string" ? rewriteUrls : preferredMountPath;
             fluid.model.setSimple(options, ["requestHandlers", camelName + "RewritingHandler"], {
                 type: "fluid.renderer.rewriting.request",
-                route: preferredMountPath + "/*.html",
+                route: /*preferredMountPath + */ "/*.html",
+                prefix: fluid.isValue(pkgPreferred) ? pkgPreferred : "",
                 options: {
                     mountedRoot: staticHandlerOptions.root
                 },
                 method: "get",
-                priority: "before:" + staticHandlerKey
+                priority: "after:" + staticHandlerKey
             });
         }
     });
@@ -173,6 +180,7 @@ fluid.defaults("fluid.renderer.rewriting.request", {
 });
 
 fluid.renderer.rewriting.getSourcePagePath = function (mountedRoot, requestUrl) {
-    var fsPath = fluid.module.resolvePath(mountedRoot) + requestUrl;
+    var urlObj = new URL(requestUrl, "http://localhost/");
+    var fsPath = fluid.module.resolvePath(mountedRoot) + urlObj.pathname;
     return fsPath;
 };

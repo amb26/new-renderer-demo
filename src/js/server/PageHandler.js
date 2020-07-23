@@ -55,12 +55,25 @@ fluid.renderer.pageHandler.handle = function (request) {
 // The handler as a requestHandler - we should really abolish this silly distinction in next Kettle
 fluid.defaults("fluid.renderer.pageRequestHandler", {
     gradeNames: ["kettle.request.http", "fluid.renderer.pageHandler"],
+    distributeOptions: {
+        record: {
+            namespace: "toKettleRequest",
+            func: "fluid.renderer.signalResourceError",
+            args: ["{kettle.request.http}", "{arguments}.0"]
+        },
+        target: "{that fluid.resourceLoader}.options.listeners.onResourceError"
+    },
     invokers: {
         handleRequest: {
             funcName: "fluid.renderer.pageHandler.handleGet"
         }
     }
 });
+
+fluid.renderer.signalResourceError = function (request, error) {
+    error.statusCode = 404;
+    request.events.onError.fire(error);
+};
 
 fluid.renderer.pageHandler.handleGet = function (request) {
     var togo = fluid.renderer.pageHandler.handle(request);

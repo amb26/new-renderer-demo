@@ -69,7 +69,7 @@ var fluid_3_0_0 = fluid_3_0_0 || {};
         if (tagName === "input") {
             fluid.setImmediate(node, ["attrs", "value"], encodedValue);
         } else {
-            node.text = encodedValue;
+            node.children = [{text: encodedValue}];
         }
     };
 

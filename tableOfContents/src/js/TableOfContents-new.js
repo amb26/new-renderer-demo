@@ -13,7 +13,7 @@ https://github.com/fluid-project/infusion/raw/master/Infusion-LICENSE.txt
 
 var fluid_3_0_0 = fluid_3_0_0 || {};
 
-(function ($, fluid) {
+(function (fluid) {
     "use strict";
 
     /******
@@ -287,4 +287,4 @@ var fluid_3_0_0 = fluid_3_0_0 || {};
         levels: ["H1", "H2", "H3", "H4", "H5", "H6"]
     });
 
-})(jQuery, fluid_3_0_0);
+})(fluid_3_0_0);

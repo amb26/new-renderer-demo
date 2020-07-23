@@ -63,7 +63,7 @@ var fluid_3_0_0 = fluid_3_0_0 || {};
         if (rewritten === null) {
             fluid.fail("Request for module-relative path " + url +
                 " which can't be resolved into a static mount - available module mounts are " +
-                fluid.includeRewriting.dumpMounts(mountTable));
+                fluid.resourceLoader.dumpMounts(mountTable));
         }
         return rewritten;
     };

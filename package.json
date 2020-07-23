@@ -17,6 +17,7 @@
         "gpii-grunt-lint-all": "1.0.7",
         "grunt": "1.1.0"
     },
+    "main": "src/serverRendererIndex.js",
     "infusion": {
         "bundleType": "fluid-renderer-module"
     }
