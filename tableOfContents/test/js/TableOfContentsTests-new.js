@@ -226,20 +226,6 @@ https://github.com/fluid-project/infusion/raw/master/Infusion-LICENSE.txt
     });
 
 
-    /**
-    jqUnit.module("Table of Contents: Levels Tests");
-
-    jqUnit.test("generateTree: skipped indentation tree, [h1, '', '', '', '', h6]", function () {
-        generateTreeTests(skippedHeadingsForSkippedIndentationModel.model, skippedHeadingsForSkippedIndentationTree);
-    });
-    jqUnit.test("generateTree: gradual indentation tree, [h1, h6]", function () {
-        generateTreeTests(skippedHeadingsForGradualIndentationModel.model, skippedHeadingsForGradualIndentationTree);
-    });
-    jqUnit.test("generateTree: empty tree, []", function () {
-        generateTreeTests([], emptyTree);
-    });
-    **/
-
     jqUnit.module("Table of Contents Tests");
 
     /**
@@ -256,6 +242,11 @@ https://github.com/fluid-project/infusion/raw/master/Infusion-LICENSE.txt
         return set;
     };
 
+    fluid.tests.tableOfContents.domPositionComparator = function (na, nb) {
+        var comparison = na[0].compareDocumentPosition(nb[0]);
+        return 3 - comparison;
+    };
+
     /**
      * @param {fluid.tableOfContents.ui} ui - An instance of fluid.tableOfContents.ui component
      * @param {Object} testHeadings - expected heading info data
@@ -268,6 +259,7 @@ https://github.com/fluid-project/infusion/raw/master/Infusion-LICENSE.txt
     fluid.tests.tableOfContents.renderTOCTest = function (ui, testHeadings, anchorInfo) {
         var linkComponents = fluid.queryIoCSelector(ui, "fluid.uiLink");
         var tocLinks = fluid.getMembers(linkComponents, "container");
+        tocLinks.sort(fluid.tests.tableOfContents.domPositionComparator);
         jqUnit.assertEquals("The toc header is rendered correctly", ui.options.strings.tocHeader, ui.locate("tocHeader").text());
         jqUnit.assertEquals("The correct number of links are rendered", testHeadings.headingInfo.length, tocLinks.length);
         // #FLUID-4352: check if <ul> exists when there is no tocLinks
@@ -286,9 +278,7 @@ https://github.com/fluid-project/infusion/raw/master/Infusion-LICENSE.txt
     fluid.tests.tableOfContents.renderTOCTests = function (testHeadings) {
         var container = $(".flc-toc-tocContainer", "#flc-toc");
         fluid.tableOfContents.ui(container, {
-            model: {
-                headings: testHeadings.model
-            },
+            model: testHeadings.model,
             listeners: {
                 onCreate: function (that) {
                     fluid.tests.tableOfContents.renderTOCTest(that, testHeadings);
@@ -334,7 +324,7 @@ https://github.com/fluid-project/infusion/raw/master/Infusion-LICENSE.txt
       * @precondition   Must be rendered
       */
     fluid.tests.tableOfContents.renderTOCAnchorTest = function () {
-        var anchorLinks = $(".flc-toc-levels-link");
+        var anchorLinks = $(".flc-toc-link");
         anchorLinks.each(function (anchorIndex) {
             var anchorHref = anchorLinks.eq(anchorIndex).attr("href");
             jqUnit.assertTrue("Component test headings: TOC anchors should map to the headers correctly - " + anchorHref, $(anchorHref)[0]);
@@ -362,9 +352,9 @@ https://github.com/fluid-project/infusion/raw/master/Infusion-LICENSE.txt
         });
         fluid.tableOfContents("#flc-toc", {
             listeners: {
-                onReady: {
+                onCreate: {
                     func: function (that) {
-                        fluid.tests.tableOfContents.renderTOCTest(that.levels, testHeadings, that.anchorInfo);
+                        fluid.tests.tableOfContents.renderTOCTest(that.ui, testHeadings, that.anchorInfo);
                         fluid.tests.tableOfContents.renderTOCAnchorTest();
                         jqUnit.start();
                     },
@@ -384,9 +374,9 @@ https://github.com/fluid-project/infusion/raw/master/Infusion-LICENSE.txt
         };
         fluid.tableOfContents("#flc-toc-noHeaders", {
             listeners: {
-                onReady: {
+                onCreate: {
                     func: function (that) {
-                        fluid.tests.tableOfContents.renderTOCTest(that.levels, testHeadings, that.anchorInfo);
+                        fluid.tests.tableOfContents.renderTOCTest(that.ui, testHeadings, that.anchorInfo);
                         fluid.tests.tableOfContents.renderTOCAnchorTest();
                         jqUnit.start();
                     },
@@ -403,14 +393,14 @@ https://github.com/fluid-project/infusion/raw/master/Infusion-LICENSE.txt
     jqUnit.asyncTest("Output includes a heading", function () {
         fluid.tableOfContents("#flc-toc", {
             listeners: {
-                onReady: {
+                onCreate: {
                     func: function (that) {
                         var header = $("h2", that.container);
                         jqUnit.assertEquals("The output should contain exactly one H2", 1, header.length);
                         jqUnit.assertEquals("The H2 should contain the expected text", "Table of Contents", header.text());
                         jqUnit.start();
                     },
-                    args: ["{that}.levels"]
+                    args: ["{that}.ui"]
                 }
             }
         });
@@ -432,19 +422,19 @@ https://github.com/fluid-project/infusion/raw/master/Infusion-LICENSE.txt
         };
         fluid.tableOfContents("#flc-toc-refreshHeadings", {
             listeners: {
-                "onReady.initialState": {
-                    listener: function (levels, that) {
-                        that.events.onRefresh.addListener(function () {
+                "onCreate.initialState": {
+                    listener: function (that) {
+                        that.events.afterRender.addListener(function () {
                             jqUnit.assert("The onRefresh event should have fired");
-                            fluid.tests.tableOfContents.renderTOCTest(levels, testHeadingRefreshed, that.anchorInfo);
+                            fluid.tests.tableOfContents.renderTOCTest(that.ui, testHeadingRefreshed, that.anchorInfo);
                             fluid.tests.tableOfContents.renderTOCAnchorTest();
                             jqUnit.start();
                         }, "inTestCase", "last");
 
                         that.container.append("<h2>test</h2>");
-                        that.refreshView();
-                    },
-                    args: ["{that}.levels", "{that}"]
+                        that.pullHeadingsModel();
+                        jqUnit.start();
+                    }
                 }
             }
         });
@@ -459,12 +449,12 @@ https://github.com/fluid-project/infusion/raw/master/Infusion-LICENSE.txt
                 tocHeader: "Localized ToC Header"
             },
             listeners: {
-                onReady: {
+                onCreate: {
                     listener: function (that) {
                         jqUnit.assertEquals("The ToC Header should be localized.", that.options.strings.tocHeader, that.locate("tocHeader").text());
                         jqUnit.start();
                     },
-                    args: ["{that}.levels"]
+                    args: ["{that}.ui"]
                 }
             }
         });
@@ -487,13 +477,12 @@ https://github.com/fluid-project/infusion/raw/master/Infusion-LICENSE.txt
                 "fluid-5697": ".fluid-5697-exclude"
             },
             listeners: {
-                onReady: {
-                    listener: function (that, levels) {
-                        fluid.tests.tableOfContents.renderTOCTest(levels, testHeadings, that.anchorInfo);
+                onCreate: {
+                    listener: function (that) {
+                        fluid.tests.tableOfContents.renderTOCTest(that.ui, testHeadings, that.anchorInfo);
                         fluid.tests.tableOfContents.renderTOCAnchorTest();
                         jqUnit.start();
-                    },
-                    args: ["{that}", "{that}.levels"]
+                    }
                 }
             }
         });

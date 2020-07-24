@@ -297,15 +297,9 @@ var fluid_3_0_0 = fluid_3_0_0 || {};
     };
 
     fluid.renderer.render = function (renderer, components) {
-        // Note that this appears to be the core workflow of every renderer - note that fluid.renderer.server.render is so
-        // effectful that we could just deliver all of this as a prefix before the tree gets munged
+        // First phase of render workflow after resource resolution - first listener to renderer.events.render
         console.log("About to render " + components.length + " components to renderer " + fluid.dumpComponentPath(renderer));
-        /*
-        // var rootComponent = components[0];
-        if (!fluid.componentHasGrade(rootComponent, "fluid.rootPage")) {
-            fluid.fail("Must render at least one component, the first of which should be descended from fluid.rootPage - "
-               + " the head component was ", rootComponent);
-        }*/
+
         components.forEach(function (component) {
             // Evaluating the container of each component will force it to evaluate and render into it
             fluid.getForComponent(component, "container");

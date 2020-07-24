@@ -84,9 +84,10 @@ var fluid_3_0_0 = fluid_3_0_0 || {};
             item: ".flc-toc-item",
             level: ".flc-toc-level"
         },
-        components: {
+        dynamicComponents: {
             link: {
                 type: "fluid.uiLink",
+                source: "{level}.model.text",
                 options: {
                     container: "{level}.dom.link",
                     model: {
@@ -110,10 +111,10 @@ var fluid_3_0_0 = fluid_3_0_0 || {};
         return anchorInfo;
     };
 
-    fluid.tableOfContents.locateHeadings = function (that) {
+    fluid.tableOfContents.locateHeadings = function (that, ignoreForToC) {
         var headings = that.locate("headings");
 
-        fluid.each(that.options.ignoreForToC, function (sel) {
+        fluid.each(ignoreForToC, function (sel) {
             headings = headings.not(sel).not(sel + " :header");
         });
 
@@ -123,7 +124,8 @@ var fluid_3_0_0 = fluid_3_0_0 || {};
     fluid.tableOfContents.pullHeadingsModel = function (that, modelBuilder) {
         var headings = that.locateHeadings();
 
-        var anchorInfo = fluid.transform(headings, that.headingTextToAnchorInfo);
+        // This is scrawled onto the component primarily to make some tests easier to write
+        var anchorInfo = that.anchorInfo = fluid.transform(headings, that.headingTextToAnchorInfo);
 
         return modelBuilder.assembleModel(headings, anchorInfo);
     };
@@ -165,7 +167,7 @@ var fluid_3_0_0 = fluid_3_0_0 || {};
             headingTextToAnchorInfo: "fluid.tableOfContents.headingTextToAnchorInfo",
             locateHeadings: {
                 funcName: "fluid.tableOfContents.locateHeadings",
-                args: ["{that}"]
+                args: ["{that}", "{that}.options.ignoreForToC"]
             },
             pullHeadingsModel: {
                 funcName: "fluid.tableOfContents.pullHeadingsModel",
