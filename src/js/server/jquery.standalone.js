@@ -17,7 +17,7 @@
  * Date: Thu May 12 15:04:36 2011 -0400
  */
 
-/* global jQuery:true, global */
+/* global jQuery:true, global, Symbol */
 /* exported jQuery */
 
 var fluid_3_0_0 = fluid_3_0_0 || {};
@@ -39,6 +39,8 @@ var fluid = fluid || fluid_3_0_0;
     var jQuery = fluid.jQueryStandalone = function (/* arguments */) {
         return jQuery.constructor.apply(null, arguments);
     };
+
+    fluid.jQueryStandalone[Symbol.isConcatSpreadable] = true;
 
     // Define all the members in a fresh object, so that they can later be copied onto the function
     var jQueryMembers = {

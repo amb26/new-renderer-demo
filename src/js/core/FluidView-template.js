@@ -51,7 +51,7 @@ var fluid_3_0_0 = fluid_3_0_0 || {};
             fluid.fail("fluid.container argument is empty");
         }
         var selector = containerSpec.selector || containerSpec;
-        if (userJQuery) { // TODO: Why on earth?
+        if (userJQuery) { // Probably in case we want to swap some existing jQuery for another one - e.g. cross iFrames - check logic
             containerSpec = fluid.unwrap(containerSpec);
         }
         // FLUID-5047: Patched here to support "/" container

@@ -14,7 +14,7 @@
  * http://jquery.org/license
  */
 
-/* global jQuery:true */
+/* global jQuery:true, Symbol */
 
 var fluid_3_0_0 = fluid_3_0_0 || {};
 var fluid = fluid || fluid_3_0_0;
@@ -24,6 +24,7 @@ fluid_3_0_0 = fluid_3_0_0 || {};
 (function (fluid) {
     "use strict";
     // On the client we just include this file until we abolish the real jQuery
+    // TODO: On the client the renderer's jQueryStandalone diverges from the server one - i.e. we defer to jQuery's extend, etc.
     if (!fluid.jQueryStandalone) {
         var jQuery = fluid.jQueryStandalone = function (/* arguments */) {
             return jQuery.constructor.apply(null, arguments);
@@ -57,6 +58,9 @@ fluid_3_0_0 = fluid_3_0_0 || {};
             fluid.fail("Unrecognised signature to jQueryStandalone.constructor ", arg0, arg1);
         }
     };
+
+    fluid.jQueryStandalone.constructor.prototype[Symbol.isConcatSpreadable] = true;
+
     var $ = fluid.jQueryStandalone;
 
     fluid.jQueryStandalone.constructor.prototype.jquery = $.jquery || "1.6.1-fluidStandalone-renderer";

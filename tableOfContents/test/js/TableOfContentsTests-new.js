@@ -327,7 +327,7 @@ https://github.com/fluid-project/infusion/raw/master/Infusion-LICENSE.txt
         var anchorLinks = $(".flc-toc-link");
         anchorLinks.each(function (anchorIndex) {
             var anchorHref = anchorLinks.eq(anchorIndex).attr("href");
-            jqUnit.assertTrue("Component test headings: TOC anchors should map to the headers correctly - " + anchorHref, $(anchorHref)[0]);
+            jqUnit.assertValue("Component test headings: TOC anchors should map to the headers correctly - " + anchorHref, $(anchorHref)[0]);
         });
     };
 
@@ -424,16 +424,17 @@ https://github.com/fluid-project/infusion/raw/master/Infusion-LICENSE.txt
             listeners: {
                 "onCreate.initialState": {
                     listener: function (that) {
-                        that.events.afterRender.addListener(function () {
+                        var renderer = fluid.resolveContext("fluid.renderer", that, true);
+                        renderer.events.render.addListener(function () {
                             jqUnit.assert("The onRefresh event should have fired");
                             fluid.tests.tableOfContents.renderTOCTest(that.ui, testHeadingRefreshed, that.anchorInfo);
                             fluid.tests.tableOfContents.renderTOCAnchorTest();
+                            renderer.events.render.removeListener("inTestCase");
                             jqUnit.start();
                         }, "inTestCase", "last");
 
                         that.container.append("<h2>test</h2>");
-                        that.pullHeadingsModel();
-                        jqUnit.start();
+                        that.resourceFetcher.refetchOneResource("documentHeadingsSource");
                     }
                 }
             }

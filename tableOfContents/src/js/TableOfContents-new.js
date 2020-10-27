@@ -155,14 +155,6 @@ var fluid_3_0_0 = fluid_3_0_0 || {};
                 promiseFunc: "{that}.pullHeadingsModel"
             }
         },
-        modelListeners: {
-            headings: "{that}.events.afterRender.fire"
-        },
-        events: {
-        // This event is no longer necessary but we are temporarily preserving it to gear to integrations such
-        // as fluid.prefs.enactor.tableOfContents
-            afterRender: null
-        },
         invokers: {
             headingTextToAnchorInfo: "fluid.tableOfContents.headingTextToAnchorInfo",
             locateHeadings: {

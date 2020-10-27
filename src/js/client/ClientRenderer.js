@@ -129,48 +129,103 @@ var fluid_3_0_0 = fluid_3_0_0 || {};
             });
         } else if (node.comment) {
             domNode = document.createComment(node.comment);
-        } else {
+        } else if (node.text) {
             domNode = document.createTextNode(node.text);
         }
-        if (node.id) {
-            templateIdToDom[node.id] = domNode;
+        if (domNode) {
+            if (node.id) {
+                templateIdToDom[node.id] = domNode;
+            }
+            parent.appendChild(domNode);
         }
-        parent.appendChild(domNode);
-        return node;
     };
 
-    fluid.renderer.client.renderFragment = function (templateIdToDom, nodes) {
+    /** Convert an array of template nodes into a DOM document fragment
+     * @param {Object<String, DomNode>} templateIdToDom - Map of template node ids to corresponding DOM nodes they have been allocated to - updated
+     * by this call
+     * @param {TemplateNode[]} templateNodes - Array of template nodes to be rendered
+     * @return {DocumentFragment} A DOM document fragment with one child for each new template node
+     */
+    fluid.renderer.client.renderFragment = function (templateIdToDom, templateNodes) {
         var fragment = new DocumentFragment();
-        nodes.forEach(function (node) {
+        templateNodes.forEach(function (node) {
             fluid.renderer.client.templateToDOM(templateIdToDom, fragment, node);
         });
         return fragment;
     };
 
-    fluid.renderer.client.render = function (renderer, components) {
-        var rootComponent = components[0];
+    fluid.renderer.client.createDomBinder = function (that, container, selectors, templateBinder) {
+        var domBinder = fluid.createDomBinder(container, selectors);
+        domBinder.baseLocate = domBinder.locate;
+        domBinder.templateBinder = templateBinder;
+        domBinder.locate = function (selectorName, localContainer) {
+            var oldReturn = domBinder.baseLocate(selectorName, localContainer);
+            if (!localContainer) { // TODO: eliminate this crazy variant signature from base DOM binder
+                oldReturn.contextThat = that; // note that this is already there
+                oldReturn.templateRange = templateBinder.locate(selectorName);
+            }
+            return oldReturn;
+        };
+        domBinder.resolvePathSegment = domBinder.locate;
+        return domBinder;
+    };
+
+    /** Convert a list of supplied template nodes to DOM nodes and render them as children of the supplied DOM node
+     * @param {Object<String, DomNode>} templateIdToDom - Map of template node ids to corresponding DOM nodes they have been allocated to - updated by this call
+     * @param {DomNode} domContainer - The DOM container to receive the new children
+     * @param {TemplateNode[]} templateNodes - Array of template nodes to be rendered
+     */
+    fluid.renderer.client.renderToDom = function (templateIdToDom, domContainer, templateNodes) {
+        var fragment = fluid.renderer.client.renderFragment(templateIdToDom, templateNodes);
+        console.log("Got DOM container ", domContainer);
+        console.log("Dumping markup: ");
+        console.log(fluid.htmlParser.render(templateNodes));
+        domContainer.appendChild(fragment);
+    };
+
+    /** Added as a listener to the renderer's "render" event after the main listener fluid.renderer.render **/
+
+    fluid.renderer.client.render = function (renderer, shadows) {
+        var templateIdToDom = renderer.templateIdToDom;
+        var rootComponent = shadows[0].that;
         var rootShadow = fluid.shadowForComponent(rootComponent);
         var rootContainer = rootComponent.container[0];
-        var domRoot = rootShadow.rendererRecords.domRootContainer;
-        var templateIdToDom = rootShadow.rendererRecords.templateIdToDom = {};
-        templateIdToDom[rootContainer.id] = domRoot;
-        var fragment = fluid.renderer.client.renderFragment(templateIdToDom, rootContainer.children);
+        var domRoot = fluid.getImmediate(rootShadow, ["rendererRecords", "domRootContainer"]);
+        if (domRoot) {
+            templateIdToDom[rootContainer.id] = domRoot;
+            // TODO: make sure this "splicing" behaviour (where all the children are spliced as children of the existing parent
+            // node without disturbing it) is consistent in differential rendering too - in practice, we probably want to splice the
+            // nodes together more intelligently, e.g. by compounding any classes together that are on either node
+            fluid.renderer.client.renderToDom(templateIdToDom, domRoot, rootContainer.children);
+        }
 
-        console.log("Got DOM root ", domRoot);
-        console.log("Dumping markup: ");
-        console.log(fluid.htmlParser.render(rootContainer));
-        domRoot.appendChild(fragment);
-        components.forEach(function (component) {
-            var componentShadow = fluid.shadowForComponent(component);
+        renderer.perRenderState.invalidatedDomParents.forEach(function (invalidated) {
+            var parentNode = invalidated.parentNode;
+            console.log("Considering invalidated parentNode ", parentNode);
+            var children = parentNode.children;
+            var newChildren = children.filter(function (child) {
+                return child.originalIndex === undefined;
+            });
+            console.log("Found " + newChildren.length + " newly rendered children");
+            var domParent = templateIdToDom[parentNode.id];
+            fluid.renderer.client.renderToDom(templateIdToDom, domParent, newChildren);
+            // TODO: after this, we may need to resort the children depending on their new positions
+        });
+
+        shadows.forEach(function (shadow) {
+            var component = shadow.that;
             // Stash the original container and DOM binder for later use during re-rendering
-            fluid.model.setSimple(componentShadow, ["rendererRecords", "templateContainer"], component.container);
-            fluid.model.setSimple(componentShadow, ["rendererRecords", "templateDomBinder"], component.dom);
+            fluid.model.setSimple(shadow, ["rendererRecords", "templateContainer"], component.container);
+            fluid.model.setSimple(shadow, ["rendererRecords", "templateDomBinder"], component.dom);
             var nodeId = component.container[0].id;
             if (!nodeId || !templateIdToDom[nodeId]) {
                 fluid.fail("Unable to remap container for component ", component);
             }
+            // Whip through all the freshly constructed components, malignantly rewriting their container and DOM binder to point to
+            // ones oriented to the browser's DOM. We subvert the DOM binder's return so that containers of freshly instantiating components
+            // in subsequent rounds can locate the template DOM
             component.container = fluid.container(templateIdToDom[nodeId]);
-            component.dom = fluid.createDomBinder(component.container, component.options.selectors);
+            component.dom = fluid.renderer.client.createDomBinder(component, component.container, component.options.selectors, component.dom);
         });
     };
 

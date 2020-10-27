@@ -47,7 +47,7 @@ fluid.defaults("fluid.serverRootPage", {
         script: "head script"
     },
     members: {
-        container: "@expand:fluid.buildTemplateContainer({that})"
+        container: "@expand:fluid.renderer.buildTemplateContainer({that})"
     }
 });
 
@@ -82,8 +82,8 @@ fluid.renderer.server.addScriptTemplate = function (bodyNode, template, terms, m
 // Global workflow function collects together all renderer components nested under a renderer and dispatches them
 // in groups, I/O and parsing will already have been achieved via "waitIO" in the workflow definition and the
 // resource loader
-fluid.renderer.server.render = function (renderer, staticMountIndexer, components, markup) {
-    var rootComponent = components[0];
+fluid.renderer.server.render = function (renderer, staticMountIndexer, shadows, markup) {
+    var rootComponent = shadows[0].that;
     if (!fluid.componentHasGrade(rootComponent, "fluid.rootPage")) {
         fluid.fail("Must render at least one component, the first of which should be descended from fluid.rootPage - "
            + " the head component was ", rootComponent);
@@ -103,7 +103,7 @@ fluid.renderer.server.render = function (renderer, staticMountIndexer, component
         mountTable: staticMountIndexer.mountTable
     }, "unshift");
 
-    if (components.length > 1) {
+    if (shadows.length > 1) {
         var pageShadow = fluid.globalInstantiator.idToShadow[renderer.page.id];
         var pagePotentia = pageShadow.potentia;
         //console.log("Got PAGE POTENTIA ", fluid.prettyPrintJSON(fluid.censorKeys(pagePotentia, ["localRecord", "parentThat"])));
@@ -114,10 +114,10 @@ fluid.renderer.server.render = function (renderer, staticMountIndexer, component
         });
 
         var rootPath = fluid.pathForComponent(rootComponent);
-        var models = components.map(function (component) {
+        var models = shadows.map(function (shadow) {
             return {
-                path: fluid.removePrefix(rootPath, fluid.pathForComponent(component)),
-                model: component.model
+                path: fluid.removePrefix(rootPath, shadow.path),
+                model: shadow.component.model
             };
         });
 
