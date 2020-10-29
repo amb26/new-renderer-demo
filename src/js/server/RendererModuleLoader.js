@@ -79,6 +79,10 @@ fluid.renderer.normaliseSimplePath = function (suffix) {
     }
 };
 
+fluid.unslashify = function (path) {
+    return typeof(path) === "string" && path.endsWith("/") ? path.slice(0, -1) : path;
+};
+
 fluid.setLogging(true);
 
 // Generates dynamic component material with one "kettle.staticRequestHandlers.static" component for every
@@ -95,12 +99,10 @@ fluid.renderer.generateMountOptions = function (moduleConfiguration) {
         var mountEntire = fluid.getImmediate(moduleConfiguration, [moduleName, "mountEntire"]);
         var staticMountBase = !mountEntire && pkg.infusion.staticMountBase || "./";
         var suffix = fluid.renderer.normaliseSimplePath(staticMountBase);
+        // Note that "preferredMountPath" is now only functional for the static mount - the rewritten mount now defaults to "/" for easy user access
         var pkgPreferred = pkg.infusion.preferredMountPath;
-        pkgPreferred = pkgPreferred === "/" ? "" : pkgPreferred;
-        var preferredMountPath = fluid.isValue(pkgPreferred) ? pkgPreferred : "/" + camelName + "Static";
-        if (preferredMountPath.endsWith("/")) {
-            preferredMountPath = preferredMountPath.slice(0, -1);
-        }
+        var preferredMountPath = fluid.isValue(pkgPreferred) ? fluid.unslashify(pkgPreferred) : "/" + camelName + "Static";
+
         var isRoot = preferredMountPath === "";
         var baseStaticHandlerOptions = {
             root: "%" + moduleName + suffix,
@@ -115,18 +117,23 @@ fluid.renderer.generateMountOptions = function (moduleConfiguration) {
             options: staticHandlerOptions
         });
         fluid.log("Mounting module " + moduleName + " at path " + preferredMountPath);
+        // TODO: some things can be specified in the package, such as "preferredMountPath" whereas some come from the
+        // per-module configuration - these should be merged and/or rationalised
+        // Recall that we decided against a "PHP-style" mounting whereby the rewritten versions of resources were
+        // plastered on top of the static ones, but instead to keep them in separate areas
         var rewriteUrls = fluid.getImmediate(moduleConfiguration, [moduleName, "rewriteUrls"]);
         if (rewriteUrls) {
-            // var prefix = typeof (rewriteUrls) === "string" ? rewriteUrls : preferredMountPath;
+            var prefix = fluid.unslashify(fluid.getImmediate(rewriteUrls, "target")) || "";
+            // TODO: Think about reading "source" member of rewriteUrls and sticking it on to mountedRoot
             fluid.model.setSimple(options, ["requestHandlers", camelName + "RewritingHandler"], {
                 type: "fluid.renderer.rewriting.request",
-                route: /*preferredMountPath + */ "/*.html",
+                route: "/*.html",
                 prefix: fluid.isValue(pkgPreferred) ? pkgPreferred : "",
                 options: {
                     mountedRoot: staticHandlerOptions.root
                 },
                 method: "get",
-                priority: "after:" + staticHandlerKey
+                priority: "last" // see notes on FLUID-5948
             });
         }
     });

@@ -1,5 +1,5 @@
 /**
- * New Renderer Demo App
+ * New Renderer Performance Test App
  *
  * Copyright 2018 Raising The Floor - International
  *

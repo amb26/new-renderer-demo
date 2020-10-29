@@ -31,7 +31,13 @@ fluid.renderer.loadModule("%new-renderer-demo/tableOfContents");
 fluid.renderer.autoMountRendererModulesServer({
     moduleConfiguration: {
         "fluid-table-of-contents": {
-            rewriteUrls: "/test/html",
+            // Currently ignored - rewriteUrls is a boolean
+            // TODO: For real apps, we probably want a more targetted way of specifying what we want to mount/rewrite
+            rewriteUrls: {
+                source: "/test/html",
+                target: "/"
+            },
+            // Say this so that we mount all the test cases too just for this configuration
             mountEntire: true
         }
     }

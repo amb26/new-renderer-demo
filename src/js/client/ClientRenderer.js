@@ -49,8 +49,7 @@ var fluid_3_0_0 = fluid_3_0_0 || {};
 
 
     fluid.defaults("fluid.clientRootPage", {
-        // No reason why this can't specify "html" directly to avoid hard-coding fluid.container.
-        // container: "html",
+        container: "html",
         members: {
             // Re-override container definition from newRendererComponent with one from fluid.newViewComponent again
             // This will interpret the container spec of "/" in fluid.rootPage as a designation of an <html> root element
@@ -82,6 +81,7 @@ var fluid_3_0_0 = fluid_3_0_0 || {};
     // Client side initBlock "driver" function which accepts the "care package" from the server and uses it to
     // reconstruct whatever component tree needs to be built against the already-correct markup. It sets
     // "parentMarkup" to true for every component to prevent it from attempting to render again.
+    // TODO: Note this is obviously faulty since the components may subsequently RE-RENDER.
     fluid.renderer.initBlockClientRenderer = function (config) {
         var rendererPotentia = {
             path: fluid.renderer.clientRendererPath,
@@ -211,22 +211,25 @@ var fluid_3_0_0 = fluid_3_0_0 || {};
             fluid.renderer.client.renderToDom(templateIdToDom, domParent, newChildren);
             // TODO: after this, we may need to resort the children depending on their new positions
         });
-
-        shadows.forEach(function (shadow) {
-            var component = shadow.that;
-            // Stash the original container and DOM binder for later use during re-rendering
-            fluid.model.setSimple(shadow, ["rendererRecords", "templateContainer"], component.container);
-            fluid.model.setSimple(shadow, ["rendererRecords", "templateDomBinder"], component.dom);
-            var nodeId = component.container[0].id;
-            if (!nodeId || !templateIdToDom[nodeId]) {
-                fluid.fail("Unable to remap container for component ", component);
-            }
-            // Whip through all the freshly constructed components, malignantly rewriting their container and DOM binder to point to
-            // ones oriented to the browser's DOM. We subvert the DOM binder's return so that containers of freshly instantiating components
-            // in subsequent rounds can locate the template DOM
-            component.container = fluid.container(templateIdToDom[nodeId]);
-            component.dom = fluid.renderer.client.createDomBinder(component, component.container, component.options.selectors, component.dom);
-        });
+        // Use this test as cheap proxy for not having been initially rendered against a real DOM - 
+        // TODO: Note that in future we will have to construct a full template DOM on the client too, so that re-rendering can occur consistently 
+        if (!fluid.componentHasGrade(rootComponent, "fluid.clientRootPage")) {
+            shadows.forEach(function (shadow) {
+                var component = shadow.that;
+                // Stash the original container and DOM binder for later use during re-rendering
+                fluid.model.setSimple(shadow, ["rendererRecords", "templateContainer"], component.container);
+                fluid.model.setSimple(shadow, ["rendererRecords", "templateDomBinder"], component.dom);
+                var nodeId = component.container[0].id;
+                if (!nodeId || !templateIdToDom[nodeId]) {
+                    fluid.fail("Unable to remap container for component ", component);
+                }
+                // Whip through all the freshly constructed components, malignantly rewriting their container and DOM binder to point to
+                // ones oriented to the browser's DOM. We subvert the DOM binder's return so that containers of freshly instantiating components
+                // in subsequent rounds can locate the template DOM
+                component.container = fluid.container(templateIdToDom[nodeId]);
+                component.dom = fluid.renderer.client.createDomBinder(component, component.container, component.options.selectors, component.dom);
+            });
+        }
     };
 
     fluid.defaults("fluid.renderer.rootBrowserRenderer", {

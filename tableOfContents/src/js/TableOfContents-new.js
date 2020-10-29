@@ -51,6 +51,7 @@ var fluid_3_0_0 = fluid_3_0_0 || {};
             tocHeader: ".flc-toc-header",
             levelContainer: ".flc-toc-level-container"
         },
+        includeTemplateRoot: true,
         model: {
             messages: "{that}.options.strings"
         },

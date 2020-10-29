@@ -142,7 +142,7 @@ fluid_3_0_0 = fluid_3_0_0 || {};
         if (classes.length) {
             var elem, i = 0;
             while ( ( elem = jq[ i++ ] ) ) {
-                var curValue = elem.attrs["class"] || "";
+                var curValue = fluid.getImmediate(elem, ["attrs", "class"]) || "";
                 var cur = " " + fluid.jQueryStandalone.stripAndCollapse(curValue) + " ";
 
                 if (cur) {

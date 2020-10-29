@@ -46,6 +46,7 @@ fluid.defaults("fluid.serverRootPage", {
         link: "head link",
         script: "head script"
     },
+    includeTemplateRoot: true,
     members: {
         container: "@expand:fluid.renderer.buildTemplateContainer({that})"
     }
@@ -107,8 +108,10 @@ fluid.renderer.server.render = function (renderer, staticMountIndexer, shadows, 
         var pageShadow = fluid.globalInstantiator.idToShadow[renderer.page.id];
         var pagePotentia = pageShadow.potentia;
         //console.log("Got PAGE POTENTIA ", fluid.prettyPrintJSON(fluid.censorKeys(pagePotentia, ["localRecord", "parentThat"])));
+        // TODO: in CLEAN ROOM INFUSION (or earlier) create a scheme for recovering the actual original user gesture potentia - 
+        // How the Mike do distributions get in there?
         var toMerges = pagePotentia.lightMerge.toMerge.filter(function (oneToMerge) {
-            return oneToMerge.recordType !== "defaults" && oneToMerge.type !== "fluid.emptySubcomponent";
+            return oneToMerge.recordType !== "defaults" && oneToMerge.recordType !== "distribution" && oneToMerge.type !== "fluid.emptySubcomponent";
         }).map(function (oneToMerge) {
             return fluid.filterKeys(oneToMerge, ["type", "options"]);
         });
@@ -116,8 +119,8 @@ fluid.renderer.server.render = function (renderer, staticMountIndexer, shadows, 
         var rootPath = fluid.pathForComponent(rootComponent);
         var models = shadows.map(function (shadow) {
             return {
-                path: fluid.removePrefix(rootPath, shadow.path),
-                model: shadow.component.model
+                path: fluid.removePrefix(rootPath, fluid.globalInstantiator.parseEL(shadow.path)),
+                model: shadow.that.model
             };
         });
 

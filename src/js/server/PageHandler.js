@@ -53,6 +53,7 @@ fluid.renderer.pageHandler.handle = function (request) {
 };
 
 // The handler as a requestHandler - we should really abolish this silly distinction in next Kettle
+// TODO: Write tests that verify error behaviour
 fluid.defaults("fluid.renderer.pageRequestHandler", {
     gradeNames: ["kettle.request.http", "fluid.renderer.pageHandler"],
     distributeOptions: {

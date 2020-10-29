@@ -27,6 +27,7 @@ var fluid_3_0_0 = fluid_3_0_0 || {};
         members: {
             container: "@expand:fluid.renderer.resolveTemplateContainer({that}, {that}.options.container)",
             // TODO: use an options distribution/contextAwareness to distinguish between server and client DOM binders
+            // TODO: we should actually be able to move this method into the renderer now
             dom: {
                 expander: {
                     funcName: "fluid.createRendererDomBinder",
@@ -47,7 +48,6 @@ var fluid_3_0_0 = fluid_3_0_0 || {};
         resources: {
             template: {
                 dataType: "html",
-//                resourceText: "Default text: no template was configured",
                 parseOptions: {
                     selectors: "{that}.options.selectors"
                 }
@@ -59,13 +59,17 @@ var fluid_3_0_0 = fluid_3_0_0 || {};
         skipTemplateFetch: "{that}.options.parentMarkup",
         // Set to `true` if there is no template and/or the component expects to render into markup provided by parent
         parentMarkup: false,
-        // Set to `true` if the root node of the template is to be written into the markup
-        // otherwise it will be elided and its children joined to the parent node directly
+        // Set to `false` if, when the "container" selector is "/", whether the synthetic (outer) root node of the template should
+        // be taken into account, otherwise when "container" is "/" the template will be considered to consist of 
+        // its physical root node. TODO: This will need to be combined with a directive governing splicing, at which point
+        // we might be able to remove it.
         includeTemplateRoot: false,
         workflows: {
             global: {
                 renderMarkup: {
                     funcName: "fluid.renderer.renderMarkup",
+                    // TODO: Should really be able to specify that this depends on BOTH resolveResourceModel AND fetchTemplates
+                    // But then what becomes of our "positional" priority scheme!
                     priority: "after:resolveResourceModel",
                     waitIO: true
                 }
@@ -81,15 +85,16 @@ var fluid_3_0_0 = fluid_3_0_0 || {};
      * @return {ljQuery} The container node.
      */
     fluid.renderer.buildTemplateContainer = function (that) {
-        var includeTemplateRoot = fluid.getForComponent(that, "options.includeTemplateRoot");
+        var includeTemplateRoot = fluid.getForComponent(that, "options.includeTemplateRoot") || that.options.selectors.container !== "/";
         var matchedSelectors = that.resources.template.parsed.matchedSelectors;
         if (!matchedSelectors.container) {
             fluid.fail("Failure in template for " + fluid.dumpComponentAndPath(that) + " at "
                + (that.resources.template.path || that.resources.template.url) + ": template selector " + that.options.selectors.container + " was not matched");
         }
         var matchedContainer = matchedSelectors.container[0];
-        var containerTree = matchedContainer.node;
-        var rootDepth = matchedContainer.childIndices.length - (includeTemplateRoot ? 1 : 0);
+
+        var containerTree = includeTemplateRoot ? matchedContainer.node : matchedContainer.node.children[0];
+        var rootDepth = matchedContainer.childIndices.length + (includeTemplateRoot ? 0 : 1);
         // TODO: Create a separate area for these indices rather than bashing the parsed template in place
         fluid.each(matchedSelectors, function (matchedSelector) {
             matchedSelector.forEach(function (oneMatch) {
