@@ -27,7 +27,7 @@ var fluid_3_0_0 = fluid_3_0_0 || {};
         members: {
             container: "@expand:fluid.renderer.resolveTemplateContainer({that}, {that}.options.container)",
             // TODO: use an options distribution/contextAwareness to distinguish between server and client DOM binders
-            // TODO: we should actually be able to move this method into the renderer now
+            // TODO: we should be able to move this method into the renderer now
             dom: {
                 expander: {
                     funcName: "fluid.createRendererDomBinder",
@@ -44,6 +44,9 @@ var fluid_3_0_0 = fluid_3_0_0 || {};
                 funcName: "fluid.createDomBinder",
                 args: ["{that}.container", "{that}.options.selectors"]
             }
+        },
+        listeners: { // Override this temporary listener in fluid.viewComponent since the modern renderer does this timely
+            "onCreate.onDomBind": null
         },
         resources: {
             template: {
@@ -393,9 +396,11 @@ var fluid_3_0_0 = fluid_3_0_0 || {};
         console.log("About to render " + shadows.length + " components to renderer " + fluid.dumpComponentPath(renderer));
 
         shadows.forEach(function (shadow) {
+            var that = shadow.that;
             // Evaluating the container of each component will force it to evaluate and render into it
-            fluid.getForComponent(shadow.that, "container");
-            fluid.getForComponent(shadow.that, "dom");
+            fluid.getForComponent(that, "container");
+            fluid.getForComponent(that, "dom");
+            that.events.onDomBind.fire(that);
         });
 
         shadows.forEach(function (shadow) {

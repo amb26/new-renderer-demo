@@ -159,6 +159,8 @@ fluid_3_0_0 = fluid_3_0_0 || {};
         }
     };
 
+    // TODO: needed - text, toggleClass
+
     fluid.jQueryStandalone.properties = fluid.transform($.fn, function (func, propertyName) {
         return {
             get: function () {

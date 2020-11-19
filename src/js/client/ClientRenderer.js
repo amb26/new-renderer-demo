@@ -228,6 +228,7 @@ var fluid_3_0_0 = fluid_3_0_0 || {};
                 // in subsequent rounds can locate the template DOM
                 component.container = fluid.container(templateIdToDom[nodeId]);
                 component.dom = fluid.renderer.client.createDomBinder(component, component.container, component.options.selectors, component.dom);
+                component.events.onDomBind.fire(component);
             });
         }
     };
