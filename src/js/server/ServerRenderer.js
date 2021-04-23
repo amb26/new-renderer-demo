@@ -108,7 +108,7 @@ fluid.renderer.server.render = function (renderer, staticMountIndexer, shadows, 
         var pageShadow = fluid.globalInstantiator.idToShadow[renderer.page.id];
         var pagePotentia = pageShadow.potentia;
         //console.log("Got PAGE POTENTIA ", fluid.prettyPrintJSON(fluid.censorKeys(pagePotentia, ["localRecord", "parentThat"])));
-        // TODO: in CLEAN ROOM INFUSION (or earlier) create a scheme for recovering the actual original user gesture potentia - 
+        // TODO: in CLEAN ROOM INFUSION (or earlier) create a scheme for recovering the actual original user gesture potentia -
         // How the Mike do distributions get in there?
         var toMerges = pagePotentia.lightMerge.toMerge.filter(function (oneToMerge) {
             return oneToMerge.recordType !== "defaults" && oneToMerge.recordType !== "distribution" && oneToMerge.type !== "fluid.emptySubcomponent";

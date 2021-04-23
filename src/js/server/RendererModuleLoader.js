@@ -123,7 +123,7 @@ fluid.renderer.generateMountOptions = function (moduleConfiguration) {
         // plastered on top of the static ones, but instead to keep them in separate areas
         var rewriteUrls = fluid.getImmediate(moduleConfiguration, [moduleName, "rewriteUrls"]);
         if (rewriteUrls) {
-            var prefix = fluid.unslashify(fluid.getImmediate(rewriteUrls, "target")) || "";
+            // var prefix = fluid.unslashify(fluid.getImmediate(rewriteUrls, "target")) || "";
             // TODO: Think about reading "source" member of rewriteUrls and sticking it on to mountedRoot
             fluid.model.setSimple(options, ["requestHandlers", camelName + "RewritingHandler"], {
                 type: "fluid.renderer.rewriting.request",

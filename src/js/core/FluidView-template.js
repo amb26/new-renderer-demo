@@ -35,7 +35,7 @@ var fluid_3_0_0 = fluid_3_0_0 || {};
     };
 
     fluid.isBrowserDOMNode = function (obj) {
-        return obj && typeof (obj.nodeType) === "number";
+        return obj && typeof(obj.nodeType) === "number";
     };
 
     /**
@@ -62,14 +62,14 @@ var fluid_3_0_0 = fluid_3_0_0 || {};
         // FLUID-5047: Removed check for container.jquery
         // TODO: This should really apply fluid.isJQuery but in the long term we don't want such pollution
         if (!container || container.length !== 1) {
-            if (typeof (containerSpec) !== "string") {
+            if (typeof(containerSpec) !== "string") {
                 containerSpec = container.selector;
             }
             var count = container.length !== undefined ? container.length : 0;
             var extraMessage = container.selectorName ? " with selector name " + container.selectorName +
                 " in context " + fluid.dumpEl(containerSpec.context) : "";
             fluid.fail((count > 1 ? "More than one (" + count + ") container elements were"
-                    : "No container element was") + " found for selector " + containerSpec + extraMessage );
+                : "No container element was") + " found for selector " + containerSpec + extraMessage );
         }
         if (!fluid.isDOMNode(container[0])) {
             fluid.fail("fluid.container was supplied a non-jQueryable element");
@@ -100,7 +100,7 @@ var fluid_3_0_0 = fluid_3_0_0 || {};
 
     fluid.allocateSimpleId = function (element) {
         return fluid.isTemplateDOMNode(element) ?
-           fluid.allocateSimpleIdTemplate(element) : fluid.allocateSimpleIdBrowser(element);
+            fluid.allocateSimpleIdTemplate(element) : fluid.allocateSimpleIdBrowser(element);
     };
 
     /*

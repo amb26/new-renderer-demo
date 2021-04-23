@@ -11,7 +11,7 @@ You may obtain a copy of the ECL 2.0 License and BSD License at
 https://github.com/fluid-project/infusion/raw/master/Infusion-LICENSE.txt
 */
 
-/* global fluid, jqUnit */
+/* global jqUnit */
 
 (function ($) {
     "use strict";
@@ -320,9 +320,8 @@ https://github.com/fluid-project/infusion/raw/master/Infusion-LICENSE.txt
     });
 
     /**
-      * Test anchor links created by TOC.  Check if the heading table a href link maps to the correct header
-      * @precondition   Must be rendered
-      */
+     * Test anchor links created by TOC.  Check if the heading table a href link maps to the correct header
+     */
     fluid.tests.tableOfContents.renderTOCAnchorTest = function () {
         var anchorLinks = $(".flc-toc-link");
         anchorLinks.each(function (anchorIndex) {
@@ -441,9 +440,9 @@ https://github.com/fluid-project/infusion/raw/master/Infusion-LICENSE.txt
         });
     });
 
-   /**
-    * #FLUID-5567: Test that table of contents header is localizable
-    */
+    /**
+     * #FLUID-5567: Test that table of contents header is localizable
+     */
     jqUnit.asyncTest("FLUID-5567: Table of Contents header localization", function () {
         fluid.tableOfContents("#flc-toc-l10n", {
             strings: {
@@ -462,8 +461,8 @@ https://github.com/fluid-project/infusion/raw/master/Infusion-LICENSE.txt
     });
 
     /**
-    * #FLUID-5697: Test the exclusion of headers
-    */
+     * #FLUID-5697: Test the exclusion of headers
+     */
     jqUnit.asyncTest("FLUID-5697: Header exclusion", function () {
         // craft headingInfo so renderTOCTest() can use it
         var testHeadings = {

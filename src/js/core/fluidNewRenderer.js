@@ -63,7 +63,7 @@ var fluid_3_0_0 = fluid_3_0_0 || {};
         // Set to `true` if there is no template and/or the component expects to render into markup provided by parent
         parentMarkup: false,
         // Set to `false` if, when the "container" selector is "/", whether the synthetic (outer) root node of the template should
-        // be taken into account, otherwise when "container" is "/" the template will be considered to consist of 
+        // be taken into account, otherwise when "container" is "/" the template will be considered to consist of
         // its physical root node. TODO: This will need to be combined with a directive governing splicing, at which point
         // we might be able to remove it.
         includeTemplateRoot: false,
@@ -174,9 +174,9 @@ var fluid_3_0_0 = fluid_3_0_0 || {};
             }
             return innerContainer;
         } else {
-            fluid.fail("Cannot resolve container for renderer " + fluid.dumpComponentPath(that)
-                + " which has no markup template and has not set `parentMarkup` to `true` - container argument was ",
-                that.options.container);
+            fluid.fail("Cannot resolve container for renderer " + fluid.dumpComponentPath(that) +
+                " which has no markup template and has not set `parentMarkup` to `true` - container argument was ",
+                that.options.container); // eslint-disable-line indent
         }
     };
 
@@ -434,7 +434,7 @@ var fluid_3_0_0 = fluid_3_0_0 || {};
         // var renderId = fluid.allocateGuid();
         fluid.each(rendererToShadows, function (shadows, key) {
             var renderer = fluid.globalInstantiator.idToShadow[key].that;
-            renderer.currentRenderCycle ++;
+            renderer.currentRenderCycle++;
             renderer.perRenderState = {
                 invalidatedDomParents: []
             };

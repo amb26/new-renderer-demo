@@ -211,8 +211,8 @@ var fluid_3_0_0 = fluid_3_0_0 || {};
             fluid.renderer.client.renderToDom(templateIdToDom, domParent, newChildren);
             // TODO: after this, we may need to resort the children depending on their new positions
         });
-        // Use this test as cheap proxy for not having been initially rendered against a real DOM - 
-        // TODO: Note that in future we will have to construct a full template DOM on the client too, so that re-rendering can occur consistently 
+        // Use this test as cheap proxy for not having been initially rendered against a real DOM -
+        // TODO: Note that in future we will have to construct a full template DOM on the client too, so that re-rendering can occur consistently
         if (!fluid.componentHasGrade(rootComponent, "fluid.clientRootPage")) {
             shadows.forEach(function (shadow) {
                 var component = shadow.that;

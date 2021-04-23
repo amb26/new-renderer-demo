@@ -17,11 +17,10 @@
  * Date: Thu May 12 15:04:36 2011 -0400
  */
 
-/* global jQuery:true, global, Symbol */
+/* global global, Symbol */
 /* exported jQuery */
 
 var fluid_3_0_0 = fluid_3_0_0 || {};
-var fluid = fluid || fluid_3_0_0;
 
 (function (fluid) {
     "use strict";
@@ -164,4 +163,4 @@ var fluid = fluid || fluid_3_0_0;
 })(fluid_3_0_0);
 
 // FLUID-5047: Never overwrite the real jQuery with ours
-var jQuery = typeof(jQuery) === "undefined" ? fluid.jQueryStandalone : jQuery;
+var jQuery = typeof(jQuery) === "undefined" ? fluid.jQueryStandalone : jQuery; // eslint-disable-line no-redeclare

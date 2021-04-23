@@ -14,12 +14,9 @@
  * http://jquery.org/license
  */
 
-/* global jQuery:true, Symbol */
+/* global Symbol */
 
 var fluid_3_0_0 = fluid_3_0_0 || {};
-var fluid = fluid || fluid_3_0_0;
-
-fluid_3_0_0 = fluid_3_0_0 || {};
 
 (function (fluid) {
     "use strict";
