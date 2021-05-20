@@ -14,10 +14,6 @@
  * http://jquery.org/license
  */
 
-/* global Symbol */
-
-var fluid_3_0_0 = fluid_3_0_0 || {};
-
 (function (fluid) {
     "use strict";
     // On the client we just include this file until we abolish the real jQuery

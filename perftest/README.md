@@ -25,3 +25,6 @@ of individual fixtures. After about 20 seconds a markup summary like the followi
 This verifies that contrary to the received wisdom on numerous blogs, on modern browsers the fragment rendering approach
 is superior. Due to various other inefficiencies, the performance advantage will be greater than the figure reported
 by the raw test timings.
+
+Also note analysis on https://stackoverflow.com/questions/43401497/why-is-documentfragment-no-faster-than-repeated-dom-access
+and also https://github.com/facebook/react/issues/11171

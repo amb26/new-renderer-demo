@@ -4,9 +4,10 @@
     <meta http-equiv="Content-Type" content="text/html; charset=utf-8">
     <meta content="width=device-width, initial-scale=1.0" name="viewport">
 
-    <link rel="stylesheet" type="text/css" href="../../node_modules/infusion/src/lib/normalize/css/normalize.css" />
     <link rel="stylesheet" type="text/css" href="../../node_modules/infusion/src/framework/core/css/fluid.css" />
-    <link rel="stylesheet" type="text/css" href="../../node_modules/infusion/src/framework/core/css/fluid.css" />
+    <link rel="stylesheet" type="text/css" href="../../textfieldControl/css/TextfieldSlider.css" />
+    <link rel="stylesheet" type="text/css" href="../../textfieldControl/css/TextfieldStepper.css" />
+    <link rel="stylesheet" type="text/css" href="../css/demo.css" />
 
     <script type="text/javascript" src="../../node_modules/infusion/src/lib/jquery/core/js/jquery.js"></script>
     <script type="text/javascript" src="../../node_modules/infusion/src/framework/core/js/Fluid.js"></script>
@@ -21,26 +22,29 @@
     <script type="text/javascript" src="../../node_modules/infusion/src/framework/core/js/DataBinding.js"></script>
     <script type="text/javascript" src="../../node_modules/infusion/src/framework/core/js/FluidView.js"></script>
     <script type="text/javascript" src="../../node_modules/infusion/src/framework/core/js/FluidView-browser.js"></script>
-    <script type="text/javascript" src="../../node_modules/infusion/src/components/tooltip/js/Tooltip.js"></script>
-<!-- Special patched includes that will eventually go into base framework -->
-    <script type="text/javascript" src="%new-renderer-demo/src/js/core/fastXmlPull.js"></script>
-    <script type="text/javascript" src="%new-renderer-demo/src/js/core/fluidView-template.js"></script>
-    <script type="text/javascript" src="%new-renderer-demo/src/js/core/fluidNewRenderer.js"></script>
-    <script type="text/javascript" src="%new-renderer-demo/src/js/core/htmlParser.js"></script>
-    <script type="text/javascript" src="%new-renderer-demo/src/js/client/ClientRenderer.js"></script>
+    <script type="text/javascript" src="../../node_modules/infusion/src/framework/core/js/NewViewSupport.js"></script>
+    <script type="text/javascript" src="../../textfieldControl/js/Textfield.js"></script>
+    <script type="text/javascript" src="../../textfieldControl/js/TextfieldSlider.js"></script>
+    <script type="text/javascript" src="../../textfieldControl/js/TextfieldStepper.js"></script>
+    <script type="text/javascript" src="../../src/js/core/fluidNewRenderer.js"></script>
+    <script type="text/javascript" src="../../src/js/core/htmlParser.js"></script>
+    <script type="text/javascript" src="../../src/js/core/ResourceRewriter.js"></script>
+    <script type="text/javascript" src="../../src/js/client/ClientRenderer.js"></script>
 <!-- Includes for our own application - will eventually be auto-generated -->    
-    <script type="text/javascript" src="%fluid-renderer-perftest/PerfTest.js"></script>
+    <script type="text/javascript" src="js/DemoPage.js"></script>
 
-    <title>Performance Test</title>
+    <title>Textfield Controls Demo</title>
 </head>
+<!-- The structure of this demo was taken from %fluid-infusion/demos/textfieldControl -->
 <body>
-        <main>
-            <button id="run-tests">Run Tests</button>
-            <h1>Performance Tests: DOM rendering</h1>
-            <h2>Performance Results</h2>
-            <ul class="results"></ul>
-            <div class="render-target"></div>
-            <br/>
-        </main>
+    <section class="fl-demo-container">
+    </section>
+    <script>
+        fluid.resourceLoader.staticMountTable = [
+            {moduleName: "fluid-textfield-controls",      prefix: "../../textfieldControl", suffix: ""},
+            {moduleName: "fluid-textfield-controls-demo", prefix: "./",                     suffix: ""},
+        ];
+        fluid.demos.demoPage(".fl-demo-container");        
+    </script>
 </body>
 </html>

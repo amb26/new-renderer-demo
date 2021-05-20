@@ -17,10 +17,8 @@
  * Date: Thu May 12 15:04:36 2011 -0400
  */
 
-/* global global, Symbol */
+/* global global */
 /* exported jQuery */
-
-var fluid_3_0_0 = fluid_3_0_0 || {};
 
 (function (fluid) {
     "use strict";
