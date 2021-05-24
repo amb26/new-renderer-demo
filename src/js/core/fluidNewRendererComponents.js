@@ -12,21 +12,35 @@ https://github.com/fluid-project/infusion/raw/master/Infusion-LICENSE.txt
 (function ($, fluid) {
     "use strict";
 
-    fluid.defaults("fluid.uiText", {
-        model: {
-            // value: any
-        },
+    fluid.defaults("fluid.uiTextBinding", {
         modelRelay: {
             value: {
                 target: "dom.container.text",
                 source: "{that}.model.value"
             }
+        }
+    });
+
+    fluid.defaults("fluid.uiValueBinding", {
+        modelRelay: {
+            value: {
+                target: "dom.container.value",
+                source: "{that}.model.value"
+            }
+        }
+    });
+
+    fluid.defaults("fluid.uiText", {
+        gradeNames: "fluid.uiTextBinding",
+        model: {
+            // value: any
         },
         resources: {
             template: {
                 resourceText: "<span></span>"
             }
-        }
+        },
+        parentMarkup: true
     });
 
     fluid.defaults("fluid.uiInput", {
@@ -34,18 +48,60 @@ https://github.com/fluid-project/infusion/raw/master/Infusion-LICENSE.txt
         model: {
             // value: any
         },
-        modelRelay: {
-            value: {
-                target: "dom.container.value",
-                source: "{that}.model.value"
-            }
-        },
         resources: {
             template: {
                 resourceText: "<input type=\"text\"/>"
             }
-        }
+        },
+        markupChecks: {
+            "fluid.uiValueBinding": {
+                selector: "",
+                tagName: "input"
+            },
+            "fluid.uiTextBinding": {}
+        },
+        parentMarkup: true
     });
+
+    fluid.defaults("fluid.polyMarkupComponent", {
+        gradeNames: "fluid.newRendererComponent"
+    });
+
+    // Applied by hand by the renderer
+    fluid.polyMarkupComponent.check = function (that) {
+        var checks = fluid.getForComponent(that, ["options", "markupChecks"]);
+        var grade = fluid.find(checks, function (value, grade) {
+            if (value.selector !== undefined) {
+                var container = that.dom.container;
+                var fullSelector = "#" + container[0].id + " " + value.selector; // TODO: Deal with prefixing comma selectors by splitting and rejoining
+                var nodes = that.dom.doQuery(fullSelector, "*");
+                var tags = fluid.makeArray(value.tagName);
+                if (nodes.length > 0 && tags.includes(nodes[0].tagName.toLowerCase())) {
+                    return grade;
+                }
+            } else {
+                return grade;
+            }
+        });
+        if (grade !== undefined) {
+            var shadow = fluid.shadowForComponent(that);
+            var upDefaults = fluid.defaults(grade);
+            // Cheapskate strategy - grade content will be wrong since we can't be bothered to hack into computeDynamicGrades and its malignly hidden "rec" structure
+            shadow.mergeOptions.mergeBlocks.push(fluid.generateExpandBlock({
+                options: upDefaults,
+                recordType: "polyMarkupBindings",
+                priority: fluid.mergeRecordTypes.distribution
+            }, that, {}));
+            // Note that this limits us to only handling long-form relay records since we bypass all the machinery of the mergePolicy and the weird special-case logic
+            // inside fluid.establishModelRelay
+            fluid.each(upDefaults.modelRelay, function (mrrec, key) {
+                fluid.parseModelRelay(that, mrrec, key);
+            });
+            shadow.mergeOptions.updateBlocks();
+            return true;
+        }
+        return false;
+    };
 
     fluid.defaults("fluid.uiLink", {
         gradeNames: "fluid.newRendererComponent",

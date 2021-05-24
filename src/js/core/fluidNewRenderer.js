@@ -394,7 +394,8 @@ https://github.com/fluid-project/infusion/raw/master/Infusion-LICENSE.txt
         that.doQuery = function (selector, selectorName) {
             if (!that.rendererSelectors[selectorName] || !that.cache[selectorName]) {
                 var innerContainer = (that.containerFragment || container)[0];
-                return userJQuery(innerContainer.querySelectorAll(selector));
+                // Special behaviour allowing us to match the container for ad hoc queries through markup polymorphism checks
+                return userJQuery(innerContainer.matches(selector) && innerContainer || innerContainer.querySelectorAll(selector));
             } else {
             // Renderer selectors are just resolved from the cache which is really a live map of the DOM structure
                 return that.cache[selectorName];
@@ -445,13 +446,22 @@ https://github.com/fluid-project/infusion/raw/master/Infusion-LICENSE.txt
     fluid.renderer.render = function (renderer, shadows) {
         // First phase of render workflow after resource resolution - first listener to renderer.events.render
         console.log("About to render " + shadows.length + " components to renderer " + fluid.dumpComponentPath(renderer));
+        var applyNewRelays = false;
 
         shadows.forEach(function (shadow) {
             var that = shadow.that;
             // Evaluating the container of each component will force it to evaluate and render into it
             fluid.getForComponent(that, "container");
             fluid.getForComponent(that, "dom");
+            if (fluid.componentHasGrade(that, "fluid.polyMarkupComponent")) {
+                if (fluid.polyMarkupComponent.check(that)) {
+                    applyNewRelays = true;
+                }
+            }
         });
+        if (applyNewRelays) {
+            fluid.operateInitialTransactionWorkflow(shadows, fluid.currentTreeTransaction());
+        }
 
         // Final call for model-driven DOM modifications before we are attached
         shadows.forEach(function (shadow) {

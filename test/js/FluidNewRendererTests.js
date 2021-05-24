@@ -126,4 +126,20 @@ https://github.com/fluid-project/infusion/raw/master/Infusion-LICENSE.txt
         });
     });
 
+    jqUnit.test("Markup polymorphism test", function () {
+        var that = fluid.uiInput("#poly-test-input", {
+            model: {
+                value: "from model"
+            }
+        });
+        jqUnit.assertEquals("Markup-based polymorphic input has successfully bound", "from model", that.container.val());
+
+        var that2 = fluid.uiInput("#poly-test-textarea", {
+            model: {
+                value: "from model"
+            }
+        });
+        jqUnit.assertEquals("Markup-based polymorphic input has successfully bound", "from model", that2.container.val());
+    });
+
 })(jQuery);
