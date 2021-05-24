@@ -51,10 +51,8 @@ https://github.com/fluid-project/infusion/raw/master/Infusion-LICENSE.txt
         includeTemplateRoot: false,
         workflows: {
             global: {
-                renderMarkup: {
-                    funcName: "fluid.renderer.renderMarkup",
-                    // TODO: Should really be able to specify that this depends on BOTH resolveResourceModel AND fetchTemplates
-                    // But then what becomes of our "positional" priority scheme!
+                render: {
+                    funcName: "fluid.renderer.workflow.render",
                     priority: "after:resolveResourceModel",
                     waitIO: true
                 }
@@ -136,7 +134,7 @@ https://github.com/fluid-project/infusion/raw/master/Infusion-LICENSE.txt
      * @param {Object} binderRecords - The binder records structure attached to the active range
      */
     fluid.renderer.insertAt = function (binderCache, newNode, binderRecords) {
-        Array.prototype.push.apply(binderCache, newNode);
+        Array.prototype.push.call(binderCache, newNode);
         var sentinel = binderRecords.sentinel;
         sentinel.parentNode.insertBefore(newNode, sentinel);
     };
@@ -154,6 +152,16 @@ https://github.com/fluid-project/infusion/raw/master/Infusion-LICENSE.txt
         target.classList.add.apply(target.classList, source.classList);
     };
 
+    /** Render the template for the supplied component, given a representation of the parent container. If the parent
+     * is a renderer DOM range, the new container will be appended to the end of the range. If the parent is a
+     * DocumentFragment for a fresh DOM section, the template will be appended as the first (and expected only) child.
+     * If the parent is a conventional (single) DOM node, the template root node will be fused with it.
+     * @param {fluid.newRendererComponent} that - The renderer component for which the template is to be rendered
+     * @param {DomRange} outerContainer - A jQuery-like wrapper for the parent DOM range. Either a return from
+     * a renderer DOM binder or a conventional wrapped node
+     * @return {Element} The template root node which was cloned from the component's template. In case 3 where the
+     * template was fused to an existing DOM node, this will not be the upcoming component's container.
+     */
     fluid.renderer.renderTemplate = function (that, outerContainer) {
         var $b = fluid.renderer.binderSymbol;
         var templateContainer = that.resources.template.parsed.node.cloneNode(true);
@@ -210,10 +218,11 @@ https://github.com/fluid-project/infusion/raw/master/Infusion-LICENSE.txt
                 }
                 // We do this here otherwise there is nothing we could initialise "container" with - and also in this case
                 // we know there must be a parent rendererComponent and hence we are not in "split mode"
-                innerContainer = fluid.renderer.renderTemplate(that, outerContainer);
+                innerContainer = $(fluid.renderer.renderTemplate(that, outerContainer));
             }
         }
-        return $(innerContainer);
+        fluid.allocateSimpleId(innerContainer);
+        return innerContainer;
     };
 
     // Modifies supplied argument
@@ -320,7 +329,11 @@ https://github.com/fluid-project/infusion/raw/master/Infusion-LICENSE.txt
             var innerContainer = dom.containerFragment || dom.locate("container");
             // TODO: Resolve "elideParent" option to fuse inner and outer containers
             // TODO: Extract some kind of base class out of "fluid.containerRenderingView" so that we could expose a path via override of renderMarkup and that.options.markup.container
-            fluid.renderer.renderTemplate(that, innerContainer);
+            var templateContainer = fluid.renderer.renderTemplate(that, innerContainer);
+            if (dom.containerFragment) {
+                // Copy the upcoming id in so that self-based selectors will work
+                templateContainer.id = dom.locate("container")[0].id;
+            }
         }
     };
 
@@ -419,8 +432,6 @@ https://github.com/fluid-project/infusion/raw/master/Infusion-LICENSE.txt
         events: {
             render: null
         },
-        members: {
-        },
         listeners: {
             "render.render": {
                 funcName: "fluid.renderer.render",
@@ -440,17 +451,12 @@ https://github.com/fluid-project/infusion/raw/master/Infusion-LICENSE.txt
             // Evaluating the container of each component will force it to evaluate and render into it
             fluid.getForComponent(that, "container");
             fluid.getForComponent(that, "dom");
-            that.events.onDomBind.fire(that);
         });
 
+        // Final call for model-driven DOM modifications before we are attached
         shadows.forEach(function (shadow) {
-            // TODO: Will eventually be "Late materialised model relay" which is possible since transaction is not closed
-            // until notifyInitModel
-            // Note that leaf components will probably be abolished - this work will be done during onDomBind through materialisation
             var that = shadow.that;
-            if (fluid.componentHasGrade(that, "fluid.leafRendererComponent")) {
-                fluid.getForComponent(that, "updateTemplateMarkup")(that.container[0], that.model);
-            }
+            that.events.onDomBind.fire(that);
         });
         // Final pass to render all accumulate documentFragments into the real dom
         shadows.forEach(function (shadow) {
@@ -461,12 +467,14 @@ https://github.com/fluid-project/infusion/raw/master/Infusion-LICENSE.txt
         });
     };
 
+    fluid.registerNamespace("fluid.renderer.workflow");
+
     /** Main workflow function for fluid.newRendererComponent's global workflow.
      * Assembles map of rendererComponent's to corresponding renderer, and then fires the "render"
      * event on each renderer
      */
 
-    fluid.renderer.renderMarkup = function (shadows) {
+    fluid.renderer.workflow.render = function (shadows) {
         // Map of parent renderer's id to list of nested renderer components
         var rendererToShadows = {};
         shadows.forEach(function (shadow) {
@@ -479,10 +487,8 @@ https://github.com/fluid-project/infusion/raw/master/Infusion-LICENSE.txt
                 fluid.pushArray(rendererToShadows, parentRenderer.id, shadow);
             }
         });
-        // var renderId = fluid.allocateGuid();
         fluid.each(rendererToShadows, function (shadows, key) {
             var renderer = fluid.globalInstantiator.idToShadow[key].that;
-            fluid.getForComponent(renderer, "events.render");
             renderer.events.render.fire(shadows);
         });
     };

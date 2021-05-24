@@ -12,76 +12,56 @@ https://github.com/fluid-project/infusion/raw/master/Infusion-LICENSE.txt
 (function ($, fluid) {
     "use strict";
 
-    // Mix this in to any fluid.leafRendererComponent under a fluid.renderer.template in order to keep it live
-    fluid.defaults("fluid.templateLeafRendererComponent", {
-        modelListeners: {
-            updateTemplateMarkup: {
-                path: "",
-                func: "{that}.updateTemplateMarkup",
-                args: ["{that}.container.0", "{change}.value"]
-            }
-        }
-    });
-
-    fluid.defaults("fluid.leafRendererComponent", {
-        gradeNames: "fluid.newRendererComponent",
-        invokers: {
-            updateTemplateMarkup: {
-                // signature: container node, model contents
-                funcName: "fluid.notImplemented"
-            }
-        },
-        parentMarkup: true
-    });
-
-    fluid.defaults("fluid.uiValue", {
-        gradeNames: "fluid.leafRendererComponent",
+    fluid.defaults("fluid.uiText", {
         model: {
             // value: any
         },
-        invokers: {
-            updateTemplateMarkup: {
-                funcName: "fluid.uiValue.updateTemplateMarkup",
-                // container node, new model
-                args: ["{arguments}.0", "{that}.options.verbatim", "{arguments}.1"]
+        modelRelay: {
+            value: {
+                target: "dom.container.text",
+                source: "{that}.model.value"
             }
         },
         resources: {
             template: {
                 resourceText: "<span></span>"
             }
-        },
-        verbatim: false
+        }
     });
 
-    // See old fluidRenderer.js renderComponent
-
-    fluid.registerNamespace("fluid.uiValue.template");
-
-    fluid.uiValue.updateTemplateMarkup = function (node, verbatim, model) {
-        if (typeof(model.value) !== "string") {
-            fluid.fail("uiValue component is missing required model field \"value\": model contents are ", model);
+    fluid.defaults("fluid.uiInput", {
+        gradeNames: "fluid.polyMarkupComponent",
+        model: {
+            // value: any
+        },
+        modelRelay: {
+            value: {
+                target: "dom.container.value",
+                source: "{that}.model.value"
+            }
+        },
+        resources: {
+            template: {
+                resourceText: "<input type=\"text\"/>"
+            }
         }
-        var encodedValue = verbatim ? model.value : fluid.XMLEncode(model.value);
-        var tagName = node.tagName;
-        if (tagName === "input") {
-            fluid.setImmediate(node, ["attrs", "value"], encodedValue);
-        } else {
-            node.children = [{text: encodedValue}];
-        }
-    };
+    });
 
     fluid.defaults("fluid.uiLink", {
-        gradeNames: "fluid.leafRendererComponent",
+        gradeNames: "fluid.newRendererComponent",
+        parentMarkup: true,
         model: {
             // target: string
-            // linktext: string (optional)
+            // linkText: string (optional)
         },
-        invokers: {
-            updateTemplateMarkup: {
-                funcName: "fluid.uiLink.updateTemplateMarkup",
-                // container node, new model
-                args: ["{arguments}.0", "{that}.options.verbatim", "{arguments}.1"]
+        modelRelay: {
+            linkTarget: {
+                target: "dom.container.attrs.href",
+                source: "{that}.model.target"
+            },
+            linkText: {
+                target: "dom.container.text",
+                source: "{that}.model.linkText"
             }
         },
         resources: {
@@ -91,6 +71,10 @@ https://github.com/fluid-project/infusion/raw/master/Infusion-LICENSE.txt
         }
     });
 
+    /** Could be supported some day via some variety of AFFERENT POLYMORPHISM but the reusability value seems low -
+     * the user is far more likely to simply specify the relay rule onto the relevant attribute inline as above
+     */
+    /*
     fluid.uiLink.attributeMap = { // From old fluidRenderer.js
         a: "href",
         link: "href",
@@ -119,5 +103,6 @@ https://github.com/fluid-project/infusion/raw/master/Infusion-LICENSE.txt
             }];
         }
     };
+    */
 
 })(jQuery, fluid_3_0_0);
