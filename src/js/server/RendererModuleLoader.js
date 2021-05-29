@@ -89,8 +89,7 @@ fluid.setLogging(true);
 // loaded "fluid-renderer-module" Infusion module, which hosts its static content, and one
 // "fluid.renderer.rewriting.request" requestHandler for every such module whose entry in the supplied
 // moduleConfiguration has the rewriteUrls option set to true.
-// This then gets interpolated
-// into a dynamically generated grade applied to a Kettle app hosting the content.
+// This then gets interpolated into a dynamically generated grade applied to a Kettle app hosting the content.
 
 fluid.renderer.generateMountOptions = function (moduleConfiguration) {
     var options = {};

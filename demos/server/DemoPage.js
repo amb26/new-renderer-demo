@@ -2,7 +2,7 @@ fluid.defaults("fluid.demos.demoPage", {
     gradeNames: "fluid.rootPage",
     resources: {
         template: {
-            path: "%fluid-renderer-demo/DemoPage.html"
+            path: "%server-renderer-demo/DemoPage.html"
         }
     },
     selectors: {

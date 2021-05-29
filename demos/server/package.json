@@ -1,5 +1,5 @@
 {
-    "name": "fluid-renderer-demo",
+    "name": "server-renderer-demo",
     "description": "A demonstration of Infusion server-side rendering.",
     "version": "1.0.0",
     "license": "BSD-3-Clause",

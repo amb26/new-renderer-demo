@@ -70,11 +70,17 @@
     };
 
     $.fn.attr = function (jq, attrName, attrVal) {
-        if (attrVal === undefined) {
-            return jq[0].attrs[attrName];
+        if (attrVal === undefined && !fluid.isPlainObject(attrName)) {
+            return jq[0].getAttribute(attrName);
         } else {
             jq.forEach(function (node) {
-                node.attrs[attrName] = attrVal;
+                if (fluid.isPlainObject(attrName)) {
+                    fluid.each(attrName, function (value, name) {
+                        node.setAttribute(name, value);
+                    });
+                } else {
+                    node.setAttribute(attrName, attrVal);
+                }
             });
         }
     };
@@ -88,7 +94,7 @@
     };
 
     fluid.jQueryStandalone.decodeValueAccessor = function (node) {
-        var tagName = node.tagName;
+        var tagName = node.tagName.toLowerCase();
         var accessor = fluid.jQueryStandalone.valueMap[tagName];
         if (!accessor) {
             fluid.fail("Cannot access value for tag name " + tagName);
@@ -114,7 +120,7 @@
         }
     };
 
-    $.fn.click = $.fn.on = $.fn.change = fluid.identity;
+    $.fn.click = $.fn.on = $.fn.change = $.fn.hover = fluid.identity;
 
     fluid.jQueryStandalone.rnothtmlwhite = (/[^\x20\t\r\n\f]+/g);
 
@@ -132,24 +138,10 @@
     $.fn.addClass = function (jq, value) {
         console.log("addClass ", value);
         var classes = fluid.jQueryStandalone.classesToArray(value);
-        if (classes.length) {
-            var elem, i = 0;
-            while ( ( elem = jq[ i++ ] ) ) {
-                var curValue = fluid.getImmediate(elem, ["attrs", "class"]) || "";
-                var cur = " " + fluid.jQueryStandalone.stripAndCollapse(curValue) + " ";
-
-                if (cur) {
-                    var j = 0, clazz;
-                    while ( ( clazz = classes[ j++ ] ) ) {
-                        if ( cur.indexOf( " " + clazz + " " ) < 0 ) {
-                            cur += clazz + " ";
-                        }
-                    }
-                    var finalValue = fluid.jQueryStandalone.stripAndCollapse(cur);
-                    elem.attrs["class"] = finalValue;
-                }
-            }
-        }
+        jq.forEach(function (elem) {
+            fluid.refreshClazzAttribute(elem);
+            elem.classList.add(...classes);
+        });
     };
 
     // TODO: needed - text, toggleClass

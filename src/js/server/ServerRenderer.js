@@ -18,8 +18,11 @@
 var fluid = require("infusion");
 fluid.require("%kettle");
 
-// TODO: Factor "server renderer" into genuine server full-page renderer and one which merely applies a template
-// representation
+// TODO: Perhaps "server renderer" functions could be split up better between i) full-page isomorphic renderer
+// ii) merely doing head URL rewriting, iii) rendering to node in existing page
+
+// One of these is created by every "PageHandler" and it expects to be the parent of all rendered components
+
 fluid.defaults("fluid.renderer.server", {
     gradeNames: "fluid.renderer",
     rootPageGrade: "fluid.serverRootPage", // Gets distributed onto the rootPage via linkage
@@ -47,9 +50,9 @@ fluid.defaults("fluid.serverRootPage", {
         script: "head script"
     },
     includeTemplateRoot: true,
-    members: {
-        container: "@expand:fluid.renderer.buildTemplateContainer({that})"
-    }
+    parentMarkup: true, // Don't try to template in during rendering because we directly adopt the template as root node below
+    skipTemplateFetch: false,
+    container: "@expand:fluid.cloneDom({that}.resources.template.parsed.element)"
 });
 
 fluid.removePrefix = function (prefix, segs) {
@@ -61,23 +64,25 @@ fluid.removePrefix = function (prefix, segs) {
     return segs.slice(prefix.length);
 };
 
-fluid.renderer.server.scriptToNode = function (script) {
-    return {
-        tagName: "script",
-        children: [{
-            text: script
-        }]
-    };
+// Don't bother to transmit the materialised DOM model to the client
+fluid.renderer.server.censorDomModel = function (model) {
+    return model ? fluid.censorKeys(model, ["dom"]) : model;
 };
 
-fluid.renderer.server.addScriptTemplate = function (bodyNode, template, terms, method) {
-    method = method || "push";
-    var script = fluid.stringTemplate(template, fluid.transform(terms, function (term) {
+/** Adds a templated <script> block as a child of the supplied node.
+ * @param {Element} bodyNode - The node to which the <script> block is to be added
+ * @param {String} template - A template for the block's code, as supplied to `fluid.stringTemplate`
+ * @param {Object} terms - A hash of terms to be interpolated into the template
+ * @param {Node|Null} insertBefore - The child of `bodyNode` before which the script is to be inserted,
+ * or `null` if it should be added as the last child of `bodyNode`
+ */
+fluid.renderer.server.addScriptTemplate = function (bodyNode, template, terms, insertBefore) {
+    var script = "<script>" + fluid.stringTemplate(template, fluid.transform(terms, function (term) {
         return JSON.stringify(term, null, 2);
-    }));
+    })) + "</script>";
 
-    var scriptNode = fluid.renderer.server.scriptToNode(script);
-    bodyNode.children[method](scriptNode);
+    var scriptNode = fluid.htmlParser.parseMarkup(script, true);
+    bodyNode.insertBefore(scriptNode, insertBefore);
 };
 
 // Global workflow function collects together all renderer components nested under a renderer and dispatches them
@@ -102,7 +107,7 @@ fluid.renderer.server.render = function (renderer, staticMountIndexer, shadows, 
 
     fluid.renderer.server.addScriptTemplate(bodyNode, markup.modulePathToURLTemplate, {
         mountTable: staticMountIndexer.mountTable
-    }, "unshift");
+    }, bodyNode.firstChild);
 
     if (shadows.length > 1) {
         var pageShadow = fluid.globalInstantiator.idToShadow[renderer.page.id];
@@ -115,19 +120,22 @@ fluid.renderer.server.render = function (renderer, staticMountIndexer, shadows, 
         }).map(function (oneToMerge) {
             return fluid.filterKeys(oneToMerge, ["type", "options"]);
         });
+        // This doesn't seem right, but otherwise we end up with "type": "{pageHandler}.options.pageGrade"
+        var expandedMerges = fluid.expandImmediate(toMerges, pageShadow.that);
 
         var rootPath = fluid.pathForComponent(rootComponent);
         var models = shadows.map(function (shadow) {
             return {
                 path: fluid.removePrefix(rootPath, fluid.globalInstantiator.parseEL(shadow.path)),
-                model: shadow.that.model
+                model: fluid.renderer.server.censorDomModel(shadow.that.model)
             };
+        }).filter(function (rec) {
+            return rec.model !== undefined;
         });
 
         fluid.renderer.server.addScriptTemplate(bodyNode, markup.initBlockTemplate, {
-            lightMerge: toMerges,
+            lightMerge: expandedMerges,
             models: models
-        }, "push");
+        }, null);
     }
-    renderer.markupTree = rootComponent.container[0];
 };

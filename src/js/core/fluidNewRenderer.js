@@ -139,8 +139,17 @@ https://github.com/fluid-project/infusion/raw/master/Infusion-LICENSE.txt
         sentinel.parentNode.insertBefore(newNode, sentinel);
     };
 
+    fluid.refreshClazzAttribute = function (node) {
+        var clazz = node.getAttribute("class");
+        node.removeAttribute("class");
+        node.setAttribute("class", clazz);
+    };
+
     fluid.renderer.fuseNode = function (target, source) {
-        while (source.childNodes.length > 0) {
+        while (target.firstChild) {
+            target.removeChild(target.firstChild);
+        }
+        while (source.firstChild) {
             target.appendChild(source.firstChild);
         }
         for (var i = 0; i < source.attributes.length; i++) {
@@ -149,7 +158,15 @@ https://github.com/fluid-project/infusion/raw/master/Infusion-LICENSE.txt
                 target.setAttribute(attrib.name, attrib.value);
             }
         }
-        target.classList.add.apply(target.classList, source.classList);
+
+        fluid.refreshClazzAttribute(target); // Necessary because of https://github.com/WebReflection/linkedom/issues/65
+        fluid.refreshClazzAttribute(source);
+        target.classList.add(...source.classList);
+        fluid.refreshClazzAttribute(target);
+    };
+
+    fluid.cloneDom = function (node) {
+        return node.cloneNode(true);
     };
 
     /** Render the template for the supplied component, given a representation of the parent container. If the parent
@@ -164,7 +181,7 @@ https://github.com/fluid-project/infusion/raw/master/Infusion-LICENSE.txt
      */
     fluid.renderer.renderTemplate = function (that, outerContainer) {
         var $b = fluid.renderer.binderSymbol;
-        var templateContainer = that.resources.template.parsed.node.cloneNode(true);
+        var templateContainer = fluid.cloneDom(that.resources.template.parsed.element);
         var binderRecords = outerContainer[$b];
         if (binderRecords) {
             fluid.renderer.insertAt(outerContainer, templateContainer, binderRecords);
@@ -187,6 +204,13 @@ https://github.com/fluid-project/infusion/raw/master/Infusion-LICENSE.txt
         return templateContainer;
     };
 
+    fluid.renderer.useParentMarkup = function (that) {
+        var parentMarkup = fluid.getForComponent(that, ["options", "parentMarkup"]);
+        var root = fluid.resolveContext("fluid.rootPage", that);
+        var markupSnapshot = root && fluid.getForComponent(root, ["markupSnapshot"]);
+        return parentMarkup || markupSnapshot;
+    };
+
     fluid.renderer.resolveRendererContainer = function (that, containerSpec) {
         var $b = fluid.renderer.binderSymbol;
         var fail = function (extraMessage) {
@@ -201,7 +225,7 @@ https://github.com/fluid-project/infusion/raw/master/Infusion-LICENSE.txt
             };
         };
 
-        var parentMarkup = fluid.getForComponent(that, ["options", "parentMarkup"]);
+        var parentMarkup = fluid.renderer.useParentMarkup(that);
         // Note that we can't use fluid.container here since there may be several or none of them
         var outerContainer = fluid.isJQuery(containerSpec) ? containerSpec : $(containerSpec);
         var innerContainer = outerContainer;
@@ -209,7 +233,8 @@ https://github.com/fluid-project/infusion/raw/master/Infusion-LICENSE.txt
         if (binderRecords) {
             if (binderRecords.isBoolean) {
                 if (!parentMarkup) {
-                    // Don't set return - but remember to process elision
+                    // TODO: not right. This should be the same as any ordinary rendering -
+                    // Old comment read: Don't set return - but remember to process elision
                     fluid.renderer.renderTemplate(that, outerContainer);
                 }
             } else if (!binderRecords.isBoolean) { // It's an array case
@@ -220,6 +245,19 @@ https://github.com/fluid-project/infusion/raw/master/Infusion-LICENSE.txt
                 // we know there must be a parent rendererComponent and hence we are not in "split mode"
                 innerContainer = $(fluid.renderer.renderTemplate(that, outerContainer));
             }
+        }
+        if (innerContainer.length !== 1) {
+            fluid.container(innerContainer); // purely to provoke the traditional failure on mismatched container multiplicity
+        }
+        if (!parentMarkup && !(binderRecords && !binderRecords.isBoolean) &&
+            that.resources.template.parsed.element.tagName !== innerContainer[0].tagName) {
+            console.log("Mismatched container tag name detected");
+            // TODO: Invoke "fuseOrObliterate" here
+            // Note that this is awkward since we currently defer rendering until initialiseDomBinder because we
+            // wanted to do stuff like sticking the documentFragment in the binder in "split mode". In practice we would
+            // really prefer to have the side-effects of assigning container and dom at the same time. It's a bit silly that
+            // we have a two-stage deal - better would be to initialise the DOM binder first and then get the container
+            // out of that
         }
         fluid.allocateSimpleId(innerContainer);
         return innerContainer;
@@ -321,10 +359,11 @@ https://github.com/fluid-project/infusion/raw/master/Infusion-LICENSE.txt
     fluid.renderer.initialiseDomBinder = function (that, dom) {
         var shadow = fluid.shadowForComponent(that);
         var isFreshRoot = fluid.renderer.isFreshRoot(shadow);
-        if (isFreshRoot && !that.options.parentMarkup) { // Create a "split mode" DOM binder - but where does the content come from? It needs to be here by the time we execute the immediately following block of "doQuery"
-            dom.containerFragment = $(document.createDocumentFragment());
+        var useParentMarkup = fluid.renderer.useParentMarkup(that);
+        if (isFreshRoot && !useParentMarkup) { // Create a "split mode" DOM binder - but where does the content come from? It needs to be here by the time we execute the immediately following block of "doQuery"
+            dom.containerFragment = $((fluid.serverDocument || document).createDocumentFragment());
         }
-        if (!that.options.parentMarkup) {
+        if (!useParentMarkup) {
             // Whether it is a split container or a genuine one, now render our markup into it
             var innerContainer = dom.containerFragment || dom.locate("container");
             // TODO: Resolve "elideParent" option to fuse inner and outer containers
@@ -507,7 +546,5 @@ https://github.com/fluid-project/infusion/raw/master/Infusion-LICENSE.txt
         gradeNames: ["fluid.renderer", "fluid.resolveRootSingle"],
         singleRootType: "fluid.renderer"
     });
-
-    fluid.renderer.rootRenderer();
 
 })(jQuery, fluid_3_0_0);

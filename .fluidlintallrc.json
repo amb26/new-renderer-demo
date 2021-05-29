@@ -1,6 +1,6 @@
 {
     "sources": {
-        "js": ["./src/**/*.js", "./test/**/*.js", "./textfieldControl/**/*.js", "./tableOfContents/**/*.js", "./tableOfContentsDemo/**/*.js", "./demo/**/*.js", "./perftest/**/*.js", "./*.js"],
+        "js": ["./src/**/*.js", "./tests/**/*.js", "./textfieldControl/**/*.js", "./tableOfContents/**/*.js", "./tableOfContentsDemo/**/*.js", "./demo/**/*.js", "./perftest/**/*.js", "./*.js"],
         "json": ["./*.json"],
         "md": ["./*.md"],
         "other": ["./.*"]

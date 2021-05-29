@@ -4,45 +4,44 @@
     <meta http-equiv="Content-Type" content="text/html; charset=utf-8">
     <meta content="width=device-width, initial-scale=1.0" name="viewport">
 
-    <link rel="stylesheet" type="text/css" href="../../node_modules/infusion/src/lib/normalize/css/normalize.css" />
-    <link rel="stylesheet" type="text/css" href="../../node_modules/infusion/src/framework/core/css/fluid.css" />
-    <link rel="stylesheet" type="text/css" href="../../node_modules/infusion/src/framework/core/css/fluid.css" />
+    <link rel="stylesheet" type="text/css" href="%infusion/src/framework/core/css/fluid.css" />
     <link rel="stylesheet" type="text/css" href="%fluid-textfield-controls/css/TextfieldSlider.css" />
-    <link rel="stylesheet" type="text/css" href="%new-renderer-demo/demos/demo.css" />
+    <link rel="stylesheet" type="text/css" href="%fluid-textfield-controls/css/TextfieldStepper.css" />
+    <link rel="stylesheet" type="text/css" href="%new-renderer-demo/demos/css/demo.css" />
 
-    <script type="text/javascript" src="../../node_modules/infusion/src/lib/jquery/core/js/jquery.js"></script>
-    <script type="text/javascript" src="../../node_modules/infusion/src/framework/core/js/Fluid.js"></script>
-    <script type="text/javascript" src="../../node_modules/infusion/src/framework/core/js/FluidPromises.js"></script>
-    <script type="text/javascript" src="../../node_modules/infusion/src/framework/core/js/FluidDocument.js"></script>
-    <script type="text/javascript" src="../../node_modules/infusion/src/framework/core/js/FluidIoC.js"></script>
-    <script type="text/javascript" src="../../node_modules/infusion/src/framework/core/js/DataSource.js"></script>
-    <script type="text/javascript" src="../../node_modules/infusion/src/framework/core/js/ResourceLoader.js"></script>
-    <script type="text/javascript" src="../../node_modules/infusion/src/framework/core/js/ResourceLoader-browser.js"></script>
-    <script type="text/javascript" src="../../node_modules/infusion/src/framework/core/js/ModelTransformation.js"></script>
-    <script type="text/javascript" src="../../node_modules/infusion/src/framework/core/js/ModelTransformationTransforms.js"></script>
-    <script type="text/javascript" src="../../node_modules/infusion/src/framework/core/js/DataBinding.js"></script>
-    <script type="text/javascript" src="../../node_modules/infusion/src/framework/core/js/FluidView.js"></script>
-    <script type="text/javascript" src="../../node_modules/infusion/src/framework/core/js/FluidView-browser.js"></script>
-    <script type="text/javascript" src="../../node_modules/infusion/src/components/tooltip/js/Tooltip.js"></script>
+    <script type="text/javascript" src="%infusion/src/lib/jquery/core/js/jquery.js"></script>
+    <script type="text/javascript" src="%infusion/src/framework/core/js/Fluid.js"></script>
+    <script type="text/javascript" src="%infusion/src/framework/core/js/FluidPromises.js"></script>
+    <script type="text/javascript" src="%infusion/src/framework/core/js/FluidDocument.js"></script>
+    <script type="text/javascript" src="%infusion/src/framework/core/js/FluidIoC.js"></script>
+    <script type="text/javascript" src="%infusion/src/framework/core/js/DataSource.js"></script>
+    <script type="text/javascript" src="%infusion/src/framework/core/js/ResourceLoader.js"></script>
+    <script type="text/javascript" src="%infusion/src/framework/core/js/ResourceLoader-browser.js"></script>
+    <script type="text/javascript" src="%infusion/src/framework/core/js/ModelTransformation.js"></script>
+    <script type="text/javascript" src="%infusion/src/framework/core/js/ModelTransformationTransforms.js"></script>
+    <script type="text/javascript" src="%infusion/src/framework/core/js/DataBinding.js"></script>
+    <script type="text/javascript" src="%infusion/src/framework/core/js/FluidView.js"></script>
+    <script type="text/javascript" src="%infusion/src/framework/core/js/NewViewSupport.js"></script>
+    <script type="text/javascript" src="%infusion/src/framework/core/js/FluidView-browser.js"></script>
+    <script type="text/javascript" src="%infusion/src/components/tooltip/js/Tooltip.js"></script>
     <script type="text/javascript" src="%fluid-textfield-controls/js/Textfield.js"></script>
     <script type="text/javascript" src="%fluid-textfield-controls/js/TextfieldSlider.js"></script>
     <script type="text/javascript" src="%fluid-textfield-controls/js/TextfieldStepper.js"></script>
-<!-- Special patched includes that will eventually go into base framework -->
-    <script type="text/javascript" src="%new-renderer-demo/src/js/core/fastXmlPull.js"></script>
-    <script type="text/javascript" src="%new-renderer-demo/src/js/core/fluidView-template.js"></script>
+
     <script type="text/javascript" src="%new-renderer-demo/src/js/core/fluidNewRenderer.js"></script>
     <script type="text/javascript" src="%new-renderer-demo/src/js/core/fluidNewRendererComponents.js"></script>
     <script type="text/javascript" src="%new-renderer-demo/src/js/core/htmlParser.js"></script>
     <script type="text/javascript" src="%new-renderer-demo/src/js/core/ResourceRewriter.js"></script>
     <script type="text/javascript" src="%new-renderer-demo/src/js/client/ClientRenderer.js"></script>
 <!-- Includes for our own application - will eventually be auto-generated -->    
-    <script type="text/javascript" src="%fluid-renderer-demo/DemoPage.js"></script>
-    <script type="text/javascript" src="%fluid-renderer-demo/MutationChecker.js"></script>
+    <script type="text/javascript" src="%server-renderer-demo/DemoPage.js"></script>
+    <script type="text/javascript" src="%server-renderer-demo/MutationChecker.js"></script>
 
-    <title>Textfield Controls Demo</title>
+    <title>Textfield Controls Server Rendering Demo</title>
 </head>
 <!-- The structure of this demo was taken from %fluid-infusion/demos/textfieldControl -->
 <body onload="fluid.demos.checkMutations()">
+    <h1>Textfield Controls Server Rendering Demo</h1>
     <section class="fl-demo-container">
         <div>
             <h2>Textfield Slider</h2>
@@ -64,5 +63,7 @@
             </div>
         </div>
     </section>
+    This page's markup and model are generated as a snapshot on the server, and are rendered against by the client
+    without any changes to the DOM on startup.
 </body>
 </html>

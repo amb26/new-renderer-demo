@@ -16,11 +16,21 @@
 
 var fluid = require("infusion");
 
+var linkedom = require("linkedom");
+
 fluid.loadFrameworkPatch = function (path) {
     var fullPath = fluid.module.resolvePath(path);
     fluid.loadInContext(fullPath, true);
 };
 
+fluid.serverDocument = linkedom.parseHTML("<html />").document;
+
+fluid.serverDocumentParser = function (text) {
+    var document = linkedom.parseHTML(text).document;
+    var fragment = document.createDocumentFragment();
+    fragment.appendChild(document.firstElementChild);
+    return fragment;
+};
 
 // fluid.loadFrameworkPatch("%new-renderer-demo/src/js/server/jquery.standalone.js");
 fluid.loadFrameworkPatch("%new-renderer-demo/src/js/core/jquery.standalone.renderer.js");

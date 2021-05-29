@@ -20,13 +20,10 @@ fluid.require("%kettle");
 // Core grade managing rendering functionality, independent of delivery scheme
 fluid.defaults("fluid.renderer.pageHandler", {
     gradeNames: "fluid.renderer.server",
-    member: {
-        // The renderer workflow accumulates the virtual DOM tree into this member during component construction
-        markupTree: null
-    },
+    pageGrade: null, // Must be filled in by user
     components: {
-        page: { // TODO: overridden by clients with something derived from fluid.rootPage
-            type: "fluid.rootPage"
+        page: {
+            type: "{pageHandler}.options.pageGrade"
         }
     }
 });
@@ -46,7 +43,7 @@ fluid.defaults("fluid.renderer.pageMiddleware", {
  * @return {fluid.promise} A promise resolving the rendered markup as a String
  */
 fluid.renderer.pageHandler.handle = function (request) {
-    var text = fluid.htmlParser.render(request.markupTree.children);
+    var text = fluid.htmlParser.render(request.page.container[0]);
     request.res.type("html");
     return fluid.promise().resolve(text);
 

@@ -18,10 +18,10 @@ var fluid = require("infusion");
 
 fluid.require("%kettle");
 
-require("../src/serverRendererIndex.js");
+require("../../src/serverRendererIndex.js");
 
 fluid.renderer.loadModule("%new-renderer-demo/textfieldControl");
-fluid.renderer.loadModule("%new-renderer-demo/demo");
+fluid.renderer.loadModule("%new-renderer-demo/demos/server");
 
 //? Unnecessary, right? the module loader should have loaded it
 require("./DemoPage.js");
@@ -39,7 +39,7 @@ fluid.defaults("fluid.demos.demoApp", {
         newRendererSrc: {
             type: "kettle.staticRequestHandlers.static",
             options: {
-                root: "%new-renderer-demo/src/js",
+                root: "%new-renderer-demo",
                 prefix: "/newRendererSrc"
             }
         }
@@ -72,7 +72,7 @@ fluid.defaults("fluid.demos.client", {
     url: "http://localhost:8085/demoApp",
     components: {
         encoding: {
-            type: "kettle.dataSource.encoding.none"
+            type: "fluid.dataSource.encoding.none"
         }
     }
 });

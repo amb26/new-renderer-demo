@@ -21,9 +21,9 @@ fluid.includeRewriting.tagToHref = {
 };
 
 fluid.includeRewriting.rewriteUrl = function (node, attrName, mountTable) {
-    var href = node.attrs[attrName];
+    var href = node.getAttribute(attrName);
     var rewritten = fluid.resourceLoader.rewriteUrlWithDiagnostic(mountTable, href);
-    node.attrs[attrName] = rewritten;
+    node.setAttribute(attrName, rewritten);
 };
 
 /** Rewrite the URLs attached to all appropriate nodes in the template's head from module-relative to paths as
@@ -36,7 +36,7 @@ fluid.includeRewriting.rewriteTemplate = function (dom, mountTable, selectorsToR
     selectorsToRewrite.forEach(function (selector) {
         var nodes = dom.locate(selector);
         nodes.forEach(function (node) {
-            var attrName = fluid.includeRewriting.tagToHref[node.tagName];
+            var attrName = fluid.includeRewriting.tagToHref[node.tagName.toLowerCase()];
             fluid.includeRewriting.rewriteUrl(node, attrName, mountTable);
         });
     });

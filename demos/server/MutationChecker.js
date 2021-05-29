@@ -18,7 +18,7 @@ fluid.demos.checkMutations = function () {
     var targetNode = document.getElementsByTagName("body")[0];
 
     // Options for the observer (which mutations to observe)
-    var config = { attributes: true, childList: true, subtree: true };
+    var config = { attributes: true, childList: true, subtree: true, attributeOldValue: true };
 
     // Callback function to execute when mutations are observed
     var callback = function (mutationsList) {
@@ -27,7 +27,8 @@ fluid.demos.checkMutations = function () {
                 console.log("A child node has been added or removed.");
             }
             else if (mutation.type === "attributes") {
-                console.log("The " + mutation.attributeName + " attribute was modified.");
+                console.log("The " + mutation.attributeName + " attribute of node ", mutation.target, 
+                " was changed from " + mutation.oldValue + " to " + mutation.target.getAttribute(mutation.attributeName));
             }
         });
     };

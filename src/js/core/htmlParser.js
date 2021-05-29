@@ -11,11 +11,24 @@ https://github.com/fluid-project/infusion/raw/master/Infusion-LICENSE.txt
 
 (function ($, fluid) {
     "use strict";
-    // Note that on the server we will use https://www.npmjs.com/package/linkedom
+
     fluid.registerNamespace("fluid.htmlParser");
 
+    /** Parse the supplied markup into a DOM element. If the markup has a single root node, this is signalled by
+     * setting `hasRoot` to `true`, and that node will be returned. Otherwise, setting `hasRoot` to false will
+     * instead return a DocumentFragment that has the parsed markup as children.
+     * @param {String} template - The markup to be parsed
+     * @param {Boolean} hasRoot - If `true`, the returned node will be the (assumed) single root node of the supplied markup,
+     * otherwise the return will be a DocumentFragment hosting the entire markup's nodes
+     * @return {Element} The parsed markup as a tree of nodes
+     */
     fluid.htmlParser.parseMarkup = function (template, hasRoot) {
-        var fragment = document.createRange().createContextualFragment(template);
+        var fragment;
+        if (fluid.serverDocumentParser) {
+            fragment = fluid.serverDocumentParser(template);
+        } else {
+            fragment = document.createRange().createContextualFragment(template);
+        }
         return hasRoot ? fragment.firstElementChild : fragment;
     };
 
@@ -46,13 +59,17 @@ https://github.com/fluid-project/infusion/raw/master/Infusion-LICENSE.txt
             options: fluid.extend({}, defaults, options)
         };
         // see https://stackoverflow.com/a/25214113 - use another method on the server
-        that.node = fluid.isDOMNode(template) ? fluid.htmlParser.parseNode(template) :
+        that.element = fluid.isDOMNode(template) ? fluid.htmlParser.parseNode(template) :
             fluid.htmlParser.parseMarkup(template, that.options.hasRoot);
         that.matchedSelectors = fluid.transform(that.options.selectors, function (selector) {
-            return selector === "/" ? that.node : that.node.querySelectorAll(selector);
+            return selector === "/" ? that.element : that.element.querySelectorAll(selector);
         });
 
         return that;
+    };
+
+    fluid.htmlParser.render = function (element) {
+        return element.outerHTML;
     };
 
 })(jQuery, fluid_3_0_0);

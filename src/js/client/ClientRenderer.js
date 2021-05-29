@@ -14,6 +14,25 @@ https://github.com/fluid-project/infusion/raw/master/Infusion-LICENSE.txt
 
     fluid.setLogging(true);
 
+    // Full-page "client renderer" which accepts an init block as rendered from the server, which insists that the
+    // page's markup should correspond to that required, and constructs a matching model skeleton
+
+    fluid.defaults("fluid.renderer.client", {
+        gradeNames: "fluid.renderer.rootRenderer",
+        rootPageGrade: "fluid.clientRootPage"
+    });
+
+    // Note that we will have to create a version of this which only refers to part of a page - rootPage is an essentially empty
+    // grade and can be used to house the "markupSnapshot" property
+    fluid.defaults("fluid.clientRootPage", {
+        gradeNames: "fluid.rootPage",
+        container: "html",
+        parentMarkup: true, // We could never render our own exterior document
+        members: {
+            markupSnapshot: true
+        }
+    });
+
     // Use the table in fluid.resourceLoader.staticMountTable to rewrite "path" resources to "url" resources and load them -
     // Presumably this should be eventually made into some more general patten of resource interception
     fluid.resourceLoader.loaders.path = function (resourceSpec) {
@@ -41,8 +60,6 @@ https://github.com/fluid-project/infusion/raw/master/Infusion-LICENSE.txt
         return togo;
     };
 
-    fluid.renderer.clientRendererPath = "clientRenderer";
-
     // Client side initBlock "driver" function which accepts the "care package" from the server and uses it to
     // reconstruct whatever component tree needs to be built against the already-correct markup. It sets
     // "parentMarkup" to true for every component to prevent it from attempting to render again.
@@ -57,17 +74,28 @@ https://github.com/fluid-project/infusion/raw/master/Infusion-LICENSE.txt
         var lightMergeRecords = fluid.transform(config.lightMerge, function (oneLightMerge) {
             return $.extend({recordType: "user"}, oneLightMerge);
         });
+        var renderer = fluid.resolveContext("fluid.renderer");
+        var rendererPath = fluid.pathForComponent(renderer)[0];
         var pagePotentia = {
-            path: [fluid.renderer.clientRendererPath, "rootPage"],
+            path: [rendererPath, "rootPage"],
             type: "create",
             records: lightMergeRecords.concat([skeletonRecord])
         };
         var transRec = fluid.registerPotentia(pagePotentia);
         fluid.commitPotentiae(transRec.transactionId);
-        transRec.promise.then(null, function (err) {
+        transRec.promise.then(function () {
+            var rootPage = transRec.outputShadows.find(function (shadow) {
+                return fluid.componentHasGrade(shadow.that, "fluid.rootPage");
+                rootPage.markupSnapshot = false;
+            });
+        }, function (err) {
             fluid.log.apply(null, [fluid.logLevel.FAIL, "Error received during client rendering: "].concat([err]));
             throw err;
         });
     };
+
+    // Singleton instance for every client document - note that in the virtual DOM days we used to create one
+    // in every instance of initBlockClientRenderer
+    fluid.renderer.client();
 
 })(jQuery, fluid_3_0_0);
