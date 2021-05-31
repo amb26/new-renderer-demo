@@ -8,6 +8,7 @@
     <link rel="stylesheet" type="text/css" href="%fluid-textfield-controls/css/TextfieldSlider.css" />
     <link rel="stylesheet" type="text/css" href="%fluid-textfield-controls/css/TextfieldStepper.css" />
     <link rel="stylesheet" type="text/css" href="%new-renderer-demo/demos/css/demo.css" />
+    <link rel="stylesheet" type="text/css" href="%server-renderer-demo/demoApp.css" />
 
     <script type="text/javascript" src="%infusion/src/lib/jquery/core/js/jquery.js"></script>
     <script type="text/javascript" src="%infusion/src/framework/core/js/Fluid.js"></script>
@@ -40,7 +41,8 @@
     <title>Textfield Controls Server Rendering Demo</title>
 </head>
 <!-- The structure of this demo was taken from %fluid-infusion/demos/textfieldControl -->
-<body onload="fluid.demos.checkMutations()">
+<body>
+
     <h1>Textfield Controls Server Rendering Demo</h1>
     <section class="fl-demo-container">
         <div>
@@ -63,7 +65,15 @@
             </div>
         </div>
     </section>
+    <script>
+        fluid.demos.checkMutations(".fl-demo-container");
+    </script>
+    <div class="commentary">
     This page's markup and model are generated as a snapshot on the server, and are rendered against by the client
-    without any changes to the DOM on startup.
+    without any changes to the DOM on startup. Any modifications will be listed below.
+    </div>
+    <div class="modification-report fl-demo-content">
+        <div class="no-modifications">No document modifications on startup</div>
+    </div>
 </body>
 </html>

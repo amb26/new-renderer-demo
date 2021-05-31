@@ -1,6 +1,10 @@
-#### "Isomorphic rendering demo", or as we call it, "Queen of Sheba rendering".
+#### Textfield Controls Server Rendering and DOM Mutation demo
 
-To run the demo, from the project root run 
+(Historically known as "Isomorphic rendering demo" (by current industry terminology), or "Queen of Sheba rendering", 
+following the strategy transferring server state to the client described in "Software and How It Lives On"
+at https://www.ppig.org/files/2016-PPIG-27th-Basman1.pdf )
+
+To run the demo, from the project root run
 
     node demo/demoApp.js
     
@@ -19,7 +23,7 @@ i) the markup rendered by the server, ii) the model skeleton from the server, ii
 (e.g. the + control on the stepper is disabled) and the UI then usable from that point to continue making modifications. 
 
 The client-side makes a check to ensure that no modifications are made to the markup at startup - any such modifications
-will be logged to the console as they happen.
+will be noted to the page on startup
 
 This app is written in a literal style with explicit Kettle handlers for each endpoint. This will eventually be automated
 through extending the package.json definitions which are currently used to drive auto-mounting of renderer modules.

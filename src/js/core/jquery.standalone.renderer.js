@@ -85,6 +85,12 @@
         }
     };
 
+    $.fn.removeAttr = function (jq, attrName) {
+        jq.forEach(function (node) {
+            node.removeAttribute(attrName);
+        });
+    };
+
     $.fn.prop = $.fn.attr;
 
     fluid.jQueryStandalone.valueMap = {
@@ -139,7 +145,6 @@
         console.log("addClass ", value);
         var classes = fluid.jQueryStandalone.classesToArray(value);
         jq.forEach(function (elem) {
-            fluid.refreshClazzAttribute(elem);
             elem.classList.add(...classes);
         });
     };

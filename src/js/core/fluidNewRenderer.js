@@ -139,12 +139,6 @@ https://github.com/fluid-project/infusion/raw/master/Infusion-LICENSE.txt
         sentinel.parentNode.insertBefore(newNode, sentinel);
     };
 
-    fluid.refreshClazzAttribute = function (node) {
-        var clazz = node.getAttribute("class");
-        node.removeAttribute("class");
-        node.setAttribute("class", clazz);
-    };
-
     fluid.renderer.fuseNode = function (target, source) {
         while (target.firstChild) {
             target.removeChild(target.firstChild);
@@ -159,10 +153,7 @@ https://github.com/fluid-project/infusion/raw/master/Infusion-LICENSE.txt
             }
         }
 
-        fluid.refreshClazzAttribute(target); // Necessary because of https://github.com/WebReflection/linkedom/issues/65
-        fluid.refreshClazzAttribute(source);
         target.classList.add(...source.classList);
-        fluid.refreshClazzAttribute(target);
     };
 
     fluid.cloneDom = function (node) {

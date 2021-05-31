@@ -230,11 +230,11 @@ https://github.com/fluid-project/infusion/raw/main/Infusion-LICENSE.txt
                 args: ["tabindex", "-1"]
             }
         },
-        modelListeners: {
-            disabled: {
-                "this": "{that}.container",
-                method: "prop",
-                args: ["disabled", "{change}.value"]
+        modelRelay: {
+            markupEnabled: {
+                source: "disabled",
+                target: "dom.container.enabled",
+                func: x => !x
             }
         }
     });
