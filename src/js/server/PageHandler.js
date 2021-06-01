@@ -20,7 +20,7 @@ fluid.require("%kettle");
 // Core grade managing rendering functionality, independent of delivery scheme
 fluid.defaults("fluid.renderer.pageHandler", {
     gradeNames: "fluid.renderer.server",
-    pageGrade: null, // Must be filled in by user
+    pageGrade: "fluid.rootPage", // Often overridden by the user unless pure rewriting is required
     components: {
         page: {
             type: "{pageHandler}.options.pageGrade"

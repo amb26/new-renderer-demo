@@ -33,7 +33,8 @@ https://github.com/fluid-project/infusion/raw/master/Infusion-LICENSE.txt
             template: {
                 dataType: "html",
                 parseOptions: {
-                    selectors: "{that}.options.selectors"
+                    selectors: "{that}.options.selectors",
+                    hasRoot: "{that}.options.templateHasRoot"
                 }
             }
         },
@@ -48,7 +49,7 @@ https://github.com/fluid-project/infusion/raw/master/Infusion-LICENSE.txt
         // be taken into account, otherwise when "container" is "/" the template will be considered to consist of
         // its physical root node. TODO: This will need to be combined with a directive governing splicing, at which point
         // we might be able to remove it.
-        includeTemplateRoot: false,
+        templateHasRoot: true,
         workflows: {
             global: {
                 render: {
@@ -67,7 +68,7 @@ https://github.com/fluid-project/infusion/raw/master/Infusion-LICENSE.txt
     fluid.renderer.isFreshRoot = function (shadow) {
         var transRec = fluid.currentTreeTransaction();
         return !transRec.outputShadows.find(function (outputShadow) {
-            var that = shadow.that;
+            var that = outputShadow.that;
             // If we pass all these conditions for any constructing component then the component is disqualified from being a fresh root
             return shadow !== outputShadow && fluid.componentHasGrade(that, "fluid.newRendererComponent")
                 && !fluid.getForComponent(that, ["options", "parentMarkup"])
@@ -146,14 +147,19 @@ https://github.com/fluid-project/infusion/raw/master/Infusion-LICENSE.txt
         while (source.firstChild) {
             target.appendChild(source.firstChild);
         }
-        for (var i = 0; i < source.attributes.length; i++) {
-            var attrib = source.attributes[i];
-            if (attrib.name !== "class" && attrib.name !== "id") {
-                target.setAttribute(attrib.name, attrib.value);
+        if (source.nodeType !== 11) { // DOCUMENT_FRAGMENT
+            for (var i = 0; i < source.attributes.length; i++) {
+                var attrib = source.attributes[i];
+                if (attrib.name !== "class" && attrib.name !== "id") {
+                    target.setAttribute(attrib.name, attrib.value);
+                }
             }
+            target.classList.add(...source.classList);
         }
+    };
 
-        target.classList.add(...source.classList);
+    fluid.indirectContainer = function (element, selector) {
+        return selector && selector !== "/" ? element.querySelector(selector) : element;
     };
 
     fluid.cloneDom = function (node) {
@@ -172,7 +178,9 @@ https://github.com/fluid-project/infusion/raw/master/Infusion-LICENSE.txt
      */
     fluid.renderer.renderTemplate = function (that, outerContainer) {
         var $b = fluid.renderer.binderSymbol;
-        var templateContainer = fluid.cloneDom(that.resources.template.parsed.element);
+        var templateElement = that.resources.template.parsed.element;
+        var templateRoot = fluid.cloneDom(templateElement);
+        var templateContainer = fluid.indirectContainer(templateRoot, fluid.getForComponent(that, ["options", "selectors", "container"]));
         var binderRecords = outerContainer[$b];
         if (binderRecords) {
             fluid.renderer.insertAt(outerContainer, templateContainer, binderRecords);
@@ -181,7 +189,7 @@ https://github.com/fluid-project/infusion/raw/master/Infusion-LICENSE.txt
                 fluid.fail("Assertion failure - conventional DOM binder return without one element for template insertion");
             } else {
                 var target = outerContainer[0];
-                if (target.nodeType === 11) {
+                if (target.nodeType === 11) { // DOCUMENT_FRAGMENT
                     if (target.firstElementChild) {
                         fluid.fail("Assertion failure - documentFragment has already been rendered to");
                     } else {
@@ -240,15 +248,19 @@ https://github.com/fluid-project/infusion/raw/master/Infusion-LICENSE.txt
         if (innerContainer.length !== 1) {
             fluid.container(innerContainer); // purely to provoke the traditional failure on mismatched container multiplicity
         }
-        if (!parentMarkup && !(binderRecords && !binderRecords.isBoolean) &&
-            that.resources.template.parsed.element.tagName !== innerContainer[0].tagName) {
-            console.log("Mismatched container tag name detected");
+
+        if (!parentMarkup) {
+            var templateElement = that.resources.template.parsed.element;
+            if (!(binderRecords && !binderRecords.isBoolean) && templateElement.tagName &&
+                templateElement.tagName !== innerContainer[0].tagName) {
+                console.log("Mismatched container tag name detected");
             // TODO: Invoke "fuseOrObliterate" here
             // Note that this is awkward since we currently defer rendering until initialiseDomBinder because we
             // wanted to do stuff like sticking the documentFragment in the binder in "split mode". In practice we would
             // really prefer to have the side-effects of assigning container and dom at the same time. It's a bit silly that
             // we have a two-stage deal - better would be to initialise the DOM binder first and then get the container
             // out of that
+            }
         }
         fluid.allocateSimpleId(innerContainer);
         return innerContainer;
@@ -269,7 +281,8 @@ https://github.com/fluid-project/infusion/raw/master/Infusion-LICENSE.txt
         var shadow = fluid.shadowForComponent(that);
         fluid.each(shadow.modelSourcedDynamicComponents, function (record, key) {
             var lightMerge = shadow.lightMergeDynamicComponents[key];
-            var containers = fluid.getMembers(lightMerge.toMerge, "container");
+            // Same dodgy approach as in fluid.expandComponentOptions
+            var containers = fluid.getMembers(lightMerge.toMerge, ["options", "container"]).concat(fluid.getMembers(lightMerge.toMerge, "container"));
             var lastContainer = fluid.renderer.lastValue(containers);
             if (lastContainer) {
                 var parsed = fluid.parseContextReference(lastContainer);
@@ -351,7 +364,9 @@ https://github.com/fluid-project/infusion/raw/master/Infusion-LICENSE.txt
         var shadow = fluid.shadowForComponent(that);
         var isFreshRoot = fluid.renderer.isFreshRoot(shadow);
         var useParentMarkup = fluid.renderer.useParentMarkup(that);
-        if (isFreshRoot && !useParentMarkup) { // Create a "split mode" DOM binder - but where does the content come from? It needs to be here by the time we execute the immediately following block of "doQuery"
+        if (isFreshRoot && !useParentMarkup) {
+            // Create a "split mode" DOM binder
+            // Ultimately this is a jQuery since fluid.renderer.renderTemplate accepts one
             dom.containerFragment = $((fluid.serverDocument || document).createDocumentFragment());
         }
         if (!useParentMarkup) {
@@ -362,6 +377,7 @@ https://github.com/fluid-project/infusion/raw/master/Infusion-LICENSE.txt
             var templateContainer = fluid.renderer.renderTemplate(that, innerContainer);
             if (dom.containerFragment) {
                 // Copy the upcoming id in so that self-based selectors will work
+                // TODO: surely unworkable if it is a DocumentFragment itself?
                 templateContainer.id = dom.locate("container")[0].id;
             }
         }
@@ -425,7 +441,8 @@ https://github.com/fluid-project/infusion/raw/master/Infusion-LICENSE.txt
             if (!that.rendererSelectors[selectorName] || !that.cache[selectorName]) {
                 var innerContainer = (that.containerFragment || container)[0];
                 // Special behaviour allowing us to match the container for ad hoc queries through markup polymorphism checks
-                return userJQuery(innerContainer.matches(selector) && innerContainer || innerContainer.querySelectorAll(selector));
+                // TODO: Why did we never trigger the case where innerContainer was a DocumentFragment in any of the textfieldControls tests?
+                return userJQuery(innerContainer.matches && innerContainer.matches(selector) && innerContainer || innerContainer.querySelectorAll(selector));
             } else {
             // Renderer selectors are just resolved from the cache which is really a live map of the DOM structure
                 return that.cache[selectorName];
@@ -500,9 +517,11 @@ https://github.com/fluid-project/infusion/raw/master/Infusion-LICENSE.txt
         });
         // Final pass to render all accumulate documentFragments into the real dom
         shadows.forEach(function (shadow) {
-            var dom = shadow.that.dom;
+            var that = shadow.that;
+            var dom = that.dom;
             if (dom.containerFragment) {
-                fluid.renderer.fuseNode(dom.container[0], dom.containerFragment[0].firstElementChild);
+                var source = that.options.templateHasRoot ? dom.containerFragment[0].firstElementChild : dom.containerFragment[0];
+                fluid.renderer.fuseNode(dom.container[0], source);
             }
         });
     };

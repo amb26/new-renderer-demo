@@ -31,7 +31,7 @@ https://github.com/fluid-project/infusion/raw/master/Infusion-LICENSE.txt
     });
 
     fluid.defaults("fluid.uiText", {
-        gradeNames: "fluid.uiTextBinding",
+        gradeNames: ["fluid.newRendererComponent", "fluid.uiTextBinding"],
         model: {
             // value: any
         },

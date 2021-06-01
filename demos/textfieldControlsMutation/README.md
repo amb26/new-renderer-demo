@@ -6,7 +6,7 @@ at https://www.ppig.org/files/2016-PPIG-27th-Basman1.pdf )
 
 To run the demo, from the project root run
 
-    node demo/demoApp.js
+    node demos/textfieldControlsMutation/demoApp.js
     
 And then browse to 
 

@@ -11,13 +11,93 @@ You may obtain a copy of the ECL 2.0 License and BSD License at
 https://github.com/fluid-project/infusion/raw/master/Infusion-LICENSE.txt
 */
 
-(function ($, fluid) {
+(function (fluid) {
     "use strict";
 
     /******
     * ToC *
     *******/
     fluid.registerNamespace("fluid.tableOfContents");
+
+
+    fluid.defaults("fluid.tableOfContents.withLevels", {
+        gradeNames: ["fluid.newRendererComponent", "fluid.resourceLoader"],
+        dynamicComponents: {
+            levels: {
+                sources: "{that}.model.headings",
+                type: "fluid.tableOfContents.level",
+                container: "{that}.dom.level",
+                options: {
+                    model: "{source}"
+                }
+            }
+        },
+        templateHasRoot: false,
+        resources: {
+            template: {
+                path: "%fluid-table-of-contents/src/html/TableOfContents.html"
+            }
+        }
+    });
+
+    fluid.defaults("fluid.tableOfContents.ui", {
+        gradeNames: "fluid.tableOfContents.withLevels",
+        strings: {
+            tocHeader: "Table of Contents"
+        },
+        selectors: {
+            container: "/",
+            tocHeader: ".flc-toc-header",
+            levelContainer: ".flc-toc-level-container"
+        },
+        model: {
+            messages: "{that}.options.strings"
+        },
+        components: {
+            header: {
+                type: "fluid.uiText",
+                container: "{ui}.dom.tocHeader",
+                options: {
+                    model: {
+                        value:"{ui}.model.messages.tocHeader"
+                    }
+                }
+            }
+        },
+        dynamicComponents: {
+            levels: {
+                container: "{ui}.dom.levelContainer"
+            }
+        }
+        // Shares template and "levels" definition with "fluid.tableOfContents.level"
+    });
+
+    fluid.defaults("fluid.tableOfContents.level", {
+        gradeNames: "fluid.tableOfContents.withLevels",
+        model: {
+            // text: heading, url: linkURL, headings: [ an array of subheadings in the same format ]
+        },
+        selectors: {
+            container: ".flc-toc-level-container",
+            link:  ".flc-toc-link",
+            item: ".flc-toc-item",
+            level: ".flc-toc-level"
+        },
+        dynamicComponents: {
+            link: {
+                type: "fluid.uiLink",
+                source: "{level}.model.text",
+                options: {
+                    container: "{level}.dom.link",
+                    model: {
+                        target: "{level}.model.url",
+                        linkText: "{level}.model.text"
+                    }
+                }
+            }
+        }
+    });
+
 
     fluid.tableOfContents.headingTextToAnchorInfo = function (heading) {
         var id = fluid.allocateSimpleId(heading);
@@ -30,67 +110,62 @@ https://github.com/fluid-project/infusion/raw/master/Infusion-LICENSE.txt
         return anchorInfo;
     };
 
-    fluid.tableOfContents.locateHeadings = function (that) {
+    fluid.tableOfContents.locateHeadings = function (that, ignoreForToC) {
         var headings = that.locate("headings");
 
-        fluid.each(that.options.ignoreForToC, function (sel) {
+        fluid.each(ignoreForToC, function (sel) {
             headings = headings.not(sel).not(sel + " :header");
         });
 
         return headings;
     };
 
-    fluid.tableOfContents.refreshView = function (that) {
+    fluid.tableOfContents.pullHeadingsModel = function (that, modelBuilder) {
         var headings = that.locateHeadings();
 
-        that.anchorInfo = fluid.transform(headings, function (heading) {
-            return that.headingTextToAnchorInfo(heading);
-        });
+        // This is scrawled onto the component primarily to make some tests easier to write
+        var anchorInfo = that.anchorInfo = fluid.transform(headings, that.headingTextToAnchorInfo);
 
-        var headingsModel = that.modelBuilder.assembleModel(headings, that.anchorInfo);
-        that.applier.change("", headingsModel);
-
-        that.events.onRefresh.fire();
+        return modelBuilder.assembleModel(headings, anchorInfo);
     };
 
     fluid.defaults("fluid.tableOfContents", {
-        gradeNames: ["fluid.viewComponent"],
+        gradeNames: ["fluid.viewComponent", "fluid.resourceLoader"],
         components: {
-            levels: {
-                type: "fluid.tableOfContents.levels",
-                // This is a createOnEvent markup since the parent acquires its model state from the DOM on startup
-                // and it is currently too irritating to express this via expanders until we implement proxies for FLUID-6372
-                createOnEvent: "onCreate",
+            ui: { // TODO: Invert this structure so ui is the top-level component
+                type: "fluid.tableOfContents.ui",
                 container: "{tableOfContents}.dom.tocContainer",
                 options: {
-                    model: {
-                        headings: "{tableOfContents}.model"
-                    },
-                    events: {
-                        afterRender: "{tableOfContents}.events.afterRender"
-                    },
-                    listeners: {
-                        "{tableOfContents}.events.onRefresh": "{that}.refreshView"
-                    },
-                    strings: "{tableOfContents}.options.strings"
+                    model: "{tableOfContents}.model"
                 }
             },
             modelBuilder: {
                 type: "fluid.tableOfContents.modelBuilder"
             }
         },
-        model: [],
+        model: {
+            messages: {
+                tocHeader: "Table of Contents"
+            },
+            headings: "{that}.resources.documentHeadingsSource.parsed"
+        },
+        resources: {
+            documentHeadingsSource: {
+                promiseFunc: "{that}.pullHeadingsModel"
+            }
+        },
         invokers: {
             headingTextToAnchorInfo: "fluid.tableOfContents.headingTextToAnchorInfo",
             locateHeadings: {
                 funcName: "fluid.tableOfContents.locateHeadings",
-                args: ["{that}"]
+                args: ["{that}", "{that}.options.ignoreForToC"]
             },
-            refreshView: {
-                funcName: "fluid.tableOfContents.refreshView",
-                args: ["{that}"]
+            pullHeadingsModel: {
+                funcName: "fluid.tableOfContents.pullHeadingsModel",
+                args: ["{that}", "{that}.modelBuilder"]
             },
             // TODO: is it weird to have hide and show on a component?
+            // TODO: Yes, this should be replaced by conditional construction/destruction of the component in the enactor
             hide: {
                 "this": "{that}.dom.tocContainer",
                 "method": "hide"
@@ -100,33 +175,12 @@ https://github.com/fluid-project/infusion/raw/master/Infusion-LICENSE.txt
                 "method": "show"
             }
         },
-        strings: {
-            tocHeader: "Table of Contents"
-        },
         selectors: {
             headings: ":header:visible",
             tocContainer: ".flc-toc-tocContainer"
         },
         ignoreForToC: {
             tocContainer: "{that}.options.selectors.tocContainer"
-        },
-        events: {
-            onRefresh: null,
-            afterRender: null,
-            onReady: {
-                events: {
-                    "onCreate": "onCreate",
-                    "afterRender": "afterRender"
-                },
-                args: ["{that}"]
-            }
-        },
-        listeners: {
-            "onCreate.refreshView": {
-                func: "{that}.refreshView",
-                // New for FLUID-6148: Make sure we do not try to refresh view until after "levels" subcomponent is constructed
-                priority: "after:fluid-componentConstruction"
-            }
         }
     });
 
@@ -134,6 +188,7 @@ https://github.com/fluid-project/infusion/raw/master/Infusion-LICENSE.txt
     /*******************
     * ToC ModelBuilder *
     ********************/
+
     fluid.registerNamespace("fluid.tableOfContents.modelBuilder");
 
     fluid.tableOfContents.modelBuilder.toModel = function (headingInfo, modelLevelFn) {
@@ -164,8 +219,6 @@ https://github.com/fluid-project/infusion/raw/master/Infusion-LICENSE.txt
     };
 
     fluid.tableOfContents.modelBuilder.gradualModelLevelFn = function (modelLevel, subHeadings) {
-        // Clone the subHeadings because we don't want to modify the reference of the subHeadings.
-        // the reference will affect the equality condition in generateTree(), resulting an unwanted tree.
         var subHeadingsClone = fluid.copy(subHeadings);
         subHeadingsClone[0].level--;
         return subHeadingsClone;
@@ -176,12 +229,11 @@ https://github.com/fluid-project/infusion/raw/master/Infusion-LICENSE.txt
         return modelLevel;
     };
 
-    fluid.tableOfContents.modelBuilder.convertToHeadingObjects = function (that, headings, anchorInfo) {
-        headings = $(headings);
+    fluid.tableOfContents.modelBuilder.convertToHeadingObjects = function (that, headingCalculator, headings, anchorInfo) {
         return fluid.transform(headings, function (heading, index) {
             return {
-                level: that.headingCalculator.getHeadingLevel(heading),
-                text: $(heading).text(),
+                level: headingCalculator.getHeadingLevel(heading),
+                text: heading.textContent,
                 url: anchorInfo[index].url
             };
         });
@@ -205,7 +257,7 @@ https://github.com/fluid-project/infusion/raw/master/Infusion-LICENSE.txt
                 args: ["{arguments}.0", "{modelBuilder}.modelLevelFn"]
             },
             modelLevelFn: "fluid.tableOfContents.modelBuilder.gradualModelLevelFn",
-            convertToHeadingObjects: "fluid.tableOfContents.modelBuilder.convertToHeadingObjects({that}, {arguments}.0, {arguments}.1)", // headings, anchorInfo
+            convertToHeadingObjects: "fluid.tableOfContents.modelBuilder.convertToHeadingObjects({that}, {that}.headingCalculator, {arguments}.0, {arguments}.1)", // headings, anchorInfo
             assembleModel: "fluid.tableOfContents.modelBuilder.assembleModel({that}, {arguments}.0, {arguments}.1)" // headings, anchorInfo
         }
     });
@@ -213,159 +265,19 @@ https://github.com/fluid-project/infusion/raw/master/Infusion-LICENSE.txt
     /*************************************
     * ToC ModelBuilder headingCalculator *
     **************************************/
+
     fluid.registerNamespace("fluid.tableOfContents.modelBuilder.headingCalculator");
 
-    fluid.tableOfContents.modelBuilder.headingCalculator.getHeadingLevel = function (that, heading) {
-        return that.options.levels.indexOf(heading.tagName) + 1;
+    fluid.tableOfContents.modelBuilder.headingCalculator.getHeadingLevel = function (levels, heading) {
+        return levels.indexOf(heading.tagName) + 1;
     };
 
     fluid.defaults("fluid.tableOfContents.modelBuilder.headingCalculator", {
         gradeNames: ["fluid.component"],
         invokers: {
-            getHeadingLevel: "fluid.tableOfContents.modelBuilder.headingCalculator.getHeadingLevel({that}, {arguments}.0)" // heading
+            getHeadingLevel: "fluid.tableOfContents.modelBuilder.headingCalculator.getHeadingLevel({that}.options.levels, {arguments}.0)" // heading
         },
         levels: ["H1", "H2", "H3", "H4", "H5", "H6"]
     });
 
-    /*************
-    * ToC Levels *
-    **************/
-    fluid.registerNamespace("fluid.tableOfContents.levels");
-
-    /**
-     * Create an object model based on the type and ID.  The object should contain an
-     * ID that maps the selectors (ie. level1:), and the object should contain a children
-     * @param {String} type - Accepted values are: level, items
-     * @param {Integer} ID - The current level which is used here as the ID.
-     * @return {Object} - An object that models the level based on the type and ID.
-     */
-    fluid.tableOfContents.levels.objModel = function (type, ID) {
-        var objModel = {
-            ID: type + ID + ":",
-            children: []
-        };
-        return objModel;
-    };
-
-    /*
-     * Configure item object when item object has no text, uri, level in it.
-     * defaults to add a decorator to hide the bullets.
-     */
-    fluid.tableOfContents.levels.handleEmptyItemObj = function (itemObj) {
-        itemObj.decorators = [{
-            type: "addClass",
-            classes: "fl-tableOfContents-hide-bullet"
-        }];
-    };
-
-    /**
-     * @param {Object} headingsModel - that.model, the model with all the headings, it should be in the format of {headings: [...]}
-     * @param {Integer} currentLevel - the current level we want to generate the tree for.  default to 1 if not defined.
-     * @return {Object} - A tree that looks like {children: [{ID: x, subTree:[...]}, ...]}
-     */
-    fluid.tableOfContents.levels.generateTree = function (headingsModel, currentLevel) {
-        currentLevel = currentLevel || 0;
-        var levelObj = fluid.tableOfContents.levels.objModel("level", currentLevel);
-
-        // FLUID-4352, run generateTree if there are headings in the model.
-        if (headingsModel.headings.length === 0) {
-            return currentLevel ? [] : {children: []};
-        }
-
-        // base case: level is 0, returns {children:[generateTree(nextLevel)]}
-        // purpose is to wrap the first level with a children object.
-        if (currentLevel === 0) {
-            var tree = {
-                children: [
-                    fluid.tableOfContents.levels.generateTree(headingsModel, currentLevel + 1)
-                ]
-            };
-            return tree;
-        }
-
-        // Loop through the heading array, which can have multiple headings on the same level
-        $.each(headingsModel.headings, function (index, model) {
-            var itemObj = fluid.tableOfContents.levels.objModel("items", currentLevel);
-            var linkObj = {
-                ID: "link" + currentLevel,
-                target: model.url,
-                linktext: model.text
-            };
-
-            // If level is undefined, then add decorator to it, otherwise add the links to it.
-            if (!model.level) {
-                fluid.tableOfContents.levels.handleEmptyItemObj(itemObj);
-            } else {
-                itemObj.children.push(linkObj);
-            }
-            // If there are sub-headings, go into the next level recursively
-            if (model.headings) {
-                itemObj.children.push(fluid.tableOfContents.levels.generateTree(model, currentLevel + 1));
-            }
-            // At this point, the itemObj should be in a tree format with sub-headings children
-            levelObj.children.push(itemObj);
-        });
-        return levelObj;
-    };
-
-    /**
-     * @param {Object} that - The component itself.
-     * @return {Object} - Returned produceTree must be in {headings: [trees]}
-     */
-    fluid.tableOfContents.levels.produceTree = function (that) {
-        var tree = fluid.tableOfContents.levels.generateTree(that.model);
-        // Add the header to the tree
-        tree.children.push({
-            ID: "tocHeader",
-            messagekey: "tocHeader"
-        });
-        return tree;
-    };
-
-    fluid.defaults("fluid.tableOfContents.levels", {
-        gradeNames: ["fluid.rendererComponent", "fluid.resourceLoader"],
-        produceTree: "fluid.tableOfContents.levels.produceTree",
-        strings: {
-            tocHeader: "Table of Contents"
-        },
-        selectors: {
-            tocHeader: ".flc-toc-header",
-            level1: ".flc-toc-levels-level1",
-            level2: ".flc-toc-levels-level2",
-            level3: ".flc-toc-levels-level3",
-            level4: ".flc-toc-levels-level4",
-            level5: ".flc-toc-levels-level5",
-            level6: ".flc-toc-levels-level6",
-            items1: ".flc-toc-levels-items1",
-            items2: ".flc-toc-levels-items2",
-            items3: ".flc-toc-levels-items3",
-            items4: ".flc-toc-levels-items4",
-            items5: ".flc-toc-levels-items5",
-            items6: ".flc-toc-levels-items6",
-            link1: ".flc-toc-levels-link1",
-            link2: ".flc-toc-levels-link2",
-            link3: ".flc-toc-levels-link3",
-            link4: ".flc-toc-levels-link4",
-            link5: ".flc-toc-levels-link5",
-            link6: ".flc-toc-levels-link6"
-        },
-        repeatingSelectors: ["level1", "level2", "level3", "level4", "level5", "level6", "items1", "items2", "items3", "items4", "items5", "items6"],
-        model: {
-            headings: [] // [text: heading, url: linkURL, headings: [ an array of subheadings in the same format]
-        },
-        resources: {
-            template: {
-                url: "../html/TableOfContents.html"
-            }
-        },
-        renderOnInit: true,
-        rendererFnOptions: {
-            noexpand: true
-        },
-        rendererOptions: {
-            debugMode: false
-        }
-
-    });
-
-})(jQuery, fluid_3_0_0);
+})(fluid_3_0_0);

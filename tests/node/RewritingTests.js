@@ -14,6 +14,8 @@ require("./support/RendererTestSupport.js");
 require("./apps/js/RewritingTestApp.js");
 
 fluid.renderer.loadModule("%new-renderer-demo");
+// We only load this so that includes and hence static mount table are stable across tests
+fluid.renderer.loadModule("%new-renderer-demo/tests/node/node_modules/renderer-test-module");
 
 fluid.defaults("fluid.tests.rewritingApp", {
     gradeNames: "fluid.renderer.autoMountRendererModulesApp",

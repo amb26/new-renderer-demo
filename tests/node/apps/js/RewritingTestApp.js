@@ -8,8 +8,5 @@ fluid.defaults("fluid.tests.renderer.rewritingPage", {
         template: {
             path: "%new-renderer-demo/tests/node/apps/html/RewritingTestApp.html"
         }
-    },
-    selectors: {
-        testComponentInclude: ".test-component-include"
     }
 });

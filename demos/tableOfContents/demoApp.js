@@ -18,11 +18,11 @@ var fluid = require("infusion");
 
 fluid.require("%kettle");
 
-require("../src/serverRendererIndex.js");
+fluid.require("%new-renderer-demo/src/serverRendererIndex.js");
 
 fluid.renderer.loadModule("%new-renderer-demo");
 fluid.renderer.loadModule("%new-renderer-demo/tableOfContents");
-fluid.renderer.loadModule("%new-renderer-demo/tableOfContentsDemo");
+fluid.renderer.loadModule("%new-renderer-demo/demos/tableOfContents");
 
 fluid.renderer.autoMountRendererModulesServer({
     moduleConfiguration: {

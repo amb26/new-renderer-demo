@@ -9,10 +9,10 @@
             "./src/css/TableOfContents.css"
         ],
         "jsCommonFiles": [
-            "./src/js/TableOfContents-new.js"
+            "./src/js/TableOfContents.js"
         ],
         "htmlFiles": [
-            "./src/html/TableOfContents-new.html"
+            "./src/html/TableOfContents.html"
         ],
         "staticMountBase": "./src/",
         "testStaticMountBase": "./test"

@@ -61,9 +61,6 @@ https://github.com/fluid-project/infusion/raw/master/Infusion-LICENSE.txt
         // see https://stackoverflow.com/a/25214113 - use another method on the server
         that.element = fluid.isDOMNode(template) ? fluid.htmlParser.parseNode(template) :
             fluid.htmlParser.parseMarkup(template, that.options.hasRoot);
-        that.matchedSelectors = fluid.transform(that.options.selectors, function (selector) {
-            return selector === "/" ? that.element : that.element.querySelectorAll(selector);
-        });
 
         return that;
     };

@@ -23,7 +23,7 @@
         "eslint-config-fluid": "2.0.0",
         "fluid-lint-all": "1.1.1",
         "stylelint": "13.12.0",
-        "stylelint-config-fluid": "0.2.0"
+        "stylelint-config-fluid": "0.2.1"
     },
     "main": "src/serverRendererIndex.js",
     "infusion": {

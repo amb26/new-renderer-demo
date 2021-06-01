@@ -32,7 +32,6 @@ fluid.serverDocumentParser = function (text) {
     return fragment;
 };
 
-// fluid.loadFrameworkPatch("%new-renderer-demo/src/js/server/jquery.standalone.js");
 fluid.loadFrameworkPatch("%new-renderer-demo/src/js/core/jquery.standalone.renderer.js");
 fluid.loadFrameworkPatch("%new-renderer-demo/src/js/core/fluidNewRenderer.js");
 fluid.loadFrameworkPatch("%new-renderer-demo/src/js/core/fluidNewRendererComponents.js");

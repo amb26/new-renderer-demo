@@ -11,7 +11,7 @@ grade which automatically mounts all loaded renderer modules into the URL space 
 
 To run the demo, from the project root run 
 
-    node tableOfContentsDemo/DemoApp.js
+    node dmos/tableOfContents/DemoApp.js
     
 And then browse to 
 

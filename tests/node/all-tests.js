@@ -2,5 +2,5 @@
 
 "use strict";
 
-// require("./RewritingTests.js");
-require("./RenderingTests.js");
+require("./RewritingTests.js");
+// require("./RenderingTests.js");
