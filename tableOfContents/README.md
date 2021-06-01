@@ -13,6 +13,6 @@ To run the test cases, from the project root run
     
 And then browse to 
 
-    http://localhost:8085/test/html/TableOfContents-test-new.html
+    http://localhost:8085/test/html/TableOfContents-test.html
 
 A standard jqUnit test run interface should appear and the test should pass.

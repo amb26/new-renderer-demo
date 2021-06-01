@@ -6,7 +6,7 @@
     "license": "BSD-3-Clause",
     "repository": "git@github.com:amb26/new-renderer-demo.git",
     "scripts": {
-        "test": "node tests/all-tests.js",
+        "test": "node tests/node/all-tests.js",
         "lint": "fluid-lint-all"
     },
     "dependencies": {

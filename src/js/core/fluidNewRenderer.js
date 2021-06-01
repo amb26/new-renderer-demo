@@ -522,6 +522,8 @@ https://github.com/fluid-project/infusion/raw/master/Infusion-LICENSE.txt
             if (dom.containerFragment) {
                 var source = that.options.templateHasRoot ? dom.containerFragment[0].firstElementChild : dom.containerFragment[0];
                 fluid.renderer.fuseNode(dom.container[0], source);
+                // Avoid confusing the DOM binder for future queries of non-renderer selectors. The "local" variant needs to listen to delete its cache
+                delete dom.containerFragment;
             }
         });
     };

@@ -30,6 +30,7 @@ through extending the package.json definitions which are currently used to drive
 
 There is also a quick "autoTest" mode accessible via 
 
-    node demo/demoApp.js autoTest
+    node demos/textfieldControlsMutation/demoApp.js autoTest
     
 which will fire up both a server and a plain HTTP client which dumps the markup received from the server to the console.
+It is left to the reader's ingenuity to determine whether the markup is correct or not.

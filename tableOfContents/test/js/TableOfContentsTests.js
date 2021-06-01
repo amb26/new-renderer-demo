@@ -310,13 +310,21 @@ https://github.com/fluid-project/infusion/raw/master/Infusion-LICENSE.txt
         jqUnit.assertEquals("anchor url is the same as id except url has a '#' in front", anchorInfo.url.substr(1), anchorInfo.id);
     });
 
-    jqUnit.test("public function: show/hide component", function () {
-        var tocContainer = fluid.tableOfContents("#flc-toc").locate("tocContainer");
-        jqUnit.isVisible("Initially the component is visible.", tocContainer);
-        tocContainer.hide();
-        jqUnit.notVisible("After calling hide, the component is invisible.", tocContainer);
-        tocContainer.show();
-        jqUnit.isVisible("After calling show, the component is visible.", tocContainer);
+    jqUnit.asyncTest("public function: show/hide component", function () {
+        var testMethods = function (that) {
+            var tocContainer = that.locate("tocContainer");
+            jqUnit.isVisible("Initially the component is visible.", tocContainer);
+            tocContainer.hide();
+            jqUnit.notVisible("After calling hide, the component is invisible.", tocContainer);
+            tocContainer.show();
+            jqUnit.isVisible("After calling show, the component is visible.", tocContainer);
+            jqUnit.start();
+        };
+        fluid.tableOfContents("#flc-toc", {
+            listeners: {
+                onCreate: testMethods
+            }
+        });
     });
 
     /**
