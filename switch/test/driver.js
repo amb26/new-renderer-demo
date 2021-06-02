@@ -1,5 +1,5 @@
 /**
- * Table of Contents Test Driver
+ * Switch Test Driver
  *
  * Copyright 2018 Raising The Floor - International
  *
@@ -26,17 +26,14 @@ fluid.renderer.loadModule("%new-renderer-demo");
 // way, e.g. via some form of testem plugin or npx script
 
 // TODO: We have to load this in an odd way since it is not in a node_modules directory
-fluid.renderer.loadModule("%new-renderer-demo/tableOfContents");
+fluid.renderer.loadModule("%new-renderer-demo/switch");
 
 fluid.renderer.autoMountRendererModulesServer({
     moduleConfiguration: {
-        "fluid-table-of-contents": {
+        "fluid-switch": {
             // Currently ignored - rewriteUrls is a boolean
             // TODO: For real apps, we probably want a more targetted way of specifying what we want to mount/rewrite
-            rewriteUrls: {
-                source: "/test/html",
-                target: "/"
-            },
+            rewriteUrls: true,
             // Say this so that we mount all the test cases too just for this configuration
             mountEntire: true
         }
@@ -44,5 +41,5 @@ fluid.renderer.autoMountRendererModulesServer({
 });
 
 setTimeout(function () {
-    console.log("Please browse to http://localhost:8085/test/html/TableOfContents-test.html");
+    console.log("Please browse to http://localhost:8085/test/html/Switch-test.html");
 }, 100);

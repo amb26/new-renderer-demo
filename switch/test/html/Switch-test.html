@@ -2,7 +2,7 @@
 <html lang="en">
     <head>
         <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
-        <title>Renderer Component Rendering Test</title>
+        <title>Switch Tests</title>
 
         <link rel="stylesheet" media="screen" href="%infusion/tests/lib/qunit/css/qunit.css" />
 
@@ -20,20 +20,42 @@
         <script src="%infusion/src/framework/core/js/FluidView.js"></script>
         <script src="%infusion/src/framework/core/js/NewViewSupport.js"></script>
         <script src="%infusion/src/framework/core/js/FluidView-browser.js"></script>
-
-        <script src="%renderer-test-module/js/RendererTestComponent.js"></script>
+        <script src="%fluid-switch/src/js/Switch.js"></script>
 
         <script src="%new-renderer-demo/src/js/core/jquery.standalone.renderer.js"></script>
         <script src="%new-renderer-demo/src/js/core/fluidNewRenderer.js"></script>
         <script src="%new-renderer-demo/src/js/core/fluidNewRendererComponents.js"></script>
         <script src="%new-renderer-demo/src/js/core/htmlParser.js"></script>
         <script src="%new-renderer-demo/src/js/core/ResourceRewriter.js"></script>
+        <script src="%new-renderer-demo/src/js/client/ClientRenderer.js"></script>
+
+        <!--  These are the jqUnit test js files -->
+        <script src="%infusion/tests/lib/qunit/js/qunit.js"></script>
+        <script src="%infusion/tests/test-core/jqUnit/js/jqUnit.js"></script>
+        <script src="%infusion/tests/test-core/jqUnit/js/jqUnit-browser.js"></script>
+
+        <!-- Required to send coverage data at the end of the test run on this page -->
+        <script src="/testem.js"></script>
+        <script src="/coverage/client/coverageSender.js"></script>
+
+        <!--  These are tests that have been written using this page as data -->
+        <script src="%fluid-switch/test/js/SwitchTests.js"></script>
 
     </head>
     <body>
-        <h1>Renderer Component Rendering Test</h1>
-        <div class="test-component-include">
-            <!-- The component's markup will be inserted here --> 
+    <h1 id="qunit-header">Switch Test Suite</h1>
+    <h2 id="qunit-banner"></h2>
+    <div id="qunit-testrunner-toolbar"></div>
+    <h2 id="qunit-userAgent"></h2>
+    <ol id="qunit-tests"></ol>
+
+    <!-- Test HTML -->
+    <div id="qunit-fixture" class="container">
+        <label id="label">labelledby</label>
+        <div class="flc-switchUI">
         </div>
+
+    </div>
+
     </body>
 </html>
