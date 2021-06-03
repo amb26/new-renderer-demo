@@ -57,12 +57,6 @@ var demo = demo || {};
                 target: {
                     segs: ["dom", "panel", "class", "{that}.options.styles.light"]
                 }
-            },
-            allocatePanelId: {
-                target: "dom.panel.attrs.id",
-                func: (value) => value || fluid.allocateGuid(),
-                // An awkward hack requires a throwaway 2nd argument to ensure the relay is triggered on startup
-                args: ["{that}.model.dom.panel.attrs.id", "{that}.model"]
             }
         },
         invokers: {
@@ -81,7 +75,7 @@ var demo = demo || {};
                         controlAttrs: {
                             "aria-labelledby": "flc-switchUI-label",
                             // Note: https://heydonworks.com/article/aria-controls-is-poop/
-                            "aria-controls": "{demo.faces}.model.dom.panel.attrs.id"
+                            "aria-controls": "{demo.faces}.model.dom.panel.id"
                         }
                     },
                     modelRelay: {
