@@ -1,0 +1,59 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta http-equiv="Content-Type" content="text/html; charset=utf-8">
+    <meta content="width=device-width, initial-scale=1.0" name="viewport">
+
+    <link rel="stylesheet" type="text/css" href="%infusion/src/framework/core/css/fluid.css" />
+    <link rel="stylesheet" type="text/css" href="%new-renderer-demo/demos/demo.css" />
+    <link rel="stylesheet" type="text/css" href="%fluid-switch/src/css/Switch.css" />
+    <link rel="stylesheet" type="text/css" href="%fluid-switch-demo/css/SwitchDemo.css" />
+
+    <script src="%infusion/src/lib/jquery/core/js/jquery.js"></script>
+    <script src="%infusion/src/framework/core/js/Fluid.js"></script>
+    <script src="%infusion/src/framework/core/js/FluidPromises.js"></script>
+    <script src="%infusion/src/framework/core/js/FluidDocument.js"></script>
+    <script src="%infusion/src/framework/core/js/FluidIoC.js"></script>
+    <script src="%infusion/src/framework/core/js/DataSource.js"></script>
+    <script src="%infusion/src/framework/core/js/ResourceLoader.js"></script>
+    <script src="%infusion/src/framework/core/js/ResourceLoader-browser.js"></script>
+    <script src="%infusion/src/framework/core/js/ModelTransformation.js"></script>
+    <script src="%infusion/src/framework/core/js/ModelTransformationTransforms.js"></script>
+    <script src="%infusion/src/framework/core/js/DataBinding.js"></script>
+    <script src="%infusion/src/framework/core/js/FluidView.js"></script>
+    <script src="%infusion/src/framework/core/js/NewViewSupport.js"></script>
+    <script src="%infusion/src/framework/core/js/FluidView-browser.js"></script>
+    <script src="%fluid-switch/src/js/Switch.js"></script>
+
+    <script src="%new-renderer-demo/src/js/core/jquery.standalone.renderer.js"></script>
+    <script src="%new-renderer-demo/src/js/core/fluidNewRenderer.js"></script>
+    <script src="%new-renderer-demo/src/js/core/fluidNewRendererComponents.js"></script>
+    <script src="%new-renderer-demo/src/js/core/htmlParser.js"></script>
+    <script src="%new-renderer-demo/src/js/core/ResourceRewriter.js"></script>
+    <script src="%new-renderer-demo/src/js/client/ClientRenderer.js"></script>
+<!-- Includes for our own application - will eventually be auto-generated -->    
+    <script src="%fluid-switch-demo/js/SwitchDemo.js"></script>
+
+    <title>Switch UI Demo</title>
+</head>
+
+<body>
+    <section class="flc-overviewPanel fl-overviewPanel-container"></section>
+    <section class="fl-demo-container demo-faces demo-container">
+        <div class="fl-demo-content">
+            <p id="flc-switchUI-label">Light</p>
+            <div class="demo-faces-switch">
+            </div>
+
+            <p class="demo-faces-panel demo-panel">
+                <strong class="demo-faces-face demo-face" aria-live="polite"></strong>
+                <strong class="demo-faces-text demo-text"></strong>
+            </p>
+        </div>
+    </section>
+    <script>
+        demo.faces(".demo-faces");
+    </script>
+</body>
+</html>

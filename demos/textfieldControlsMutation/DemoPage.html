@@ -1,0 +1,79 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta http-equiv="Content-Type" content="text/html; charset=utf-8">
+    <meta content="width=device-width, initial-scale=1.0" name="viewport">
+
+    <link rel="stylesheet" type="text/css" href="%infusion/src/framework/core/css/fluid.css" />
+    <link rel="stylesheet" type="text/css" href="%fluid-textfield-controls/css/TextfieldSlider.css" />
+    <link rel="stylesheet" type="text/css" href="%fluid-textfield-controls/css/TextfieldStepper.css" />
+    <link rel="stylesheet" type="text/css" href="%new-renderer-demo/demos/css/demo.css" />
+    <link rel="stylesheet" type="text/css" href="%server-renderer-demo/demoApp.css" />
+
+    <script src="%infusion/src/lib/jquery/core/js/jquery.js"></script>
+    <script src="%infusion/src/framework/core/js/Fluid.js"></script>
+    <script src="%infusion/src/framework/core/js/FluidPromises.js"></script>
+    <script src="%infusion/src/framework/core/js/FluidDocument.js"></script>
+    <script src="%infusion/src/framework/core/js/FluidIoC.js"></script>
+    <script src="%infusion/src/framework/core/js/DataSource.js"></script>
+    <script src="%infusion/src/framework/core/js/ResourceLoader.js"></script>
+    <script src="%infusion/src/framework/core/js/ResourceLoader-browser.js"></script>
+    <script src="%infusion/src/framework/core/js/ModelTransformation.js"></script>
+    <script src="%infusion/src/framework/core/js/ModelTransformationTransforms.js"></script>
+    <script src="%infusion/src/framework/core/js/DataBinding.js"></script>
+    <script src="%infusion/src/framework/core/js/FluidView.js"></script>
+    <script src="%infusion/src/framework/core/js/NewViewSupport.js"></script>
+    <script src="%infusion/src/framework/core/js/FluidView-browser.js"></script>
+    <script src="%infusion/src/components/tooltip/js/Tooltip.js"></script>
+    <script src="%fluid-textfield-controls/js/Textfield.js"></script>
+    <script src="%fluid-textfield-controls/js/TextfieldSlider.js"></script>
+    <script src="%fluid-textfield-controls/js/TextfieldStepper.js"></script>
+
+    <script src="%new-renderer-demo/src/js/core/fluidNewRenderer.js"></script>
+    <script src="%new-renderer-demo/src/js/core/fluidNewRendererComponents.js"></script>
+    <script src="%new-renderer-demo/src/js/core/htmlParser.js"></script>
+    <script src="%new-renderer-demo/src/js/core/ResourceRewriter.js"></script>
+    <script src="%new-renderer-demo/src/js/client/ClientRenderer.js"></script>
+<!-- Includes for our own application - will eventually be auto-generated -->    
+    <script src="%server-renderer-demo/DemoPage.js"></script>
+    <script src="%server-renderer-demo/MutationChecker.js"></script>
+
+    <title>Textfield Controls Server Rendering Demo</title>
+</head>
+<!-- The structure of this demo was taken from %fluid-infusion/demos/textfieldControl -->
+<body>
+
+    <h1>Textfield Controls Server Rendering Demo</h1>
+    <section class="fl-demo-container">
+        <div>
+            <h2>Textfield Slider</h2>
+            <div class="flc-textfieldSlider">
+            <!-- static markup template - on successful server-side rendering, this markup will be replaced, eliminating the
+            letter As -->
+                <span class="demo-smallIcon">A</span>
+                <input class="flc-textfieldSlider-slider fl-slider">
+                <span class="demo-largeIcon">A</span>
+                <input class="flc-textfieldSlider-field fl-textfieldSlider-textField" type="text">
+            </div>
+
+            <h2>Textfield Stepper</h2>
+            <div class="flc-textfieldStepper">
+                <span class="demo-smallIcon">A</span>
+                <span class="flc-textfieldStepper-focusContainer fl-textfieldStepper-focusContainer">
+                </span>
+                <span class="demo-largeIcon">A</span>
+            </div>
+        </div>
+    </section>
+    <script>
+        fluid.demos.checkMutations(".fl-demo-container");
+    </script>
+    <div class="commentary">
+    This page's markup and model are generated as a snapshot on the server, and are rendered against by the client
+    without any changes to the DOM on startup. Any modifications will be listed below.
+    </div>
+    <div class="modification-report fl-demo-content">
+        <div class="no-modifications">No document modifications on startup</div>
+    </div>
+</body>
+</html>

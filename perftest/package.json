@@ -1,0 +1,19 @@
+{
+    "name": "fluid-renderer-perftest",
+    "description": "Performance testing of DOM rendering primitives supporting renderer work",
+    "version": "1.0.0",
+    "license": "BSD-3-Clause",
+    "infusion": {
+        "bundleType": "fluid-renderer-module",
+        "cssFiles": [
+        ],
+        "jsClientFiles": [
+            "./PerfTest.js"        
+        ], 
+        "jsCommonFiles": [
+        ],
+        "htmlFiles": [
+            "./PerfTest.html"
+        ]
+    }
+}

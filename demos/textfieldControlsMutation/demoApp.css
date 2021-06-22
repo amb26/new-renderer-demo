@@ -1,0 +1,35 @@
+body {
+    margin: 2rem;
+}
+
+.modification-report {
+    width: 50rem;
+    height: 20rem;
+    margin: 0 auto;
+    padding: 5px;
+    border: 10px;
+}
+
+.modification-report div {
+    margin-bottom: 6px;
+}
+
+.commentary {
+    margin: 2rem;
+}
+
+.success {
+    border: 10px solid #0b0;
+}
+
+.failure {
+    border: 10px solid #b00;
+}
+
+.modification-report .no-modifications {
+    display: none;
+}
+
+.modification-report.success .no-modifications {
+    display: block;
+}

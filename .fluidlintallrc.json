@@ -1,0 +1,26 @@
+{
+    "sources": {
+        "js": ["./src/**/*.js", "./tests/**/*.js", "./demos/**/*.js", "./textfieldControl/**/*.js", "./tableOfContents/**/*.js", "./tableOfContentsDemo/**/*.js", "./perftest/**/*.js", "./*.js"],
+        "json": ["./*.json"],
+        "md": ["./*.md"],
+        "other": ["./.*"]
+    },
+    "eslint": {
+        "js": {
+            "options": {
+            }
+        }
+    },
+    "markdownlint": {
+        "options": {
+            "config": {
+                "single-h1": false
+            }
+        }
+    },
+    "lintspaces": {
+        "newlines": {
+            "excludes": ["tests/**/images/**/*"]
+        }
+    }
+}

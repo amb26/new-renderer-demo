@@ -1,0 +1,17 @@
+{
+    "name": "fluid-switch-demo",
+    "description": "Port of the Infusion Switch component Demo to Renderer Module system",
+    "version": "1.0.0",
+    "license": "BSD-3-Clause",
+    "infusion": {
+        "bundleType": "fluid-renderer-module",
+        "cssFiles": [
+        ],
+        "jsCommonFiles": [
+            "./js/SwitchDemo.js"
+        ],
+        "htmlFiles": [
+            "./DemoPage.html"
+        ]
+    }
+}
