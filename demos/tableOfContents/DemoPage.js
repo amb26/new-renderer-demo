@@ -1,3 +1,5 @@
+"use strict";
+
 fluid.registerNamespace("fluid.tests.tableOfContents");
 
 fluid.setLogging(true);

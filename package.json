@@ -10,15 +10,14 @@
         "lint": "fluid-lint-all"
     },
     "dependencies": {
-        "infusion": "amb26/infusion#FLUID-6580",
+        "infusion": "4.0.0-dev.20211122T151009Z.8aff19812.FLUID-6697",
         "kettle": "amb26/kettle#KETTLE-78",
         "linkedom": "0.9.2"
     },
     "devDependencies": {
         "node-jqunit": "1.1.9",
         "json-diff": "0.5.3",
-        "fluid-diff": "1.0.0",
-        "fluid-handlebars": "2.1.5",
+        "glob": "7.2.0",
         "eslint": "7.24.0",
         "eslint-config-fluid": "2.0.0",
         "fluid-lint-all": "1.1.1",

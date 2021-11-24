@@ -1,0 +1,50 @@
+<!DOCTYPE html>
+<html lang="en">
+    <head>
+        <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+        <title>TextfieldControl Tests</title>
+
+        <link-symbolic rel="Stylesheet" media="screen" href="%infusion/tests/lib/qunit/css/qunit.css"></link-symbolic>
+
+        <script-symbolic src="%infusion/src/lib/jquery/core/js/jquery.js"></script-symbolic>
+        <script-symbolic src="%infusion/src/framework/core/js/Fluid.js"></script-symbolic>
+        <script-symbolic src="%infusion/src/framework/core/js/FluidPromises.js"></script-symbolic>
+        <script-symbolic src="%infusion/src/framework/core/js/FluidDocument.js"></script-symbolic>
+        <script-symbolic src="%infusion/src/framework/core/js/FluidIoC.js"></script-symbolic>
+        <script-symbolic src="%infusion/src/framework/core/js/ResourceLoader.js"></script-symbolic>
+        <script-symbolic src="%infusion/src/framework/core/js/ModelTransformation.js"></script-symbolic>
+        <script-symbolic src="%infusion/src/framework/core/js/ModelTransformationTransforms.js"></script-symbolic>
+        <script-symbolic src="%infusion/src/framework/core/js/DataBinding.js"></script-symbolic>
+        <script-symbolic src="%infusion/src/framework/core/js/FluidView.js"></script-symbolic>
+        <script-symbolic src="%infusion/src/framework/core/js/FluidView-browser.js"></script-symbolic>
+
+        <script-symbolic src="%infusion/tests/lib/qunit/js/qunit.js"></script-symbolic>
+        <script-symbolic src="%infusion/tests/test-core/jqUnit/js/jqUnit.js"></script-symbolic>
+
+        <script src="../../js/Textfield.js"></script>
+
+        <!-- Required to send coverage data at the end of the test run on this page -->
+        <script src="/testem.js"></script>
+        <script src="/coverage/client/coverageSender.js"></script>
+    </head>
+    <body>
+    <h1 id="qunit-header">Textfield Test Suite</h1>
+    <h2 id="qunit-banner"></h2>
+    <div id="qunit-testrunner-toolbar"></div>
+    <h2 id="qunit-userAgent"></h2>
+    <ol id="qunit-tests"></ol>
+
+    <!-- Test HTML -->
+    <div id="qunit-fixture" class="container">
+        <label id="label-textfield">Textfield</label>
+        <input class="flc-textfield" type="text" />
+
+        <label id="label-nativeHTML">Textfield</label>
+        <input class="flc-textfield-rangeController" type="text" />
+    </div>
+
+    <script src="../js/TextfieldControlTestUtils.js"></script>
+    <script src="../js/TextfieldTests.js"></script>
+
+    </body>
+</html>

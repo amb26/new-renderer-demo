@@ -1,3 +1,5 @@
+"use strict";
+
 fluid.defaults("fluid.demos.demoPage", {
     // NOTE: Identical with the ancient "DemoPage.js" only with fluid.rootPage swapped for fluid.newRendererComponent
     gradeNames: "fluid.newRendererComponent",

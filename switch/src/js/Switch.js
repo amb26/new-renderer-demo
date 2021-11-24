@@ -11,70 +11,65 @@ You may obtain a copy of the ECL 2.0 License and BSD License at
 https://github.com/fluid-project/infusion/raw/main/Infusion-LICENSE.txt
 */
 
-var fluid_3_0_0 = fluid_3_0_0 || {};
+"use strict";
 
-(function ($, fluid) {
-    "use strict";
+/**********
+ * Switch *
+ **********/
 
-    /**********
-     * Switch *
-     **********/
-
-    fluid.defaults("fluid.switchUI", {
-        gradeNames: ["fluid.newRendererComponent"],
-        resources: {
-            template: {
-                path: "%fluid-switch/src/html/Switch.html"
-            }
+fluid.defaults("fluid.switchUI", {
+    gradeNames: ["fluid.newRendererComponent"],
+    resources: {
+        template: {
+            path: "%fluid-switch/src/html/Switch.html"
+        }
+    },
+    selectors: {
+        on: ".flc-switchUI-on",
+        off: ".flc-switchUI-off",
+        control: ".flc-switchUI-control"
+    },
+    model: {
+        enabled: false,
+        strings: {
+            // Specified by implementor
+            // text of label to apply the switch, must add to "aria-label" in the attrs block
+            label: "",
+            on: "on",
+            off: "off"
         },
-        selectors: {
-            on: ".flc-switchUI-on",
-            off: ".flc-switchUI-off",
-            control: ".flc-switchUI-control"
-        },
-        model: {
-            enabled: false,
-            strings: {
-                // Specified by implementor
-                // text of label to apply the switch, must add to "aria-label" in the attrs block
-                label: "",
-                on: "on",
-                off: "off"
-            },
-            dom: {
-                control: {
-                    attrs: {
-                        // More attributes should be specified by implementor, e.g. 
-                        // ID of an element to use as a label for the switch
-                        // "aria-labelledby": "",
-                        // Should specify either "aria-label" or "aria-labelledby"
-                        // "aria-label": "{that}.model.strings.label",
-                        // ID of an element that is controlled by the switch.
-                        // "aria-controls": ""
-                        role: "switch"
-                    }
-                },
-                on: {
-                    text: "{that}.model.strings.on"
-                },
-                off: {
-                    text: "{that}.model.strings.off"
+        dom: {
+            control: {
+                attrs: {
+                    // More attributes should be specified by implementor, e.g. 
+                    // ID of an element to use as a label for the switch
+                    // "aria-labelledby": "",
+                    // Should specify either "aria-label" or "aria-labelledby"
+                    // "aria-label": "{that}.model.strings.label",
+                    // ID of an element that is controlled by the switch.
+                    // "aria-controls": ""
+                    role: "switch"
                 }
-            }
-        },
-        modelRelay: {
-            "aria-checked": {
-                source: "{that}.model.enabled",
-                target: "{that}.model.dom.control.attrs.aria-checked"
             },
-            "clicked": {
-                source: "{that}.model.dom.control.click",
-                target: "{that}.model.enabled",
-                singleTransform: {
-                    type: "fluid.transforms.toggle"
-                }
+            on: {
+                text: "{that}.model.strings.on"
+            },
+            off: {
+                text: "{that}.model.strings.off"
             }
         }
-    });
-
-})(jQuery, fluid_3_0_0);
+    },
+    modelRelay: {
+        "aria-checked": {
+            source: "{that}.model.enabled",
+            target: "{that}.model.dom.control.attrs.aria-checked"
+        },
+        "clicked": {
+            source: "{that}.model.dom.control.click",
+            target: "{that}.model.enabled",
+            singleTransform: {
+                type: "fluid.transforms.toggle"
+            }
+        }
+    }
+});

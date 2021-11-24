@@ -20,8 +20,6 @@ var fluid = require("infusion"),
 var fs = require("fs");
 var jqUnit = fluid.registerNamespace("jqUnit");
 
-require("fluid-handlebars");
-require("fluid-diff");
 var jsonDiff = require("json-diff");
 
 kettle.loadTestingSupport();
@@ -91,29 +89,6 @@ fluid.renderer.tests.markupToJSON = function (markup) {
     return canon;
 };
 
-fluid.defaults("fluid.renderer.tests.diffRenderer", {
-    gradeNames: ["fluid.handlebars.standaloneRenderer"],
-    templateDirs: ["%fluid-diff/tests/templates", "%fluid-diff/src/templates"],
-    components: {
-        isDiffArray: {
-            type: "fluid.diff.helper.isDiffArray"
-        }/*,
-        hasChanged: {
-            type: "fluid.diff.helper.hasChanged"
-        },
-        leftValue: {
-            type: "fluid.diff.helper.leftValue"
-        },
-        rightValue: {
-            type: "fluid.diff.helper.rightValue"
-        }*/
-    }
-});
-
-/*
-var diffRenderer = fluid.renderer.tests.diffRenderer();
-*/
-
 fluid.renderer.tests.assertResponse = function (options) {
     kettle.test.assertResponseStatusCode(options, options.expectedStatusCode);
     var expectedMarkup = fs.readFileSync(fluid.module.resolvePath(options.expectedMarkup), "utf8");
@@ -125,11 +100,6 @@ fluid.renderer.tests.assertResponse = function (options) {
         console.log("JSON-structured markup diff report: ");
         console.log(jsonDiff.diffString(expectedCanon, actualCanon));
     }
-    /* var diff = fluid.diff.compare(expectedCanon, actualCanon);
-    console.log("Got raw diff\n", JSON.stringify(diff, null, 2));
-    if (Object.keys(diff).length > 0) {
-        console.log("Got diff\n", diffRenderer.render("diff-text", diff));
-    }*/
     jqUnit.assertDeepEq("Expected markup returned", expectedCanon, actualCanon);
     console.log("Got response text ", options.string);
 };

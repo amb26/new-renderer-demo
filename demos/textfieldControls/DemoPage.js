@@ -1,3 +1,5 @@
+"use strict";
+
 fluid.defaults("fluid.demos.demoPage", {
     gradeNames: "fluid.rootPage",
     resources: {

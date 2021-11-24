@@ -11,170 +11,156 @@ You may obtain a copy of the ECL 2.0 License and BSD License at
 https://github.com/fluid-project/infusion/raw/main/Infusion-LICENSE.txt
 */
 
-(function ($, fluid) {
-    "use strict";
+"use strict";
 
-    /********************
-     * Textfield Slider *
-     ********************/
+/********************
+ * Textfield Slider *
+ ********************/
 
-    fluid.defaults("fluid.textfieldSlider", {
-        gradeNames: ["fluid.newRendererComponent"],
-        resources: {
-            template: {
-                path: "%fluid-textfield-controls/html/TextfieldSlider.html"
-            }
-        },
-        selectors: {
-            textfield: ".flc-textfieldSlider-field",
-            slider: ".flc-textfieldSlider-slider"
-        },
-        components: {
-            textfield: {
-                type: "fluid.textfield.rangeController",
-                container: "{that}.dom.textfield",
-                options: {
-                    components: {
-                        controller: {
-                            options: {
-                                model: "{textfieldSlider}.model"
+fluid.defaults("fluid.textfieldSlider", {
+    gradeNames: ["fluid.newRendererComponent"],
+    resources: {
+        template: {
+            path: "%fluid-textfield-controls/html/TextfieldSlider.html"
+        }
+    },
+    selectors: {
+        textfield: ".flc-textfieldSlider-field",
+        slider: ".flc-textfieldSlider-slider"
+    },
+    components: {
+        textfield: {
+            type: "fluid.textfield.withRangeController",
+            container: "{that}.dom.textfield",
+            options: {
+                model: {
+                    messages: "{textfieldSlider}.model.messages"
+                },
+                components: {
+                    controller: {
+                        options: {
+                            scale: "{textfieldSlider}.options.scale",
+                            model: {
+                                value: "{textfieldSlider}.model.value",
+                                step: "{textfieldSlider}.model.step",
+                                range: "{textfieldSlider}.model.range"                                
                             }
+                            //"{textfieldSlider}.model" // Really we want to share everything except messages
                         }
-                    },
-                    attrs: "{textfieldSlider}.options.attrs",
-                    strings: "{textfieldSlider}.options.strings"
-                }
-            },
-            slider: {
-                type: "fluid.slider",
-                container: "{textfieldSlider}.dom.slider",
-                options: {
-                    model: "{textfieldSlider}.model",
-                    attrs: "{textfieldSlider}.options.attrs",
-                    strings: "{textfieldSlider}.options.strings"
+                    }
                 }
             }
         },
-        styles: {
-            container: "fl-textfieldSlider fl-focus"
-        },
-        model: {
-            value: null,
-            step: 1.0,
-            range: {
-                min: 0,
-                max: 100
+        slider: {
+            type: "fluid.slider",
+            container: "{textfieldSlider}.dom.slider",
+            options: {
+                model: "{textfieldSlider}.model",
+                modelRelay: {
+                    ariaLabelledBy: {
+                        target: "dom.container.attr.aria-labelledby",
+                        source: "{textfieldSlider}.options.ariaLabelledBy"
+                    }
+                }
             }
-        },
-        modelRelay: {
+        }
+    },
+    // ariaLabelledBy, scale
+    styles: {
+        container: "fl-textfieldSlider fl-focus"
+    },
+    model: {
+        value: null,
+        step: 1.0,
+        range: {
+            min: 0,
+            max: 100
+        }
+        // messages: { label }
+    },
+    modelRelay: {
+        limitRange: {
             target: "value",
             singleTransform: {
                 type: "fluid.transforms.limitRange",
                 input: "{that}.model.value",
-                min: "{that}.options.range.min",
-                max: "{that}.options.range.max"
+                min: "{that}.model.range.min",
+                max: "{that}.model.range.max"
             }
         },
+        containerStyle: {
+            target: "dom.container.class",
+            // We can't write "args" here since it will be assumed to be a model-oriented relay. Too hard to fix in DataBinding
+            // to "look ahead".
+            source: "{that}.options.styles.container",
+            func: "fluid.transforms.parseClasses"
+        }
+    }
+});
 
-        attrs: {
-            // Specified by implementor
-            // ID of an external label to refer to with aria-labelledby
-            // attribute
-            // "aria-labelledby": "",
-            // Should specify either "aria-label" or "aria-labelledby"
-            // aria-label: "{that}.options.strings.label",
-            // ID of an element that is controlled by the textfield.
-            // "aria-controls": ""
-        },
-        strings: {
-            // Specified by implementor
-            // text of label to apply to both textfield and slider input
-            // via aria-label attribute
-            // "label": ""
-        },
-        listeners: {
-            "onCreate.addContainerStyle": {
-                "this": "{that}.container",
-                method: "addClass",
-                args: ["{that}.options.styles.container"]
-            }
-        },
-        distributeOptions: [{
-            // The scale option sets the number of decimal places to round
-            // the number to. If no scale is specified, the number will not be rounded.
-            // Scaling is useful to avoid long decimal places due to floating point imprecision.
-            source: "{that}.options.scale",
-            target: "{that > fluid.textfield > controller}.options.scale"
-        }]
-    });
-
-    fluid.defaults("fluid.slider", {
-        gradeNames: ["fluid.newRendererComponent"],
-        parentMarkup: true,
-        modelRelay: {
+fluid.defaults("fluid.slider", {
+    gradeNames: ["fluid.viewComponent"],
+    parentMarkup: true,
+    model: {
+        // value: Numeric value
+        // stringValue: Value taken from slider UI
+    },
+    invokers: {
+        pullModel: "fluid.slider.pullModel({that})"
+    },
+    modelRelay: {
+        stringValue: {
             target: "value",
             singleTransform: {
                 type: "fluid.transforms.stringToNumber",
                 input: "{that}.model.stringValue"
             }
         },
-        invokers: {
-            setModel: {
-                changePath: "stringValue",
-                value: {
-                    expander: {
-                        "this": "{that}.container",
-                        "method": "val"
-                    }
-                }
-            },
-            updateSliderAttributes: {
-                "this": "{that}.container",
-                method: "attr",
-                args: [{
-                    "min": "{that}.model.range.min",
-                    "max": "{that}.model.range.max",
-                    "step": "{that}.model.step",
-                    "type": "range",
-                    "value": "{that}.model.value",
-                    "aria-labelledby": "{that}.options.attrs.aria-labelledby",
-                    "aria-label": "{that}.options.attrs.aria-label"
-                }]
-            }
+        min: {
+            target: "dom.container.attr.min",
+            source: "range.min"
         },
-        listeners: {
-            "onCreate.initSliderAttributes": "{that}.updateSliderAttributes",
-            "onCreate.bindSlideEvt": {
-                "this": "{that}.container",
-                "method": "on",
-                "args": ["input", "{that}.setModel"]
-            },
-            "onCreate.bindRangeChangeEvt": {
-                "this": "{that}.container",
-                "method": "on",
-                "args": ["change", "{that}.setModel"]
-            }
+        max: {
+            target: "dom.container.attr.max",
+            source: "range.max"
         },
-        modelListeners: {
-            // If we don't exclude init, the value can get
-            // set before onCreate.initSliderAttributes
-            // sets min / max / step, which messes up the
-            // initial slider rendering
-            "value": [{
-                "this": "{that}.container",
-                "method": "val",
-                args: ["{change}.value"],
-                excludeSource: "init"
-            }],
-            "range": {
-                listener: "{that}.updateSliderAttributes",
-                excludeSource: "init"
-            },
-            "step": {
-                listener: "{that}.updateSliderAttributes",
-                excludeSource: "init"
-            }
+        step: {
+            target: "dom.container.attr.step",
+            source: "step"
+        },
+        value: {
+            target: "dom.container.attr.value",
+            source: "value"
+        },
+        type: {
+            source: "", // TODO: Axe this
+            target: "dom.container.attr.type",
+            func: () => "range"
         }
-    });
+    },
+    listeners: {
+        "onCreate.bindSlideEvt": {
+            "this": "{that}.container",
+            "method": "on",
+            "args": ["input", "{that}.pullModel"]
+        },
+        "onCreate.bindRangeChangeEvt": {
+            "this": "{that}.container",
+            "method": "on",
+            "args": ["change", "{that}.pullModel"]
+        }
+    },
+    modelListeners: {
+        "value": {
+            "this": "{that}.container",
+            "method": "val",
+            args: ["{change}.value"],
+            excludeSource: "init"
+        }
+    }
+});
 
-})(jQuery, fluid_3_0_0);
+fluid.slider.pullModel = function (that) {
+    var value = that.container.val();
+    that.applier.change("stringValue", value);
+};
