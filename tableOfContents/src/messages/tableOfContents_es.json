@@ -1,6 +1,3 @@
 {
-    "label": "Tabla de contenido",
-    "description": "Crear una tabla de contenido",
-    "switchOn": "ENCENDIDO",
-    "switchOff": "APAGADO"
+    "label": "Tabla de contenido"
 }

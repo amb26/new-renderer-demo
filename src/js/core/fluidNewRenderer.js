@@ -18,7 +18,6 @@ fluid.defaults("fluid.messageLoader", {
     },
     resources: {
         messages: {
-            immutableModelResource: true,
             dataType: "json"
         }
     }

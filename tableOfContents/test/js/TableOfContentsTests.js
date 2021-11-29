@@ -259,7 +259,7 @@ fluid.tests.tableOfContents.renderTOCTest = function (ui, testHeadings, anchorIn
     var linkComponents = fluid.queryIoCSelector(ui, "fluid.uiLink");
     var tocLinks = fluid.getMembers(linkComponents, "container");
     tocLinks.sort(fluid.tests.tableOfContents.domPositionComparator);
-    jqUnit.assertEquals("The toc header is rendered correctly", ui.options.strings.tocHeader, ui.locate("tocHeader").text());
+    jqUnit.assertEquals("The toc header is rendered correctly", ui.model.messages.label, ui.locate("tocHeader").text());
     jqUnit.assertEquals("The correct number of links are rendered", testHeadings.headingInfo.length, tocLinks.length);
     // #FLUID-4352: check if <ul> exists when there is no tocLinks
     if (tocLinks.length === 0) {
@@ -434,14 +434,23 @@ jqUnit.asyncTest("Component test refresh rendering", function () {
  * #FLUID-5567: Test that table of contents header is localizable
  */
 jqUnit.asyncTest("FLUID-5567: Table of Contents header localization", function () {
+    var messages = {
+        label: "Localized ToC Header"
+    };
     fluid.tableOfContents("#flc-toc-l10n", {
-        strings: {
-            tocHeader: "Localized ToC Header"
+        resources: {
+            messages: {
+                // We do this in this odd way since model resources cannot be overridden (framework bug) and we can't
+                // tunnel JSON through options because of escaping issues
+                promiseFunc: function () {
+                    return JSON.stringify(messages);
+                }
+            }
         },
         listeners: {
             onCreate: {
                 listener: function (that) {
-                    jqUnit.assertEquals("The ToC Header should be localized.", that.options.strings.tocHeader, that.locate("tocHeader").text());
+                    jqUnit.assertEquals("The ToC Header should be localized.", messages.label, that.locate("tocHeader").text());
                     jqUnit.start();
                 },
                 args: ["{that}.ui"]

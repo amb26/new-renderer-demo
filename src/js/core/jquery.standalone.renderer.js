@@ -14,8 +14,12 @@
  * http://jquery.org/license
  */
 
+// This file can be used as a minimal mockup of jQuery's "attr", "val" and "addClass" methods sufficient to
+// operate the core of the "new renderer" on the client or server, if combined with a jquery.standalone base file.
+// Currently there is no implementation of click/change/on and so this is not suitable for use with
+// integral bindings on the client which currently expects a real jQuery.
+
 "use strict";
-// On the client we just include this file until we abolish the real jQuery
 // TODO: On the client the renderer's jQueryStandalone diverges from the server one - i.e. we defer to jQuery's extend, etc.
 if (!fluid.jQueryStandalone) {
     var jQuery = fluid.jQueryStandalone = function (/* arguments */) {

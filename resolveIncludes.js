@@ -70,18 +70,20 @@ var rebaseModuleIndex = function () {
     var indexScript = document.querySelector("script[module-index]");
     var src = indexScript.getAttribute("src");
     var prefix = src.substring(0, src.indexOf("infusionModuleIndex.js"));
-    fluid.resourceLoader.staticMountTable = fluid.infusionModuleIndex.map(function (entry) {
-        var togo = Object.assign({}, entry);
-        togo.prefix = prefix + togo.prefix;
-        return togo;
-    });
+    if (fluid.resourceLoader) {
+        fluid.resourceLoader.staticMountTable = fluid.infusionModuleIndex.map(function (entry) {
+            var togo = Object.assign({}, entry);
+            togo.prefix = prefix + togo.prefix;
+            return togo;
+        });
+    }
 };
 
 
-writeFile("./infusionModuleIndex.js", "\"use strict\";\n\nfluid.infusionModuleIndex = " + JSON.stringify(staticMountTable, null, 4)
+writeFile("./infusionModuleIndex.js", "\"use strict\";\n\nvar fluid = fluid || {};\nfluid.infusionModuleIndex = " + JSON.stringify(staticMountTable, null, 4)
     + ";\n(" + rebaseModuleIndex.toString() + ")();\n");
 
-var htmls = glob.sync("!(node_modules)/**/*.html");
+var htmls = glob.sync("{!(node_modules)/**/*.html,*.html}");
 
 var templateRegex = /%([\w-_\.]*)\//g; // Note we have an extra / at the end of this pattern to replace only e.g. %infusion/
 
@@ -170,5 +172,7 @@ fluid.each(htmls, function (htmlFileName) {
         var dataR = data.replace(/=\"PLACEHOLDER_NULL\"/g, "");
 
         writeFile(outFile, dataR);
+        fs.unlinkSync(htmlFileName);
+        fs.renameSync(outFile, htmlFileName);
     }
 });

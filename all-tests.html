@@ -1,0 +1,28 @@
+<!DOCTYPE html>
+<html lang="en">
+    <head>
+        <meta charset="UTF-8">
+        <title>New Renderer Demo complete tests runner</title>
+
+        <link-symbolic rel="stylesheet" href="%infusion/tests/lib/qunit/css/qunit.css" type="text/css" media="screen"></link-symbolic>            <link media="screen" type="text/css" rel="stylesheet" synthetic href="node_modules/infusion/tests/lib/qunit/css/qunit.css">        <link-symbolic rel="stylesheet" href="%infusion/tests/lib/qunit/addons/composite/qunit-composite.css"></link-symbolic>            <link rel="stylesheet" synthetic href="node_modules/infusion/tests/lib/qunit/addons/composite/qunit-composite.css">        <script-symbolic src="%infusion/tests/lib/qunit/js/qunit.js"></script-symbolic>            <script synthetic src="node_modules/infusion/tests/lib/qunit/js/qunit.js"></script>        <script-symbolic src="%infusion/tests/lib/qunit/addons/composite/qunit-composite.js"></script-symbolic>            <script synthetic src="node_modules/infusion/tests/lib/qunit/addons/composite/qunit-composite.js"></script>            <script module-index synthetic src="infusionModuleIndex.js"></script>
+        <!--
+            command line search:
+            find . -name &amp;amp;amp;quot;*-test.html&amp;amp;amp;quot; | awk &amp;amp;amp;#39;{print &amp;amp;amp;quot;\&amp;amp;amp;quot;&amp;amp;amp;quot;$1&amp;amp;amp;quot;\&amp;amp;amp;quot;,&amp;amp;amp;quot;}&amp;amp;amp;#39;
+        -->
+        <script>
+            QUnit.testSuites("Textfield Control Tests", [
+                "tests/browser/html/FluidNewRenderer-Test.html",
+                "switch/test/html/Switch-test.html",
+                "tableOfContents/test/html/TableOfContents-test.html",
+                "textfieldControl/test/html/Textfield-test.html",
+                "textfieldControl/test/html/TextfieldSlider-test.html",
+                "textfieldControl/test/html/TextfieldStepper-test.html"
+            ]);
+        </script>
+    </head>
+    <body>
+        <div id="qunit"></div>
+        <div id="qunit-fixture">
+    </div>
+    </body>
+</html>

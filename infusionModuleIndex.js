@@ -1,5 +1,6 @@
 "use strict";
 
+var fluid = fluid || {};
 fluid.infusionModuleIndex = [
     {
         "moduleName": "new-renderer-demo",
@@ -81,9 +82,11 @@ fluid.infusionModuleIndex = [
     var indexScript = document.querySelector("script[module-index]");
     var src = indexScript.getAttribute("src");
     var prefix = src.substring(0, src.indexOf("infusionModuleIndex.js"));
-    fluid.resourceLoader.staticMountTable = fluid.infusionModuleIndex.map(function (entry) {
-        var togo = Object.assign({}, entry);
-        togo.prefix = prefix + togo.prefix;
-        return togo;
-    });
+    if (fluid.resourceLoader) {
+        fluid.resourceLoader.staticMountTable = fluid.infusionModuleIndex.map(function (entry) {
+            var togo = Object.assign({}, entry);
+            togo.prefix = prefix + togo.prefix;
+            return togo;
+        });
+    }
 })();

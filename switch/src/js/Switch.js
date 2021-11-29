@@ -31,7 +31,7 @@ fluid.defaults("fluid.switchUI", {
     },
     model: {
         enabled: false,
-        strings: {
+        messages: {
             // Specified by implementor
             // text of label to apply the switch, must add to "aria-label" in the attrs block
             label: "",
@@ -40,7 +40,7 @@ fluid.defaults("fluid.switchUI", {
         },
         dom: {
             control: {
-                attrs: {
+                attr: {
                     // More attributes should be specified by implementor, e.g. 
                     // ID of an element to use as a label for the switch
                     // "aria-labelledby": "",
@@ -52,17 +52,17 @@ fluid.defaults("fluid.switchUI", {
                 }
             },
             on: {
-                text: "{that}.model.strings.on"
+                text: "{that}.model.messages.on"
             },
             off: {
-                text: "{that}.model.strings.off"
+                text: "{that}.model.messages.off"
             }
         }
     },
     modelRelay: {
         "aria-checked": {
             source: "{that}.model.enabled",
-            target: "{that}.model.dom.control.attrs.aria-checked"
+            target: "{that}.model.dom.control.attr.aria-checked"
         },
         "clicked": {
             source: "{that}.model.dom.control.click",

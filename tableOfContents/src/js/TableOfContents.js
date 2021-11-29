@@ -43,17 +43,15 @@ fluid.defaults("fluid.tableOfContents.withLevels", {
 
 fluid.defaults("fluid.tableOfContents.ui", {
     gradeNames: "fluid.tableOfContents.withLevels",
-    strings: {
-        tocHeader: "Table of Contents"
-    },
     selectors: {
         container: "/",
         tocHeader: ".flc-toc-header",
         levelContainer: ".flc-toc-level-container"
     },
-    // TODO: Convert this into localised resource
     model: {
-        messages: "{that}.options.strings"
+        messages: {
+            label: "Table of Contents"
+        }
     },
     components: {
         header: {
@@ -61,7 +59,7 @@ fluid.defaults("fluid.tableOfContents.ui", {
             container: "{ui}.dom.tocHeader",
             options: {
                 model: {
-                    value:"{ui}.model.messages.tocHeader"
+                    value:"{ui}.model.messages.label"
                 }
             }
         }
@@ -147,7 +145,7 @@ fluid.defaults("fluid.tableOfContents", {
     },
     model: {
         messages: {
-            tocHeader: "Table of Contents"
+            label: "Table of Contents"
         },
         headings: "{that}.resources.documentHeadingsSource.parsed"
     },

@@ -43,9 +43,8 @@ fluid.defaults("fluid.textfieldSlider", {
                             model: {
                                 value: "{textfieldSlider}.model.value",
                                 step: "{textfieldSlider}.model.step",
-                                range: "{textfieldSlider}.model.range"                                
+                                range: "{textfieldSlider}.model.range"
                             }
-                            //"{textfieldSlider}.model" // Really we want to share everything except messages
                         }
                     }
                 }
@@ -79,15 +78,6 @@ fluid.defaults("fluid.textfieldSlider", {
         // messages: { label }
     },
     modelRelay: {
-        limitRange: {
-            target: "value",
-            singleTransform: {
-                type: "fluid.transforms.limitRange",
-                input: "{that}.model.value",
-                min: "{that}.model.range.min",
-                max: "{that}.model.range.max"
-            }
-        },
         containerStyle: {
             target: "dom.container.class",
             // We can't write "args" here since it will be assumed to be a model-oriented relay. Too hard to fix in DataBinding

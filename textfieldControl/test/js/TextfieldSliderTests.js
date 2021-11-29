@@ -82,12 +82,13 @@ fluid.tests.textfieldSlider.assertSliderEntry = function (valToTest, expected, t
 };
 
 fluid.each(fluid.tests.textfieldControl.testCases, function (currentCase) {
-    jqUnit.test("textfield - " + currentCase.message, function () {
+    jqUnit.asyncTest("textfield - " + currentCase.message, function () {
         var that = fluid.tests.textfieldSlider(".fl-textfield-slider", currentCase.componentOptions);
         that.events.onCreate.then(function () {
             fluid.each(currentCase.tests, function (currentTest) {
                 fluid.tests.textfieldSlider.assertTextfieldEntry(currentTest.input, currentTest.expected, that);
             });
+            jqUnit.start();
         });
     });
 });
@@ -102,12 +103,13 @@ fluid.tests.textfieldSlider.testCases.invalid.tests = [
 ];
 
 fluid.each(fluid.tests.textfieldSlider.testCases, function (currentCase) {
-    jqUnit.test("slider - " + currentCase.message, function () {
+    jqUnit.asyncTest("slider - " + currentCase.message, function () {
         var that = fluid.tests.textfieldSlider(".fl-textfield-slider", currentCase.componentOptions);
         that.events.onCreate.then(function () {
             fluid.each(currentCase.tests, function (currentTest) {
                 fluid.tests.textfieldSlider.assertSliderEntry(currentTest.input, currentTest.expected, that);
             });
+            jqUnit.start();
         });
     });
 });

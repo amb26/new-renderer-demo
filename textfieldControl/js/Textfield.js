@@ -48,29 +48,13 @@ fluid.defaults("fluid.ariaLabelledBy", {
 fluid.defaults("fluid.textfield", {
     gradeNames: ["fluid.viewComponent"],
     parentMarkup: true,
-    modelListeners: {
-        value: {
-            "this": "{that}.container",
-            "method": "val",
-            args: ["{change}.value"]
-        }
-    },
-    listeners: {
-        "onCreate.bindChangeEvt": "fluid.textfield.bindChangeEvent"
-    },
-    invokers: {
-        setModel: {
-            changePath: "value",
-            value: "{arguments}.0"
+    modelRelay: {
+        textfieldValue: {
+            source: "dom.container.value",
+            target: "value"
         }
     }
 });
-
-fluid.textfield.bindChangeEvent = function (that) {
-    that.container.on("change", function (e) {
-        that.setModel(e.target.value);
-    });
-};
 
 /******************************
  * TextField Range Controller *
@@ -106,15 +90,6 @@ fluid.defaults("fluid.textfield.withRangeController", {
                             scale: "{that}.options.scale"
                         }
                     },
-                    limitRange: {
-                        target: "value",
-                        singleTransform: {
-                            type: "fluid.transforms.limitRange",
-                            input: "{that}.model.value",
-                            min: "{that}.model.range.min",
-                            max: "{that}.model.range.max"
-                        }
-                    },
                     min: {
                         target: "{fluid.textfield}.model.dom.container.attr.min",
                         source: "{that}.model.range.min"
@@ -127,38 +102,52 @@ fluid.defaults("fluid.textfield.withRangeController", {
                         target: "{fluid.textfield}.model.dom.container.attr.step",
                         source: "{that}.model.step"
                     }
+                },
+                modelListeners: {
+                    limitValue: {
+                        path: "value",
+                        listener: "fluid.textfield.limitRange",
+                        args: ["{that}", "{change}.value"],
+                        priority: "last"
+                    }
                 }
             }
         }
     },
-    invokers: {
-        setModel: {
-            funcName: "fluid.textfield.setModelRestrictToNumbers",
-            args: ["{that}", "{arguments}.0"]
+    modelListeners: {
+        validateTextfield: {
+            path: "value",
+            source: "DOM",
+            listener: "fluid.textfield.validateToNumbers",
+            args: ["{that}", "{change}.value", "{that}.controller.model.value"],
+            priority: "last" // last otherwise we may end up get a old value relayed back into us from another notification
         }
     }
 });
-
-// Note: Very hard to deal with this via model relay, in an integral way. The interaction is that some non-number is
-// entered in the field - as well as "lensing away" this update coming away from the UI, we also want to propagate
-// back the value held in the component tree, hard to arrange, given it has not changed. There doesn't also seem to be
-// much mileage in using a relay for simple data binding, since it would be hard to guarantee ordering of its
-// listener versus the one used for back-propagation.
 /**
  * Sets the model value only if the new value is a valid number, and will reset the textfield to the current model
  * value otherwise.
  *
  * @param {Object} that - The component.
- * @param {Number} value - The incoming textual value from the UI
+ * @param {String} value - The incoming textual value from the UI
+ * @param {Number} oldValue - The previously stored valid numeric value
  */
-fluid.textfield.setModelRestrictToNumbers = function (that, value) {
+fluid.textfield.validateToNumbers = function (that, value, oldValue) {
     var isNumber = !isNaN(Number(value));
-    if (isNumber) {
-        that.applier.change("value", value);
+    if (!isNumber) {
+        that.applier.change("value", oldValue);
     }
     // Set the textfield to the latest valid entry.
     // This handles both the cases where an invalid entry was provided, as well as cases where a valid number is
     // rounded. In the case of rounded numbers this ensures that entering a number that rounds to the current
     // set value, doesn't leave the textfield with the unrounded number present.
-    that.container.val(that.model.value);
+};
+
+// Note that we don't use a relay here because of FLUID-6701
+fluid.textfield.limitRange = function (that, value) {
+    var limited = fluid.transforms.limitRange(value, {
+        min: that.model.range.min,
+        max: that.model.range.max
+    });
+    that.applier.change("value", limited);
 };

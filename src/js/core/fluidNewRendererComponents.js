@@ -111,7 +111,7 @@ fluid.defaults("fluid.uiLink", {
     },
     modelRelay: {
         linkTarget: {
-            target: "dom.container.attrs.href",
+            target: "dom.container.attr.href",
             source: "{that}.model.target"
         },
         linkText: {
