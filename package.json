@@ -12,7 +12,7 @@
     "dependencies": {
         "infusion": "4.0.0-dev.20211125T195630Z.60d4b3be8.main",
         "kettle": "amb26/kettle#KETTLE-78",
-        "linkedom": "0.9.2"
+        "linkedom": "0.13.0"
     },
     "devDependencies": {
         "node-jqunit": "1.1.9",

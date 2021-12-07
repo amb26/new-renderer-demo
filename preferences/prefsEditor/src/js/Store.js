@@ -240,10 +240,7 @@ fluid.defaults("fluid.prefs.tempStore.writable", {
 });
 
 fluid.defaults("fluid.prefs.globalSettingsStore", {
-    gradeNames: ["fluid.prefs.store"],
-    options: {
-        gradeNames: ["fluid.resolveRootSingle"],
-        writable: true,
-        singleRootType: "fluid.prefs.store"
-    }
+    gradeNames: ["fluid.prefs.store", "fluid.resolveRootSingle"],
+    writable: true,
+    singleRootType: "fluid.prefs.store"
 });

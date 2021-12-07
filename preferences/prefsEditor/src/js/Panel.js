@@ -11,6 +11,8 @@ You may obtain a copy of the ECL 2.0 License and BSD License at
 https://github.com/fluid-project/infusion/raw/main/Infusion-LICENSE.txt
 */
 
+"use strict";
+
 fluid.prefs.stringLookup = function (messageResolver, stringArrayIndex) {
     var that = {id: fluid.allocateGuid()};
     that.singleLookup = function (value) {
@@ -55,34 +57,27 @@ fluid.defaults("fluid.prefs.panel.switchAdjuster", {
         label: ".flc-prefsEditor-label",
         description: ".flc-prefsEditor-description"
     },
-    selectorsToIgnore: ["header", "switchContainer"],
+    labelId: "@expand:fluid.allocateGuid()",
     components: {
         switchUI: {
             type: "fluid.switchUI",
             container: "{that}.dom.switchContainer",
-            createOnEvent: "afterRender",
             options: {
-                strings: {
-                    on: "{fluid.prefs.panel.switchAdjuster}.msgLookup.switchOn",
-                    off: "{fluid.prefs.panel.switchAdjuster}.msgLookup.switchOff"
-                },
                 model: {
-                    enabled: "{fluid.prefs.panel.switchAdjuster}.model.value"
+                    enabled: "{fluid.prefs.panel.switchAdjuster}.model.value",
+                    messages: {
+                        on: "{switchAdjuster}.model.messages.switchOn",
+                        of: "{switchAdjuster}.model.messages.switchOff",
+                    }
                 },
-                attrs: {
-                    "aria-labelledby": {
-                        expander: {
-                            funcName: "fluid.allocateSimpleId",
-                            args: ["{fluid.prefs.panel.switchAdjuster}.dom.description"]
-                        }
+                modelRelay: {
+                    ariaLabelledBy: {
+                        target: "{switchUI}.model.dom.control.attr.aria-labelled-by",
+                        source: "{switchAdjuster}.options.labelId"
                     }
                 }
             }
         }
-    },
-    protoTree: {
-        label: {messagekey: "label"},
-        description: {messagekey: "description"}
     }
 });
 
@@ -231,7 +226,7 @@ fluid.defaults("fluid.prefs.panel.stepperAdjuster", {
         },
         descr: {
             source: "messages.description",
-            target: "dom.desc.text"
+            target: "dom.descr.text"
         }
     }
 });

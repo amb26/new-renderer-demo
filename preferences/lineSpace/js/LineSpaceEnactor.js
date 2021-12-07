@@ -25,7 +25,7 @@ https://github.com/fluid-project/infusion/raw/main/Infusion-LICENSE.txt
 
 fluid.defaults("fluid.prefs.enactor.lineSpace", {
     gradeNames: ["fluid.prefs.enactor.textRelatedSizer"],
-    preferenceMap: {
+    preferencesMap: {
         "fluid.prefs.lineSpace": {
             "model.value": "value"
         }

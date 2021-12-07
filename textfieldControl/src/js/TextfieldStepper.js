@@ -21,7 +21,7 @@ fluid.defaults("fluid.textfieldStepper", {
     gradeNames: ["fluid.newRendererComponent"],
     resources: {
         template: {
-            path: "%fluid-textfield-controls/html/TextfieldStepper.html"
+            path: "%fluid-textfield-controls/src/html/TextfieldStepper.html"
         }
     },
     selectors: {

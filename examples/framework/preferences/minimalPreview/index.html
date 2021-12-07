@@ -1,0 +1,108 @@
+<!DOCTYPE html>
+<html lang="en">
+    <head>
+        <meta http-equiv="Content-Type" content="text/html; charset=utf-8">
+        <meta content="width=device-width, initial-scale=1.0" name="viewport">
+
+        <link-symbolic rel="stylesheet" type="text/css" href="%infusion/src/framework/core/css/fluid.css"></link-symbolic>            <link type="text/css" rel="stylesheet" synthetic href="../../../../node_modules/infusion/src/framework/core/css/fluid.css">
+
+        <!-- Component styles -->
+        <link-symbolic rel="stylesheet" type="text/css" href="%fluid-prefs-editor/src/css/Enactors.css"></link-symbolic>            <link type="text/css" rel="stylesheet" synthetic href="../../../../preferences/prefsEditor/src/css/Enactors.css">
+        <link-symbolic rel="stylesheet" type="text/css" href="%fluid-prefs-editor/src/css/PrefsEditor.css"></link-symbolic>            <link type="text/css" rel="stylesheet" synthetic href="../../../../preferences/prefsEditor/src/css/PrefsEditor.css">
+        <link-symbolic rel="stylesheet" type="text/css" href="%fluid-prefs-editor/src/css/FullPrefsEditor.css"></link-symbolic>            <link type="text/css" rel="stylesheet" synthetic href="../../../../preferences/prefsEditor/src/css/FullPrefsEditor.css">
+        <link-symbolic rel="stylesheet" type="text/css" href="%fluid-prefs-editor/src/css/FullPreviewPrefsEditor.css"></link-symbolic>            <link type="text/css" rel="stylesheet" synthetic href="../../../../preferences/prefsEditor/src/css/FullPreviewPrefsEditor.css">
+
+<!--        <link-symbolic rel="stylesheet" type="text/css" href="%fluid-prefs-editor/src/css/SeparatedPanelPrefsEditorFrame.css"></link-symbolic>
+-->
+
+        <link rel="stylesheet" type="text/css" href="css/prefsEditorFullPage.css">
+        <link rel="stylesheet" type="text/css" href="css/style.css">
+
+        <script-symbolic src="%infusion/src/lib/jquery/core/js/jquery.js"></script-symbolic>            <script synthetic src="../../../../node_modules/infusion/src/lib/jquery/core/js/jquery.js"></script>
+        <script-symbolic src="%infusion/src/framework/core/js/Fluid.js"></script-symbolic>            <script synthetic src="../../../../node_modules/infusion/src/framework/core/js/Fluid.js"></script>
+        <script-symbolic src="%infusion/src/framework/core/js/FluidPromises.js"></script-symbolic>            <script synthetic src="../../../../node_modules/infusion/src/framework/core/js/FluidPromises.js"></script>
+        <script-symbolic src="%infusion/src/framework/core/js/FluidDocument.js"></script-symbolic>            <script synthetic src="../../../../node_modules/infusion/src/framework/core/js/FluidDocument.js"></script>
+        <script-symbolic src="%infusion/src/framework/core/js/DataBinding.js"></script-symbolic>            <script synthetic src="../../../../node_modules/infusion/src/framework/core/js/DataBinding.js"></script>
+        <script-symbolic src="%infusion/src/framework/core/js/FluidIoC.js"></script-symbolic>            <script synthetic src="../../../../node_modules/infusion/src/framework/core/js/FluidIoC.js"></script>
+        <script-symbolic src="%infusion/src/framework/enhancement/js/ContextAwareness.js"></script-symbolic>            <script synthetic src="../../../../node_modules/infusion/src/framework/enhancement/js/ContextAwareness.js"></script>
+        <script-symbolic src="%infusion/src/framework/core/js/DataSource.js"></script-symbolic>            <script synthetic src="../../../../node_modules/infusion/src/framework/core/js/DataSource.js"></script>
+        <script-symbolic src="%infusion/src/framework/core/js/ResourceLoader.js"></script-symbolic>            <script synthetic src="../../../../node_modules/infusion/src/framework/core/js/ResourceLoader.js"></script>
+        <script-symbolic src="%infusion/src/framework/core/js/ResourceLoader-browser.js"></script-symbolic>            <script synthetic src="../../../../node_modules/infusion/src/framework/core/js/ResourceLoader-browser.js"></script>
+        <script-symbolic src="%infusion/src/framework/core/js/ModelTransformation.js"></script-symbolic>            <script synthetic src="../../../../node_modules/infusion/src/framework/core/js/ModelTransformation.js"></script>
+        <script-symbolic src="%infusion/src/framework/core/js/ModelTransformationTransforms.js"></script-symbolic>            <script synthetic src="../../../../node_modules/infusion/src/framework/core/js/ModelTransformationTransforms.js"></script>
+        <script-symbolic src="%infusion/src/framework/core/js/DataBinding.js"></script-symbolic>            <script synthetic src="../../../../node_modules/infusion/src/framework/core/js/DataBinding.js"></script>        <script-symbolic src="%infusion/src/framework/core/js/RemoteModel.js"></script-symbolic>            <script synthetic src="../../../../node_modules/infusion/src/framework/core/js/RemoteModel.js"></script>
+        <script-symbolic src="%infusion/src/framework/core/js/FluidView.js"></script-symbolic>            <script synthetic src="../../../../node_modules/infusion/src/framework/core/js/FluidView.js"></script>
+        <script-symbolic src="%infusion/src/framework/core/js/NewViewSupport.js"></script-symbolic>            <script synthetic src="../../../../node_modules/infusion/src/framework/core/js/NewViewSupport.js"></script>
+        <script-symbolic src="%infusion/src/framework/core/js/FluidView-browser.js"></script-symbolic>            <script synthetic src="../../../../node_modules/infusion/src/framework/core/js/FluidView-browser.js"></script>
+        <script-symbolic src="%fluid-table-of-contents/src/js/TableOfContents.js"></script-symbolic>            <script synthetic src="../../../../tableOfContents/src/js/TableOfContents.js"></script>
+
+        <script-symbolic src="%new-renderer-demo/src/js/core/fluidNewRenderer.js"></script-symbolic>            <script synthetic src="../../../../src/js/core/fluidNewRenderer.js"></script>
+        <script-symbolic src="%new-renderer-demo/src/js/core/fluidNewRendererComponents.js"></script-symbolic>            <script synthetic src="../../../../src/js/core/fluidNewRendererComponents.js"></script>
+        <script-symbolic src="%new-renderer-demo/src/js/core/htmlParser.js"></script-symbolic>            <script synthetic src="../../../../src/js/core/htmlParser.js"></script>
+        <script-symbolic src="%new-renderer-demo/src/js/core/ResourceRewriter.js"></script-symbolic>            <script synthetic src="../../../../src/js/core/ResourceRewriter.js"></script>
+        <script-symbolic src="%new-renderer-demo/src/js/client/ClientRenderer.js"></script-symbolic>            <script synthetic src="../../../../src/js/client/ClientRenderer.js"></script>
+
+        <script-symbolic src="%fluid-textfield-controls/src/js/Textfield.js"></script-symbolic>            <script synthetic src="../../../../textfieldControl/src/js/Textfield.js"></script>
+        <script-symbolic src="%fluid-textfield-controls/src/js/TextfieldStepper.js"></script-symbolic>            <script synthetic src="../../../../textfieldControl/src/js/TextfieldStepper.js"></script>
+        <script-symbolic src="%fluid-textfield-controls/src/js/TextfieldSlider.js"></script-symbolic>            <script synthetic src="../../../../textfieldControl/src/js/TextfieldSlider.js"></script>
+        
+        <script-symbolic src="%fluid-prefs-line-space/js/LineSpace.js"></script-symbolic>            <script synthetic src="../../../../preferences/lineSpace/js/LineSpace.js"></script>
+        <script-symbolic src="%fluid-prefs-line-space/js/LineSpaceEnactor.js"></script-symbolic>            <script synthetic src="../../../../preferences/lineSpace/js/LineSpaceEnactor.js"></script>
+        <script-symbolic src="%fluid-prefs-line-space/js/LineSpacePanel.js"></script-symbolic>            <script synthetic src="../../../../preferences/lineSpace/js/LineSpacePanel.js"></script>
+
+        <script-symbolic src="%fluid-prefs-editor/src/js/ArrowScrolling.js"></script-symbolic>            <script synthetic src="../../../../preferences/prefsEditor/src/js/ArrowScrolling.js"></script>
+        <script-symbolic src="%fluid-prefs-editor/src/js/Enactor.js"></script-symbolic>            <script synthetic src="../../../../preferences/prefsEditor/src/js/Enactor.js"></script>
+        <script-symbolic src="%fluid-prefs-editor/src/js/Enhancer.js"></script-symbolic>            <script synthetic src="../../../../preferences/prefsEditor/src/js/Enhancer.js"></script>
+        <script-symbolic src="%fluid-prefs-editor/src/js/Indexer.js"></script-symbolic>            <script synthetic src="../../../../preferences/prefsEditor/src/js/Indexer.js"></script>
+        <script-symbolic src="%fluid-prefs-editor/src/js/Panel.js"></script-symbolic>            <script synthetic src="../../../../preferences/prefsEditor/src/js/Panel.js"></script>
+        <script-symbolic src="%fluid-prefs-editor/src/js/PreferencesHolder.js"></script-symbolic>            <script synthetic src="../../../../preferences/prefsEditor/src/js/PreferencesHolder.js"></script>
+        <script-symbolic src="%fluid-prefs-editor/src/js/PrefsEditor.js"></script-symbolic>            <script synthetic src="../../../../preferences/prefsEditor/src/js/PrefsEditor.js"></script>
+        <script-symbolic src="%fluid-prefs-editor/src/js/Store.js"></script-symbolic>            <script synthetic src="../../../../preferences/prefsEditor/src/js/Store.js"></script>
+        <script-symbolic src="%fluid-prefs-editor/src/js/Weaver.js"></script-symbolic>            <script synthetic src="../../../../preferences/prefsEditor/src/js/Weaver.js"></script>
+        <script-symbolic src="%fluid-prefs-editor/src/js/StarterPanels.js"></script-symbolic>            <script synthetic src="../../../../preferences/prefsEditor/src/js/StarterPanels.js"></script>
+
+
+        <script-symbolic src="%fluid-ui-options/src/js/UIOptions.js"></script-symbolic>            <script synthetic src="../../../../uiOptions/src/js/UIOptions.js"></script>            <script module-index synthetic src="../../../../infusionModuleIndex.js"></script>
+
+        <title>Preferences Editor: Full page with panel styling</title>
+     </head>
+
+    <body>
+
+        <main class="content">
+            <h1>Preferences Editor: Full Page</h1>
+            <div class="demo-prefsEditor-fullWithPreview"></div>
+        </main>
+        <div class="flc-toc-tocContainer"></div>
+
+        <script>
+            fluid.uiOptions(".demo-prefsEditor-fullWithPreview", {
+                panelHolderGrades: ["fluid.prefs.staticPanelHolder", "fluid.prefs.starterPanelHolder"],
+                model: {
+                    prefsEditor: true
+                }
+
+
+/*                auxiliarySchema: {
+                    loaderGrades: ["fluid.prefs.fullNoPreview"],
+                    terms: {
+                        templatePrefix: "../../../../src/framework/preferences/html/",
+                        messagePrefix: "../../../../src/framework/preferences/messages/"
+                    },
+                    "fluid.prefs.tableOfContents": {
+                        enactor: {
+                            tocTemplate: "../../../../src/components/tableOfContents/html/TableOfContents.html",
+                            tocMessage: "%messagePrefix/tableOfContents-enactor.json"
+                        }
+                    }
+                },
+                prefsEditor: {
+                    gradeNames: ["fluid.prefs.arrowScrolling"],
+                    autoSave: true
+                }
+*/
+            });
+        </script>
+    </body>
+
+</html>

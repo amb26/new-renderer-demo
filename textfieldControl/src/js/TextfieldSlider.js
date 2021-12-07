@@ -21,7 +21,7 @@ fluid.defaults("fluid.textfieldSlider", {
     gradeNames: ["fluid.newRendererComponent"],
     resources: {
         template: {
-            path: "%fluid-textfield-controls/html/TextfieldSlider.html"
+            path: "%fluid-textfield-controls/src/html/TextfieldSlider.html"
         }
     },
     selectors: {

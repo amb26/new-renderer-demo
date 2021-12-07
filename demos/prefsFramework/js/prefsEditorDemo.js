@@ -81,7 +81,7 @@ fluid.defaults("demo.prefsEditor.speak", {
 
 fluid.defaults("demo.prefsEditor.simplifyPanel", {
     gradeNames: ["fluid.prefs.panel.switchAdjuster"],
-    preferenceMap: {
+    preferencesMap: {
         "demo.prefs.simplify": {
             "model.value": "value"
         }
@@ -99,7 +99,7 @@ fluid.defaults("demo.prefsEditor.simplifyPanel", {
  **********************************************************************************/
 fluid.defaults("demo.prefsEditor.simplifyEnactor", {
     gradeNames: ["fluid.prefs.enactor", "fluid.viewComponent"],
-    preferenceMap: {
+    preferencesMap: {
         "demo.prefs.simplify": {
             "model.simplify": "value"
         }

@@ -16,7 +16,7 @@ https://github.com/fluid-project/infusion/raw/main/Infusion-LICENSE.txt
 fluid.defaults("fluid.prefs.panel.lineSpace", {
     gradeNames: ["fluid.prefs.panel.stepperAdjuster"],
     container: ".flc-prefsEditor-line-space", // with "new view" we can now put this into options
-    preferenceMap: {
+    preferencesMap: {
         "fluid.prefs.lineSpace": {
             "model.value": "value",
             "range.min": "minimum",

@@ -55,7 +55,8 @@ fluid.defaults("fluid.newRendererComponent", {
     // An override from "fluid.templateResourceFetcher"
     skipTemplateFetch: "{that}.options.parentMarkup",
     // Set to `true` if there is no template and/or the component expects to render into markup provided by parent
-    parentMarkup: false,
+    // Note that we can't default this because of the continuing FLUID-5800 blunder
+    //parentMarkup: false,
     // Set to `false` if, when the "container" selector is "/", whether the synthetic (outer) root node of the template should
     // be taken into account, otherwise when "container" is "/" the template will be considered to consist of
     // its physical root node. TODO: This will need to be combined with a directive governing splicing, at which point
@@ -221,6 +222,15 @@ fluid.renderer.useParentMarkup = function (that) {
     return parentMarkup || markupSnapshot;
 };
 
+// Find any component above the current one holding an in-progress document fragment from a renderer pass
+fluid.renderer.findFragmentHolder = function (that) {
+    var thatStack = fluid.globalInstantiator.getThatStack(that);
+    return thatStack.find(function (oneThat) {
+        return fluid.getImmediate(oneThat, ["dom", "containerFragment"]);
+    });
+};
+
+// Direct implementation of container expander for renderer component
 fluid.renderer.resolveRendererContainer = function (that, containerSpec) {
     var $b = fluid.renderer.binderSymbol;
     var fail = function (extraMessage) {
@@ -236,8 +246,11 @@ fluid.renderer.resolveRendererContainer = function (that, containerSpec) {
     };
 
     var parentMarkup = fluid.renderer.useParentMarkup(that);
+    var fragmentHolder = fluid.renderer.findFragmentHolder(that);
+    // If a fragment render is in progress for some parent, use its container fragment for the search by preference
+    var dokkument = fragmentHolder && fragmentHolder.dom.containerFragment || document;
     // Note that we can't use fluid.container here since there may be several or none of them
-    var outerContainer = fluid.isJQuery(containerSpec) ? containerSpec : $(containerSpec);
+    var outerContainer = fluid.isJQuery(containerSpec) ? containerSpec : $(containerSpec, dokkument);
     var innerContainer = outerContainer;
     var binderRecords = outerContainer[$b];
     if (binderRecords) {
@@ -257,6 +270,9 @@ fluid.renderer.resolveRendererContainer = function (that, containerSpec) {
         }
     }
     if (innerContainer.length !== 1) {
+        if (typeof(containerSpec) === "string") {
+            innerContainer.selector = containerSpec;
+        }
         fluid.container(innerContainer); // purely to provoke the traditional failure on mismatched container multiplicity
     }
 
@@ -394,6 +410,8 @@ fluid.renderer.initialiseDomBinder = function (that, dom) {
     }
 };
 
+// Last action of constructing renderer DOM binder. Sentinelises any ranges found in the DOM and creates binderRecords
+// in the parent's DOM binder.
 fluid.renderer.evaluateRendererSelectors = function (that, dom) {
     var $b = fluid.renderer.binderSymbol;
     fluid.renderer.findRendererSelectors(that, dom);

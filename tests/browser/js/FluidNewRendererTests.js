@@ -11,7 +11,7 @@ You may obtain a copy of the ECL 2.0 License and BSD License at
 https://github.com/fluid-project/infusion/raw/master/Infusion-LICENSE.txt
 */
 
-/* global jqUnit */
+/* global jqUnit, QUnit */
 
 "use strict";
 
@@ -139,4 +139,77 @@ jqUnit.test("Markup polymorphism test", function () {
         }
     });
     jqUnit.assertEquals("Markup-based polymorphic input has successfully bound", "from model", that2.container.val());
+});
+
+fluid.defaults("fluid.tests.staticSelectorSubpanel", {
+    gradeNames: "fluid.newRendererComponent",
+    container: ".line-space-panel",
+    resources: {
+        template: {
+            path: "%new-renderer-demo/tests/browser/data/SubPanel.html"
+        }
+    },
+    selectors: {
+        nestedElement: ".template-nested-element"
+    }
+});
+
+// Test similar to prefs framework panel layout with static container selector held as part of a subcomponent definition
+fluid.defaults("fluid.tests.staticSelectorParent", {
+    gradeNames: "fluid.newRendererComponent",
+    resources: {
+        template: {
+            path: "%new-renderer-demo/tests/browser/data/RootPanel.html"
+        }
+    },
+    components: {
+        subpanel: {
+            type: "fluid.tests.staticSelectorSubpanel"
+        }
+    }
+});
+
+jqUnit.asyncTest("Static selector and template test", function () {
+    var that = fluid.tests.staticSelectorParent("#static-selector");
+    that.events.onCreate.then(function () {
+        var nested = that.subpanel.dom.locate("nestedElement");
+        jqUnit.assertValue("Nested element rendered into DOM", nested);
+        jqUnit.assertNode("Expected node rendering", {
+            nodeName: "div",
+            "class": "template-nested-element"
+        }, nested);
+        jqUnit.start();
+    });
+});
+
+// TODO: Put something like this in core jqUnit
+// Double TODO: Reform framework error handling so that async failure can be detected by rejection of top-level that.events.onCreate
+jqUnit.expectFrameworkDiagnosticAsync = function (message, toInvoke, errorTexts) {
+    errorTexts = fluid.makeArray(errorTexts);
+    var assert = function (args) {
+        var fullText = fluid.transform(args, fluid.renderLoggingArg).join("");
+        errorTexts.forEach(function (errorText) {
+            jqUnit.assertTrue(message + " - message text must contain " + errorText, fullText.indexOf(errorText) >= 0);
+        });
+        fluid.failureEvent.removeListener("jqUnit");
+        fluid.failureEvent.removeListener("fail");
+        QUnit.config.current.ignoreGlobalErrors = true;
+        fluid.invokeLater(jqUnit.start);
+        throw new fluid.FluidError("Restart exception"); // Cancel the current stack
+    };
+    fluid.failureEvent.addListener(fluid.identity, "jqUnit");
+    fluid.failureEvent.addListener(assert, "fail");
+    toInvoke();
+};
+
+jqUnit.asyncTest("Static selector and template test with error", function () {
+    jqUnit.expectFrameworkDiagnosticAsync("Got framework exception with selector diagnostic", function () {
+        fluid.tests.staticSelectorParent("#static-selector-error", {
+            resources: {
+                template: {
+                    path: "%new-renderer-demo/tests/browser/data/RootPanelError.html"
+                }
+            }
+        });
+    }, ".line-space-panel");
 });

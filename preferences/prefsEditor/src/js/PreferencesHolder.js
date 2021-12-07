@@ -19,7 +19,9 @@ fluid.defaults("fluid.prefs.preferencesHolder", {
         defaultPreferences: "@expand:fluid.prefs.getDefaultPreferences({that}.options.schemaIndex)", 
         userPreferences: { // Any preferences which have been written by the user - this goes to UIEnhancer
         },
-        livePreferences: { // always === "defaultPreferences" + "userPreferences" - what is shown in the UI
+        livePreferences: {
+            // always === "defaultPreferences" + "userPreferences" - what is shown in the PrefsEditor UI
+            // and in addition to any preview
         },
         persistentPreferences: { // Flushed from "userPreferences" on save
         },
@@ -39,20 +41,17 @@ fluid.defaults("fluid.prefs.preferencesHolder", {
         }
     },
     listeners: {
-        "save.main": {
+        "save.main": { // Save: Saves userPreferences to persistentPreferences
             funcName: "fluid.prefs.setModelValue",
-            path: "persistentPreferences",
-            value: "{that}.model.userPreferences"
+            args: ["{that}", "persistentPreferences", "{that}.model.userPreferences"]
         },
-        "reset.main": {
+        "reset.main": { // Reset: Zeros out userPreferences, returns to defaults
             funcName: "fluid.prefs.setModelValue",
-            path: "userPreferences",
-            value: undefined
+            args: ["{that}", "userPreferences"]
         },
-        "cancel.main": {
+        "cancel.main": { // Cancel: Resets userPreferences to persistentPreferences
             funcName: "fluid.prefs.setModelValue",
-            path: "userPreferences",
-            value: "{that}.model.persistentPreferences"            
+            args: ["{that}", "userPreferences", "{that}.model.persistentPreferences"]            
         }
     },
     modelRelay: {
@@ -65,7 +64,7 @@ fluid.defaults("fluid.prefs.preferencesHolder", {
     modelListeners: {
         "savePrefs": {
             path: "persistentPreferences",
-            func: "{that}.write"
+            listener: "{that}.write"
         },
         "handleAutoSave": {
             path: "livePreferences",
@@ -75,19 +74,37 @@ fluid.defaults("fluid.prefs.preferencesHolder", {
         }
     },
     invokers: {
+        // Two overrides for the "remoteModelComponent" interface
+        // TODO: These two methods for "RemoteModel" component - in practice we need to decouple this workflow.
+        // Q: It seems we want to jam RemoteModel's listener into the DataSource's sequence, but this doesn't seem
+        // quite right since they have their own signature (don't use transformStrategy). We will instead stick
+        // ONE listener for the whole thing into the chain?
+        // Probably. Note that our current entry point into reading and writing prefs is via RemoteModel's top-level
+        // "fetch" invoked from "cancel"  and "write" invoked from "save".
+        
+        // Note that the fetch in "finishInit" will be moved into the resource fetch, and the fetch in "cancel" will
+        // be removed since we will already have "persistentPreferences" to fall back on.
+        
+        // Some future UIO might have a "live read" capability like UIO+
         writeImpl: {
             func: "{that}.store.set"
         },
-        readImpl: {
+        fetchImpl: {
             func: "{that}.store.get"
         }
     }
 });
 
+fluid.prefs.merge = function (defs, user) {
+    return fluid.extend({}, defs, user);
+};
+
 fluid.prefs.setModelValue = function (that, path, value) {
     var transaction = that.applier.initiate();
     transaction.fireChangeRequest({path: path, type: "DELETE"});
-    transaction.change(path, value);
+    if (value !== undefined) {
+        transaction.change(path, value);
+    }
     transaction.commit();
 };
 

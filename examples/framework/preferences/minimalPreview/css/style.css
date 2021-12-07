@@ -1,0 +1,39 @@
+main {
+    max-width: 950px;
+    width: 95%;
+}
+
+/* Scoped colours for theme swapping */
+
+/*
+    Font color: #3E606F
+    Button blue: #0071BC
+ */
+.prefsEditor-demo-theme {
+    background-color: #e8ebe0;
+    color: #3e606f;
+}
+
+.prefsEditor-demo-theme a {
+    color: #3e606f;
+}
+
+.prefsEditor-demo-theme .demo-goTo-link {
+    display: flex;
+    flex-direction: row;
+    justify-content: flex-end;
+    padding: 10px;
+}
+
+.prefsEditor-demo-theme .demo-goTo-link a {
+    background-color: #3e606f;
+    border: 2px solid #3e606f;
+    color: #fff;
+    padding: 10px;
+    text-decoration: none;
+}
+
+.prefsEditor-demo-theme .demo-goTo-link a::after {
+    content: "⇨";
+    padding-left: 5px;
+}

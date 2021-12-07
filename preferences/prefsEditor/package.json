@@ -4,17 +4,6 @@
     "version": "1.0.0",
     "license": "BSD-3-Clause",
     "infusion": {
-        "bundleType": "fluid-renderer-module",
-        "cssFiles": [
-            "./src/css/Switch.css"
-        ],
-        "jsCommonFiles": [
-            "./src/js/Switch.js"
-        ],
-        "htmlFiles": [
-            "./src/html/LineSpace.html"
-        ],
-        "staticMountBase": "./src/",
-        "testStaticMountBase": "./test"
+        "bundleType": "fluid-renderer-module"
     }
 }

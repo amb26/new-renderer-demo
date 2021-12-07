@@ -237,10 +237,11 @@ https://github.com/fluid-project/infusion/raw/main/Infusion-LICENSE.txt
         }
         return !!primarySchema;
     };
+    
+    fluid.prefs.flatRegex = /\\./g;
 
     fluid.prefs.flattenName = function (name) {
-        var regexp = new RegExp("\\.", "g");
-        return name.replace(regexp,  "_");
+        return name.replace(fluid.prefs.flatRegex,  "_");
     };
 
     /**

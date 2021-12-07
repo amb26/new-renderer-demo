@@ -13,13 +13,6 @@ https://github.com/fluid-project/infusion/raw/main/Infusion-LICENSE.txt
 
 "use strict";
 
-
-
-// We used to have 
-// fluid.prefs.assembler.prefsEd", {
-//        gradeNames: ["fluid.prefs.assembler.uie"
-// and then uio
-
 /*
  * Top-level component that orchestrates construction of panels, enhancers and stores for a preferences
  * editor component. Replaces previous-generation "builder".
@@ -31,24 +24,37 @@ fluid.defaults("fluid.prefs.weaver", {
     model: {
         prefsEditor: false, // Whether the prefsEditor should be constructed
     },
+    // Override to configure both panel templating style and panel choice - perhaps this should be a hash
+    panelHolderGrades: "fluid.prefs.starterPanelHolder",
+    // Override with desired container for prefsEditor - UIOptions naturally forwards its own container
+    prefsEditorContainer: "",
+
+    // Ends up with schemaIndex, enactorIndex from fluid.prefs.indexer
 
     components: {
-        prefsEditor: {
-            type: "fluid.prefs.editor",
-            source: "{that}.model.prefsEditor",
-            components: {
-                prefsHolder: "{fluid.prefs.preferencesHolder}"
-            }
-        },
         enhancer: {
-            type: "fluid.prefs.enhancer",
+            type: "fluid.prefs.pageEnhancer",
             options: {
-                model: {
-                    preferences: "{fluid.prefs.weaver}.model.userPreferences"
-                },
-                enactorRegistry: "{fluid.prefs.weaver}.enactorRegistry"
+                enactorRegistry: "{fluid.prefs.weaver}.options.enactorRegistry"
             }
         }
+    },
+    dynamicComponents: {
+        prefsEditor: {
+            type: "fluid.prefs.prefsEditor",
+            source: "{that}.model.prefsEditor",
+            options: {
+                container: "{fluid.prefs.weaver}.options.prefsEditorContainer",
+                components: {
+                    prefsHolder: "{fluid.prefs.preferencesHolder}",
+                    panelHolder: {
+                        options: {
+                            gradeNames: "{fluid.prefs.weaver}.options.panelHolderGrades"
+                        }
+                    }
+                }
+            }
+        }      
     },
     distributeOptions: {
         weaveEnactors: {
@@ -60,6 +66,5 @@ fluid.defaults("fluid.prefs.weaver", {
             record: "fluid.prefs.withPreferencesMap"
         }
     }
-   
 });
 

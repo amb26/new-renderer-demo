@@ -59,7 +59,8 @@ fluid.defaults("fluid.prefs.enactor.textRelatedSizer", {
         }
     },
     modelListeners: {
-        value: {
+        setAdaptation: {
+            path: "value",
             listener: "{that}.set",
             args: ["{change}.value"],
             namespace: "setAdaptation"
