@@ -84,7 +84,7 @@ fluid.defaults("fluid.prefs.panel.switchAdjuster", {
                     enabled: "{fluid.prefs.panel.switchAdjuster}.model.value",
                     messages: {
                         on: "{switchAdjuster}.model.messages.switchOn",
-                        of: "{switchAdjuster}.model.messages.switchOff"
+                        off: "{switchAdjuster}.model.messages.switchOff"
                     }
                 },
                 modelRelay: {

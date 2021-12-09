@@ -5,13 +5,13 @@ This demonstrates in-progress work implementing the new Infusion renderer which 
 This project houses several demonstrations and implementations -
 
 - Reimplementations of the existing [Switch](switch), [TextfieldSlider](textfieldControl/src/js/TextfieldSlider.js),
-[TextfieldStepper](textfieldControl/src/js/TextfieldStepper.js] and [TableOfContents](tableOfContents) components with identical
+[TextfieldStepper](textfieldControl/src/js/TextfieldStepper.js) and [TableOfContents](tableOfContents) components with identical
 functionality and near-identical interfaces to those in Infusion trunk
 - Isomorphic rendering demo of the TextfieldSlider at [demos/textfieldControlsMutation](demos/textfieldControlsMutation)
 - Port of standard TableOfContents demo at [demos/tableOfContents](demos/tableOfContents)
 - DOM manipulation performance test at [perftest](perftest)
 
-This work is packaged as a set of addons to the current (Infusion 4.x) [main]( branch of Infusion.
+This work is packaged as a set of addons to the current (Infusion 4.x) [main](https://github.com/fluid-project/infusion) branch of Infusion.
 
 You may run the browser tests by opening [all-tests.html](all-tests.html) after hosting this project from the filesystem.
 
