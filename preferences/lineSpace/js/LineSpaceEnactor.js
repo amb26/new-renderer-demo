@@ -11,6 +11,8 @@ You may obtain a copy of the ECL 2.0 License and BSD License at
 https://github.com/fluid-project/infusion/raw/main/Infusion-LICENSE.txt
 */
 
+"use strict";
+
 // Note that fontSizeMap is defined simply inline on the enactor, rather than on the UIEnhancer, since it is not
 // shared with panels
 // However it feels like there should be a generalised ability for a panel to look up the enhancer for a
@@ -37,7 +39,12 @@ fluid.defaults("fluid.prefs.enactor.lineSpace", {
         factor: "--fl-lineSpace-factor",
         size: "--fl-lineSpace"
     },
-    fontSizeMap: { // For some reason, this used to be in "aux schema"
+    fontSizeMap: {
+        // For some reason, this used to be in "aux schema"
+        // Note that this table should be shared at some higher level between textRelatedSizer enactors -
+        // It used to be defined on the UIEnhancer by "fluid.uiEnhancer.browserTextEnhancerBase" and then pulled in via
+        // their child definitions in fluid.uiEnhancer.starterEnactors
+        // similarly for classnameMap in fluid.uiEnhancer.cssClassEnhancerBase
         "xx-small": "9px",
         "x-small": "11px",
         "small": "13px",

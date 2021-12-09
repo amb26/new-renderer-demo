@@ -26,7 +26,8 @@ fluid.defaults("fluid.prefs.staticPanelHolder", {
  * work of applying those preferences to the user interface.
  */
 fluid.defaults("fluid.prefs.prefsEditor", {
-    gradeNames: ["fluid.newRendererComponent"],
+    gradeNames: ["fluid.newRendererComponent", "fluid.prefs.varietyPathHolder"],
+    // varietyPathPrefix: must be overridden
     markup: {
         // only used when dynamically generating the panel containers.
         panel: "<li class=\"%className flc-prefsEditor-panel fl-prefsEditor-panel\"></li>"
@@ -45,8 +46,7 @@ fluid.defaults("fluid.prefs.prefsEditor", {
         // panels: ".flc-prefsEditor-panel",
         cancel: ".flc-prefsEditor-cancel",
         reset: ".flc-prefsEditor-reset",
-        save: ".flc-prefsEditor-save",
-        previewFrame: ".flc-prefsEditor-preview-frame"
+        save: ".flc-prefsEditor-save"
     },
     events: {
         //beforeReset: null, // <-- Unnecessary - only listener is arrowScrolling - it should instead contribute its own init value of {panelIndex: 0}
@@ -54,7 +54,7 @@ fluid.defaults("fluid.prefs.prefsEditor", {
     },
     resources: {
         template: {
-            // need to parameterise the area where panels appear - 
+            // need to parameterise the area where panels appear -
             // Separated panel has fl-prefsEditor-panels as the container, others have fl-prefsEditor-
             path: "%fluid-prefs-editor/src/html/FullPreviewPrefsEditor.html"
         }
@@ -97,14 +97,4 @@ fluid.prefs.prefsEditor.finishInit = function (that) {
     }
 
     that.container.append(template);
-    bindHandlers(that);
-
-    var fetchPromise = that.fetch();
-    fetchPromise.then(function () {
-        that.events.onPrefsEditorMarkupReady.fire();
-        that.events.onPrefsEditorRefresh.fire();
-        that.applyChanges();
-        that.events.onReady.fire(that);
-
-    });
 };

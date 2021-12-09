@@ -13,22 +13,28 @@ https://github.com/fluid-project/infusion/raw/main/Infusion-LICENSE.txt
 
 "use strict";
 
-/**********************************************************************************
-* speakPanel
-**********************************************************************************/
-fluid.defaults("fluid.prefs.panel.speak", {
+/*************************************
+ * Preferences Editor Enhance Inputs *
+ *************************************/
+
+/**
+ * A sub-component of fluid.prefs that renders the "enhance inputs" panel of the user preferences interface.
+ */
+fluid.defaults("fluid.prefs.panel.enhanceInputs", {
     gradeNames: ["fluid.prefs.panel.switchAdjuster"],
-    preferenceMap: {
-        "fluid.prefs.speak": {
+    container: ".flc-prefsEditor-enhanceInputs",
+    templateHasRoot: false,
+    preferencesMap: {
+        "fluid.prefs.enhanceInputs": {
             "model.value": "value"
         }
     },
     resources: {
         template: {
-            path: "%fluid-prefs-self-voicing/html/SelfVoicing.html"
+            path: "%fluid-prefs-enhance-inputs/html/EnhanceInputs.html"
         },
         messages: {
-            path: "%fluid-prefs-self-voicing/messages/speak.json"
+            path: "%fluid-prefs-enhance-inputs/messages/enhanceInputs.json"
         }
     }
 });

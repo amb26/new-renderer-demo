@@ -11,29 +11,62 @@ You may obtain a copy of the ECL 2.0 License and BSD License at
 https://github.com/fluid-project/infusion/raw/main/Infusion-LICENSE.txt
 */
 
+"use strict";
+
 /***********************************
  * Full Preview Preferences Editor *
  ***********************************/
 
 fluid.defaults("fluid.prefs.withPreview", {
-    outerUiEnhancerOptions: "{originalEnhancerOptions}.options.originalUserOptions",
-    outerUiEnhancerGrades: "{originalEnhancerOptions}.uiEnhancer.options.userGrades",
+    // previewTemplatePath: ""
     components: {
         enhancerClone: {
-            type: "fluid.prefs.enhancerClone"
-        },
-        previewEnhancer: {
-            type: "fluid.prefs.uiEnhancer"
+            type: "fluid.prefs.enhancerClone",
+            options: {
+                distributeOptions: {
+                    "withPreview.outerUiEnhancerOptions": {
+                        source: "{that}.options.originalUserOptions",
+                        target: "{fluid.prefs.withPreview previewEnhancer}.options"
+                    },
+                    "withPreview.outerUiEnhancerGrades": {
+                        source: "{that}.options.userGrades",
+                        target: "{fluid.prefs.withPreview previewEnhancer}.options.gradeNames"
+                    }
+                }
+            }
         }
     },
     distributeOptions: {
-        "fullPreview.enhancer.outerUiEnhancerOptions": {
-            source: "{that}.enhancerClone.options.outerUiEnhancerOptions",
-            target: "{that previewEnhancer}.options"
+        "withPreview.prefsEditor": {
+            record: "fluid.prefs.prefsEditorWithPreview",
+            target: "{that prefsEditor}.options.gradeNames"
+        }
+    }
+});
+
+fluid.defaults("fluid.prefs.prefsEditorWithPreview", {
+    selectors: {
+        previewFrame: ".flc-prefsEditor-preview-frame"
+    },
+    components: {
+        preview: {
+            type: "fluid.newRendererComponent",
+            options: {
+                container: "{prefsEditorWithPreview}.dom.previewFrame",
+                resources: {
+                    template: {
+                        path: "{withPreview}.options.previewTemplatePath"
+                    }
+                }
+            }
         },
-        "fullPreview.enhancer.outerUiEnhancerGrades": {
-            source: "{that}.enhancerClone.options.outerUiEnhancerGrades",
-            target: "{that previewEnhancer}.options.gradeNames"
+        previewEnhancer: {
+            type: "fluid.prefs.uiEnhancer",
+            options: {
+                container: "{prefsEditor}.preview.container",
+                enactorRegistry: "{fluid.prefs.weaver}.options.enactorRegistry",
+                varietyPathPrefix: "{fluid.prefs.weaver}.model.userPreferences"
+            }
         }
     }
 });

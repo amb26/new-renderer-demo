@@ -14,17 +14,16 @@ https://github.com/fluid-project/infusion/raw/main/Infusion-LICENSE.txt
 "use strict";
 
 fluid.defaults("fluid.prefs.preferencesHolder", {
-    gradeNames: ["fluid.modelComponent", "fluid.remoteModelComponent"],
+    gradeNames: ["fluid.modelComponent", "fluid.remoteModelComponent", "fluid.resourceLoader"],
     model: {
-        defaultPreferences: "@expand:fluid.prefs.getDefaultPreferences({that}.options.schemaIndex)", 
+        defaultPreferences: "@expand:fluid.prefs.getDefaultPreferences({that}.options.schemaIndex)",
         userPreferences: { // Any preferences which have been written by the user - this goes to UIEnhancer
         },
         livePreferences: {
             // always === "defaultPreferences" + "userPreferences" - what is shown in the PrefsEditor UI
             // and in addition to any preview
         },
-        persistentPreferences: { // Flushed from "userPreferences" on save
-        },
+        persistentPreferences: "{that}.resources.initialPersistentPreferences.parsed.preferences", // Flushed from "userPreferences" on save
         local: { // for remoteModelComponent
             preferences: "{that}.model.persistentPreferences"
         }
@@ -40,25 +39,16 @@ fluid.defaults("fluid.prefs.preferencesHolder", {
             type: "fluid.prefs.globalSettingsStore"
         }
     },
-    listeners: {
-        "save.main": { // Save: Saves userPreferences to persistentPreferences
-            funcName: "fluid.prefs.setModelValue",
-            args: ["{that}", "persistentPreferences", "{that}.model.userPreferences"]
-        },
-        "reset.main": { // Reset: Zeros out userPreferences, returns to defaults
-            funcName: "fluid.prefs.setModelValue",
-            args: ["{that}", "userPreferences"]
-        },
-        "cancel.main": { // Cancel: Resets userPreferences to persistentPreferences
-            funcName: "fluid.prefs.setModelValue",
-            args: ["{that}", "userPreferences", "{that}.model.persistentPreferences"]            
-        }
-    },
     modelRelay: {
         mergeDefaultPrefs: {
             target: "livePreferences",
             func: "fluid.prefs.merge",
             args: ["{that}.model.defaultPreferences", "{that}.model.userPreferences"]
+        },
+        updatePersistentPrefs: {
+            target: "userPreferences",
+            source: "persistentPreferences",
+            backward: "never"
         }
     },
     modelListeners: {
@@ -71,6 +61,31 @@ fluid.defaults("fluid.prefs.preferencesHolder", {
             listener: "fluid.prefs.handleAutoSave",
             args: ["{that}"],
             excludeSource: "init"
+        },
+        "transferPrefs": { // Transfer any user changes caused to live preferences back into userPreferences
+            path: "livePreferences.*",
+            listener: "fluid.prefs.transferPrefs",
+            args: ["{that}", "{change}.value", "{change}.path"],
+            excludeSource: ["init", "preferencesHolder"]
+        }
+    },
+    resources: {
+        initialPersistentPreferences: {
+            promiseFunc: "{that}.fetchImpl"
+        }
+    },
+    listeners: {
+        "save.main": { // Save: Saves userPreferences to persistentPreferences
+            funcName: "fluid.prefs.setModelValue",
+            args: ["{that}", "persistentPreferences", "{that}.model.userPreferences"]
+        },
+        "reset.main": { // Reset: Zeros out userPreferences, returns to defaults
+            funcName: "fluid.prefs.reset",
+            args: ["{that}"]
+        },
+        "cancel.main": { // Cancel: Resets userPreferences to persistentPreferences
+            funcName: "fluid.prefs.setModelValue",
+            args: ["{that}", "userPreferences", "{that}.model.persistentPreferences"]
         }
     },
     invokers: {
@@ -81,29 +96,53 @@ fluid.defaults("fluid.prefs.preferencesHolder", {
         // ONE listener for the whole thing into the chain?
         // Probably. Note that our current entry point into reading and writing prefs is via RemoteModel's top-level
         // "fetch" invoked from "cancel"  and "write" invoked from "save".
-        
+
         // Note that the fetch in "finishInit" will be moved into the resource fetch, and the fetch in "cancel" will
         // be removed since we will already have "persistentPreferences" to fall back on.
-        
+
         // Some future UIO might have a "live read" capability like UIO+
-        writeImpl: {
-            func: "{that}.store.set"
-        },
-        fetchImpl: {
-            func: "{that}.store.get"
-        }
+        writeImpl: "fluid.prefs.write({that}, {arguments}.0)",
+        fetchImpl: "fluid.prefs.read({that}, {that}.store.get)"
     }
 });
 
+fluid.prefs.write = function (that, persistentPrefs) {
+    if (!$.isEmptyObject(persistentPrefs)) { // "Don't save a reset model"
+        return that.store.set(null, {
+            preferences: persistentPrefs
+        });
+    } else {
+        return fluid.promise().resolve();
+    }
+};
+
+fluid.prefs.read = function (that, getter) {
+    return fluid.promise.map(getter(), function (result) {
+        return result && result.preferences;
+    });
+};
+
 fluid.prefs.merge = function (defs, user) {
-    return fluid.extend({}, defs, user);
+    return fluid.extend(true, {}, defs, user);
+};
+
+fluid.prefs.transferPrefs = function (that, newLive, path) {
+    var segs = that.applier.parseEL(path);
+    that.applier.change(["userPreferences", fluid.peek(segs)], newLive);
+};
+
+fluid.prefs.reset = function (that) {
+    fluid.prefs.setModelValue(that, "userPreferences", undefined);
+    that.events.save.fire();
+    // TODO: bug - somehow we seemed to see the "mergeDefaultPrefs" relay not operating here
+    fluid.prefs.setModelValue(that, "livePreferences", that.model.defaultPreferences);
 };
 
 fluid.prefs.setModelValue = function (that, path, value) {
     var transaction = that.applier.initiate();
-    transaction.fireChangeRequest({path: path, type: "DELETE"});
+    transaction.fireChangeRequest({path: path, type: "DELETE", source: "preferencesHolder"});
     if (value !== undefined) {
-        transaction.change(path, value);
+        transaction.change(path, value, "ADD", "preferencesHolder");
     }
     transaction.commit();
 };

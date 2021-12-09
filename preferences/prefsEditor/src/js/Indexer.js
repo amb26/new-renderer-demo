@@ -21,7 +21,7 @@ fluid.defaults("fluid.prefs.indexer", {
             func: "fluid.prefs.indexer.indexUnique",
             args: ["schemaIndex", {
                 gradeNames: "fluid.prefs.schema",
-                indexFunc: "fluid.prefs.indexer.schemaIndexer",
+                indexFunc: "fluid.prefs.indexer.schemaIndexer"
             }, "fluid.prefs.indexer.dereferenceSchema"]
         }
     },
@@ -34,13 +34,16 @@ fluid.defaults("fluid.prefs.indexer", {
                 indexFunc: "fluid.prefs.indexer.enactorIndexer"
             }]
         }
-    },
+    }
 });
 
-fluid.prefs.varietyToModelPath = { 
-    enactor: "{fluid.prefs.weaver}.model.userPreferences",
-    panel: "{fluid.prefs.weaver}.model.livePreferences"
-} 
+// A grade interpreted by fluid.prefs.makePrefsMapGrade that it will indirect into in order to discover the
+// model prefix that a prefsMap holding component should be bound to via its model relay
+fluid.defaults("fluid.prefs.varietyPathHolder", {
+    mergePolicy: {
+        varietyPathPrefix: "noexpand"
+    }
+});
 
 /**
  * An index function that indexes all primary schema grades based on their preference name.
@@ -55,13 +58,13 @@ fluid.prefs.indexer.schemaIndexer = function (defaults) {
 fluid.prefs.indexer.dereferenceSchema = function (gradeName, indexKey) {
     var defaults = fluid.defaults(gradeName);
     return fluid.getImmediate(defaults, ["schema", indexKey]);
-}
+};
 
 fluid.prefs.indexer.indexUnique = function (indexName, indexPayload, dereferenceFunc) {
-    var rawIndex = fluid.indexDefaults(indexName, indexPayload)
+    var rawIndex = fluid.indexDefaults(indexName, indexPayload);
     return fluid.transform(rawIndex, function (grades, indexKey) {
         if (grades.length !== 1) {
-            fluid.log(fluid.logLevel.WARN, "More than one " + indexPayload.gradeNames + " grade was registered for preference with key ", key, ": ", grades.join(", "));
+            fluid.log(fluid.logLevel.WARN, "More than one " + indexPayload.gradeNames + " grade was registered for preference with key ", indexKey, ": ", grades.join(", "));
         }
         var gradeName = fluid.peek(grades);
         return dereferenceFunc ? fluid.invokeGlobalFunction(dereferenceFunc, [gradeName, indexKey]) : gradeName;
@@ -92,7 +95,7 @@ fluid.prefs.indexer.allEnactorRegistry = function (enactorIndex) {
         var flatName = fluid.prefs.flattenName(grade);
         togo[flatName] = {
             type: grade
-        }
+        };
     });
     return togo;
 };
@@ -119,7 +122,14 @@ fluid.prefs.makePrefsMapGrade = function (that, indexer) {
     if (variety !== "enactor" && variety !== "panel") {
         fluid.fail("Only varieties enactor and panel are acceptable for withPreferencesMap grade " + that.typeName);
     }
-    var modelRefPrefix = fluid.prefs.varietyToModelPath[variety];
+    var pathHolder = fluid.resolveContext("fluid.prefs.varietyPathHolder", that);
+    if (!pathHolder) {
+        fluid.fail("Unable to resolve variety path holder from prefsMap component ", fluid.dumpComponentAndPath(that));
+    }
+    var modelRefPrefix = fluid.getForComponent(pathHolder, ["options", "varietyPathPrefix"]);
+    if (!modelRefPrefix) {
+        fluid.fail("fluid.prefs.varietyPathHolder component" + fluid.dumpComponentAndPath(pathHolder) + " was not configured with a varietyPathPrefix");
+    }
     var prefsMap = fluid.getForComponent(that, ["options", "preferencesMap"]);
     var gradeName = that.typeName + ".withPrefsMap";
     var keys = Object.keys(prefsMap);
@@ -150,7 +160,7 @@ fluid.prefs.makePrefsMapGrade = function (that, indexer) {
 fluid.prefs.getDefaultPreferences = function (schemaIndex) {
     var schemaEntries = Object.entries(schemaIndex);
     var mappedEntries = schemaEntries.map(function (e) {
-        return [fluid.prefs.flattenName(e[0]), e[1]["default"]]
+        return [fluid.prefs.flattenName(e[0]), e[1]["default"]];
     });
     return Object.fromEntries(mappedEntries);
 };

@@ -1,6 +1,18 @@
 {
     "sources": {
-        "js": ["./src/**/*.js", "./tests/**/*.js", "./demos/**/*.js", "./textfieldControl/**/*.js", "./tableOfContents/**/*.js", "./tableOfContentsDemo/**/*.js", "./perftest/**/*.js", "./*.js"],
+        "js": [
+            "./src/**/*.js",
+            "./tests/**/*.js",
+            "./demos/**/*.js",
+            "./examples/**/*.js",
+            "./preferences/**/*.js",
+            "./textfieldControl/**/*.js",
+            "./tableOfContents/**/*.js",
+            "./perftest/**/*.js",
+            "./uiOptions/**/*.js",
+            "!./preferences/test/**/*.js",
+            "!./preferences/src/**/*.js",
+            "./*.js"],
         "json": ["./*.json"],
         "md": ["./*.md"],
         "other": ["./.*"]
@@ -16,11 +28,6 @@
             "config": {
                 "single-h1": false
             }
-        }
-    },
-    "lintspaces": {
-        "newlines": {
-            "excludes": ["tests/**/images/**/*"]
         }
     }
 }

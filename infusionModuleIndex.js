@@ -33,6 +33,11 @@ fluid.infusionModuleIndex = [
         "prefix": "perftest/"
     },
     {
+        "moduleName": "fluid-prefs-enhance-inputs",
+        "suffix": "",
+        "prefix": "preferences/enhanceInputs/"
+    },
+    {
         "moduleName": "fluid-prefs-line-space",
         "suffix": "",
         "prefix": "preferences/lineSpace/"
@@ -46,6 +51,11 @@ fluid.infusionModuleIndex = [
         "moduleName": "fluid-prefs-editor",
         "suffix": "",
         "prefix": "preferences/prefsEditor/"
+    },
+    {
+        "moduleName": "fluid-prefs-text-size",
+        "suffix": "",
+        "prefix": "preferences/textSize/"
     },
     {
         "moduleName": "fluid-switch",

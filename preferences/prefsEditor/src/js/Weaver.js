@@ -22,7 +22,7 @@ fluid.defaults("fluid.prefs.weaver", {
     // Override this definition in the case the user wants to respond to fewer enactors than are loaded
     enactorRegistry: "@expand:fluid.prefs.indexer.allEnactorRegistry({that}.options.enactorIndex)",
     model: {
-        prefsEditor: false, // Whether the prefsEditor should be constructed
+        prefsEditor: false // Whether the prefsEditor should be constructed
     },
     // Override to configure both panel templating style and panel choice - perhaps this should be a hash
     panelHolderGrades: "fluid.prefs.starterPanelHolder",
@@ -35,7 +35,8 @@ fluid.defaults("fluid.prefs.weaver", {
         enhancer: {
             type: "fluid.prefs.pageEnhancer",
             options: {
-                enactorRegistry: "{fluid.prefs.weaver}.options.enactorRegistry"
+                enactorRegistry: "{fluid.prefs.weaver}.options.enactorRegistry",
+                varietyPathPrefix: "{fluid.prefs.weaver}.model.persistentPreferences"
             }
         }
     },
@@ -45,6 +46,7 @@ fluid.defaults("fluid.prefs.weaver", {
             source: "{that}.model.prefsEditor",
             options: {
                 container: "{fluid.prefs.weaver}.options.prefsEditorContainer",
+                varietyPathPrefix: "{fluid.prefs.weaver}.model.livePreferences",
                 components: {
                     prefsHolder: "{fluid.prefs.preferencesHolder}",
                     panelHolder: {
@@ -54,7 +56,7 @@ fluid.defaults("fluid.prefs.weaver", {
                     }
                 }
             }
-        }      
+        }
     },
     distributeOptions: {
         weaveEnactors: {

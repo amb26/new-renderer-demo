@@ -45,10 +45,21 @@
         <script-symbolic src="%fluid-textfield-controls/src/js/Textfield.js"></script-symbolic>            <script synthetic src="../../../../textfieldControl/src/js/Textfield.js"></script>
         <script-symbolic src="%fluid-textfield-controls/src/js/TextfieldStepper.js"></script-symbolic>            <script synthetic src="../../../../textfieldControl/src/js/TextfieldStepper.js"></script>
         <script-symbolic src="%fluid-textfield-controls/src/js/TextfieldSlider.js"></script-symbolic>            <script synthetic src="../../../../textfieldControl/src/js/TextfieldSlider.js"></script>
+
+        <script-symbolic src="%fluid-switch/src/js/Switch.js"></script-symbolic>            <script synthetic src="../../../../switch/src/js/Switch.js"></script>
         
         <script-symbolic src="%fluid-prefs-line-space/js/LineSpace.js"></script-symbolic>            <script synthetic src="../../../../preferences/lineSpace/js/LineSpace.js"></script>
         <script-symbolic src="%fluid-prefs-line-space/js/LineSpaceEnactor.js"></script-symbolic>            <script synthetic src="../../../../preferences/lineSpace/js/LineSpaceEnactor.js"></script>
         <script-symbolic src="%fluid-prefs-line-space/js/LineSpacePanel.js"></script-symbolic>            <script synthetic src="../../../../preferences/lineSpace/js/LineSpacePanel.js"></script>
+
+        <script-symbolic src="%fluid-prefs-text-size/js/TextSize.js"></script-symbolic>            <script synthetic src="../../../../preferences/textSize/js/TextSize.js"></script>
+        <script-symbolic src="%fluid-prefs-text-size/js/TextSizeEnactor.js"></script-symbolic>            <script synthetic src="../../../../preferences/textSize/js/TextSizeEnactor.js"></script>
+        <script-symbolic src="%fluid-prefs-text-size/js/TextSizePanel.js"></script-symbolic>            <script synthetic src="../../../../preferences/textSize/js/TextSizePanel.js"></script>
+
+        <script-symbolic src="%fluid-prefs-enhance-inputs/js/EnhanceInputs.js"></script-symbolic>            <script synthetic src="../../../../preferences/enhanceInputs/js/EnhanceInputs.js"></script>
+        <script-symbolic src="%fluid-prefs-enhance-inputs/js/EnhanceInputsEnactor.js"></script-symbolic>            <script synthetic src="../../../../preferences/enhanceInputs/js/EnhanceInputsEnactor.js"></script>
+        <script-symbolic src="%fluid-prefs-enhance-inputs/js/EnhanceInputsPanel.js"></script-symbolic>            <script synthetic src="../../../../preferences/enhanceInputs/js/EnhanceInputsPanel.js"></script>
+
 
         <script-symbolic src="%fluid-prefs-editor/src/js/ArrowScrolling.js"></script-symbolic>            <script synthetic src="../../../../preferences/prefsEditor/src/js/ArrowScrolling.js"></script>
         <script-symbolic src="%fluid-prefs-editor/src/js/Enactor.js"></script-symbolic>            <script synthetic src="../../../../preferences/prefsEditor/src/js/Enactor.js"></script>
@@ -60,11 +71,11 @@
         <script-symbolic src="%fluid-prefs-editor/src/js/Store.js"></script-symbolic>            <script synthetic src="../../../../preferences/prefsEditor/src/js/Store.js"></script>
         <script-symbolic src="%fluid-prefs-editor/src/js/Weaver.js"></script-symbolic>            <script synthetic src="../../../../preferences/prefsEditor/src/js/Weaver.js"></script>
         <script-symbolic src="%fluid-prefs-editor/src/js/StarterPanels.js"></script-symbolic>            <script synthetic src="../../../../preferences/prefsEditor/src/js/StarterPanels.js"></script>
-
+        <script-symbolic src="%fluid-prefs-editor/src/js/WithPreview.js"></script-symbolic>            <script synthetic src="../../../../preferences/prefsEditor/src/js/WithPreview.js"></script>
 
         <script-symbolic src="%fluid-ui-options/src/js/UIOptions.js"></script-symbolic>            <script synthetic src="../../../../uiOptions/src/js/UIOptions.js"></script>            <script module-index synthetic src="../../../../infusionModuleIndex.js"></script>
 
-        <title>Preferences Editor: Full page with panel styling</title>
+        <title>Preferences Editor: Full page with grouped styling</title>
      </head>
 
     <body>
@@ -77,10 +88,13 @@
 
         <script>
             fluid.uiOptions(".demo-prefsEditor-fullWithPreview", {
+                gradeNames: "fluid.prefs.withPreview",
                 panelHolderGrades: ["fluid.prefs.staticPanelHolder", "fluid.prefs.starterPanelHolder"],
                 model: {
                     prefsEditor: true
-                }
+                },
+                autoSave: false,
+                previewTemplatePath: "%new-renderer-demo/examples/framework/preferences/minimalPreview/html/prefsEditorPreview.html"
 
 
 /*                auxiliarySchema: {

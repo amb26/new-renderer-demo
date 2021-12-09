@@ -39,7 +39,26 @@ fluid.prefs.stringLookup = function (messageResolver, stringArrayIndex) {
 
 fluid.defaults("fluid.prefs.panel", {
     gradeNames: ["fluid.newRendererComponent", "fluid.messageLoader", "fluid.prefs.withPreferencesMap"],
-    prefsMapVariety: "panel"
+    prefsMapVariety: "panel",
+    selectors: { // Note that all of this material used to be repeated inline in all the old panel variants
+        header: ".flc-prefsEditor-header",
+        label: ".flc-prefsEditor-label",
+        description: ".flc-prefsEditor-description"
+    },
+    modelRelay: {
+        label: {
+            source: "messages.label",
+            target: "dom.label.text"
+        },
+        labelId: {
+            source: "{that}.options.labelId",
+            target: "dom.label.id"
+        },
+        descr: {
+            source: "messages.description",
+            target: "dom.description.text"
+        }
+    }
 });
 
 
@@ -50,12 +69,9 @@ fluid.defaults("fluid.prefs.panel", {
 fluid.defaults("fluid.prefs.panel.switchAdjuster", {
     gradeNames: ["fluid.prefs.panel"],
     // preferences maps should map model values to "model.value"
-    // model: {value: ""}
+    // model: {value: true/false}
     selectors: {
-        header: ".flc-prefsEditor-header",
-        switchContainer: ".flc-prefsEditor-switch",
-        label: ".flc-prefsEditor-label",
-        description: ".flc-prefsEditor-description"
+        switchContainer: ".flc-prefsEditor-switch"
     },
     labelId: "@expand:fluid.allocateGuid()",
     components: {
@@ -63,11 +79,12 @@ fluid.defaults("fluid.prefs.panel.switchAdjuster", {
             type: "fluid.switchUI",
             container: "{that}.dom.switchContainer",
             options: {
+                parentMarkup: true,
                 model: {
                     enabled: "{fluid.prefs.panel.switchAdjuster}.model.value",
                     messages: {
                         on: "{switchAdjuster}.model.messages.switchOn",
-                        of: "{switchAdjuster}.model.messages.switchOff",
+                        of: "{switchAdjuster}.model.messages.switchOff"
                     }
                 },
                 modelRelay: {
@@ -182,16 +199,14 @@ fluid.defaults("fluid.prefs.panel.stepperAdjuster", {
     // preferences maps should map model values to "model.value"
     // model: {value: ""}
     selectors: {
-        header: ".flc-prefsEditor-header",
-        textfieldStepperContainer: ".flc-prefsEditor-textfieldStepper",
-        label: ".flc-prefsEditor-label",
-        descr: ".flc-prefsEditor-descr"
+        textfieldStepperContainer: ".flc-prefsEditor-textfieldStepper"
     },
     components: {
         textfieldStepper: {
             type: "fluid.textfieldStepper",
             container: "{that}.dom.textfieldStepperContainer",
             options: {
+                parentMarkup: true, // All the panels we have override the stepper markup with their own to add icons
                 model: {
                     value: "{stepperAdjuster}.model.value",
                     range: {
@@ -214,19 +229,5 @@ fluid.defaults("fluid.prefs.panel.stepperAdjuster", {
             }
         }
     },
-    labelId: "@expand:fluid.allocateGuid()",
-    modelRelay: {
-        label: {
-            source: "messages.label",
-            target: "dom.label.text"
-        },
-        labelId: {
-            source: "{that}.options.labelId",
-            target: "dom.label.id"
-        },
-        descr: {
-            source: "messages.description",
-            target: "dom.descr.text"
-        }
-    }
+    labelId: "@expand:fluid.allocateGuid()"
 });

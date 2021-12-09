@@ -6,15 +6,14 @@
     "infusion": {
         "bundleType": "fluid-renderer-module",
         "cssFiles": [
-            "./src/css/Switch.css"
         ],
         "jsCommonFiles": [
-            "./src/js/Switch.js"
+            "./js/LineSpace.js",
+            "./js/LineSpaceEnactor.js",
+            "./js/LineSpacePanel.js"
         ],
         "htmlFiles": [
-            "./src/html/Switch.html"
-        ],
-        "staticMountBase": "./src/",
-        "testStaticMountBase": "./test"
+            "./html/LineSpace.html"
+        ]
     }
 }

@@ -26,7 +26,7 @@ fluid.defaults("fluid.prefs.panel.lineSpace", {
     },
     resources: {
         template: {
-            path: "%fluid-prefs-line-space/html/LineSpace.html",
+            path: "%fluid-prefs-line-space/html/LineSpace.html"
         },
         messages: {
             path: "%fluid-prefs-line-space/messages/lineSpace.json"

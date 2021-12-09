@@ -32,7 +32,7 @@ fluid.defaults("fluid.uiEnhancer.starterEnactors", {
  ***********************************************/
 
 fluid.defaults("fluid.prefs.uiEnhancer", {
-    gradeNames: ["fluid.viewComponent"],
+    gradeNames: ["fluid.viewComponent", "fluid.prefs.varietyPathHolder"],
     distributeOptions: {
         enactorContainer: {
             record: "{uiEnhancer}.container",
@@ -66,11 +66,10 @@ fluid.prefs.filterEnhancerOptions = function (options) {
 };
 
 fluid.defaults("fluid.prefs.enhancerClone", {
-    gradeNames: "fluid.component", 
+    gradeNames: "fluid.component",
     originalUserOptions: "@expand:fluid.prefs.filterEnhancerOptions({pageEnhancer}.options)",
-    userGrades: "@expand:fluid.prefs.filterEnhancerGrades({pageEnhancer}.options.gradeNames)",
+    userGrades: "@expand:fluid.prefs.filterEnhancerGrades({pageEnhancer}.options.gradeNames)"
 });
-
 
 
 /********************************************************************************

@@ -277,6 +277,9 @@ fluid.renderer.resolveRendererContainer = function (that, containerSpec) {
     }
 
     if (!parentMarkup) {
+        if (that.resources.template.parsed.noResource) {
+            fluid.fail("No template was configured for renderer component " + fluid.dumpComponentAndPath(that) + " with parentMarkup false");
+        }
         var templateElement = that.resources.template.parsed.element;
         if (!(binderRecords && !binderRecords.isBoolean) && templateElement.tagName &&
             templateElement.tagName !== innerContainer[0].tagName) {

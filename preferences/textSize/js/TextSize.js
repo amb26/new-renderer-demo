@@ -13,17 +13,15 @@ https://github.com/fluid-project/infusion/raw/main/Infusion-LICENSE.txt
 
 "use strict";
 
-fluid.defaults("fluid.prefs.starterPanelHolder", {
-    gradeNames: "fluid.newRendererComponent",
-    components: {
-        lineSpace: {
-            type: "fluid.prefs.panel.lineSpace"
-        },
-        textSize: {
-            type: "fluid.prefs.panel.textSize"
-        },
-        enhanceInputs: {
-            type: "fluid.prefs.panel.enhanceInputs"
+fluid.defaults("fluid.prefs.schemas.textSize", {
+    gradeNames: ["fluid.prefs.schema"],
+    schema: {
+        "fluid.prefs.textSize": {
+            "type": "number",
+            "default": 1,
+            "minimum": 0.5,
+            "maximum": 2,
+            "multipleOf": 0.1
         }
     }
 });
