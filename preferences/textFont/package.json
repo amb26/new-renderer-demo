@@ -1,0 +1,19 @@
+{
+    "name": "fluid-prefs-text-font",
+    "description": "The text font preference for the Fluid preferences editor",   
+    "version": "1.0.0",
+    "license": "BSD-3-Clause",
+    "infusion": {
+        "bundleType": "fluid-renderer-module",
+        "cssFiles": [
+        ],
+        "jsCommonFiles": [
+            "./js/TextFont.js",
+            "./js/TextFontEnactor.js",
+            "./js/TextFontPanel.js"
+        ],
+        "htmlFiles": [
+            "./html/TextFont.html"
+        ]
+    }
+}

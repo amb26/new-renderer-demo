@@ -13,24 +13,10 @@ https://github.com/fluid-project/infusion/raw/main/Infusion-LICENSE.txt
 
 "use strict";
 
-fluid.prefs.stringLookup = function (messageResolver, stringArrayIndex) {
-    var that = {id: fluid.allocateGuid()};
-    that.singleLookup = function (value) {
-        var looked = messageResolver.lookup([value]);
-        return fluid.get(looked, "template");
-    };
-    that.multiLookup = function (values) {
-        return fluid.transform(values, function (value) {
-            return that.singleLookup(value);
-        });
-    };
-    that.lookup = function (value) {
-        var values = fluid.get(stringArrayIndex, value) || value;
-        var lookupFn = fluid.isArrayable(values) ? "multiLookup" : "singleLookup";
-        return that[lookupFn](values);
-    };
-    that.resolvePathSegment = that.lookup;
-    return that;
+fluid.transforms.messageLookup = function (sourceArray, messages) {
+    return sourceArray.map(function (key) {
+        return messages && messages[key] || "[Message string for key " + key + " not found]";
+    });
 };
 
 /***********************************************
@@ -45,6 +31,7 @@ fluid.defaults("fluid.prefs.panel", {
         label: ".flc-prefsEditor-label",
         description: ".flc-prefsEditor-description"
     },
+    templateHasRoot: false,
     modelRelay: {
         label: {
             source: "messages.label",
@@ -58,7 +45,8 @@ fluid.defaults("fluid.prefs.panel", {
             source: "messages.description",
             target: "dom.description.text"
         }
-    }
+    },
+    labelId: "@expand:fluid.allocateGuid()"
 });
 
 
@@ -73,7 +61,6 @@ fluid.defaults("fluid.prefs.panel.switchAdjuster", {
     selectors: {
         switchContainer: ".flc-prefsEditor-switch"
     },
-    labelId: "@expand:fluid.allocateGuid()",
     components: {
         switchUI: {
             type: "fluid.switchUI",
@@ -104,89 +91,110 @@ fluid.defaults("fluid.prefs.panel.switchAdjuster", {
 
 fluid.defaults("fluid.prefs.panel.themePicker", {
     gradeNames: ["fluid.prefs.panel"],
-    mergePolicy: {
-        "controlValues.theme": "replace",
-        "stringArrayIndex.theme": "replace"
+    model: {
+        // optionValues: String[] produced by subclass
+        // enumLabels: String[] produced by subclass
     },
-    // The controlValues are the ordered set of possible modelValues corresponding to each theme option.
-    // The order in which they are listed will determine the order they are presented in the UI.
-    // The stringArrayIndex contains the ordered set of namespaced strings in the message bundle.
-    // The order must match the controlValues in order to provide the proper labels to the theme options.
-    controlValues: {
-        theme: [] // must be supplied by the integrator
-    },
-    stringArrayIndex: {
-        theme: [] // must be supplied by the integrator
-    },
-    selectID: "{that}.id", // used for the name attribute to group the selection options
-    listeners: {
-        "afterRender.style": "{that}.style"
+    modelRelay: {
+        lookupLabels: {
+            target: "optionLabels",
+            func: "fluid.transforms.messageLookup",
+            args: ["{textFont}.model.enumLabels", "{textFont}.model.messages"]
+        },
+        produceRows: {
+            target: "rowSource",
+            func: "fluid.prefs.panel.produceThemeRows",
+            args: ["{that}.model.optionValues", "{that}.model.optionLabels", "{that}.options.classes", "{that}.options.styles.defaultThemeLabel"]
+        }
     },
     selectors: {
-        themeRow: ".flc-prefsEditor-themeRow",
-        themeLabel: ".flc-prefsEditor-theme-label",
-        themeInput: ".flc-prefsEditor-themeInput",
-        label: ".flc-prefsEditor-themePicker-label",
-        description: ".flc-prefsEditor-themePicker-descr"
+        themeRow: ".flc-prefsEditor-theme-row"
     },
     styles: {
         defaultThemeLabel: "fl-prefsEditor-themePicker-defaultThemeLabel"
     },
-    repeatingSelectors: ["themeRow"],
-    protoTree: {
-        label: {messagekey: "label"},
-        description: {messagekey: "description"},
-        expander: {
-            type: "fluid.renderer.selection.inputs",
-            rowID: "themeRow",
-            labelID: "themeLabel",
-            inputID: "themeInput",
-            selectID: "{that}.options.selectID",
-            tree: {
-                optionnames: "${{that}.msgLookup.theme}",
-                optionlist: "${{that}.options.controlValues.theme}",
-                selection: "${value}"
+    dynamicComponents: {
+        row: {
+            type: "fluid.prefs.panel.themeRow",
+            container: "{that}.dom.themeRow",
+            sources: "{that}.model.rowSource",
+            options: {
+                rowClass: "{source}.rowClass",
+                model: {
+                    // Under the supplied markup model, each radio button is bound to the same model state via fluid.value's decoding
+                    value: "{themePicker}.model.value",
+                    rowValue: "{source}.rowValue",
+                    rowLabel: "{source}.rowLabel",
+                    rowClasses: "{source}.rowClasses"
+                }
             }
         }
-    },
+    }
+    /* Markup disused and is sourced from template - retained here to retain strategy comments
     markup: {
         // Aria-hidden needed on fl-preview-A and Display 'a' created as pseudo-content in css to prevent AT from reading out display 'a' on IE, Chrome, and Safari
         // Aria-hidden needed on fl-crossout to prevent AT from trying to read crossout symbol in Safari
         label: "<span class=\"fl-preview-A\" aria-hidden=\"true\"></span><span class=\"fl-hidden-accessible\">%theme</span><div class=\"fl-crossout\" aria-hidden=\"true\"></div>"
+    }*/
+});
+
+fluid.defaults("fluid.prefs.panel.themeRow", {
+    gradeNames: "fluid.newRendererComponent",
+    parentMarkup: true,
+    selectors: {
+        themeName: ".flc-prefsEditor-theme-name",
+        input: ".flc-prefsEditor-theme-input",
+        label: ".flc-prefsEditor-theme-label"
     },
-    invokers: {
-        style: {
-            funcName: "fluid.prefs.panel.themePicker.style",
-            args: [
-                "{that}.dom.themeLabel",
-                "{that}.msgLookup.theme",
-                "{that}.options.markup.label",
-                "{that}.options.controlValues.theme",
-                "default",
-                "{that}.options.classnameMap.theme",
-                "{that}.options.styles.defaultThemeLabel"
-            ]
+    model: {
+        // value
+        // rowValue
+        // rowLabel
+        // rowClasses
+    },
+    modelRelay: {
+        inputId: {
+            source: "{that}.id",
+            target: "dom.input.id"
+        },
+        inputValueAttr: {
+            source: "rowValue",
+            target: "dom.input.attr.value"
+        },
+        value: {
+            source: "value",
+            target: "dom.input.value"
+        },
+        labelFor: {
+            source: "{that}.id",
+            target: "dom.label.attr.for"
+        },
+        labelText: {
+            source: "rowLabel",
+            target: "dom.themeName.text"
+        },
+        labelStyle: {
+            value: true,
+            target: {
+                segs: ["dom", "label", "class", "{that}.options.rowClass"]
+            }
         }
+        /*  labelStyle: { // Commented out - if we try to relay a block of "class" we end up erasing the whole target
+            // See https://issues.fluidproject.org/browse/FLUID-6208 - claims this is not implemented but surely is for FLUID-5585
+            source: "rowClasses",
+            target: "dom.label.class"
+        }*/
     }
 });
 
-// Random mixture of string templating and post-hoc DOM manipulation - the only string templating is to reach into the nested
-// span to slap %theme in there
-// TODO: Convert to integral rendering to "label" - looks like there is only expected to be one
-fluid.prefs.panel.themePicker.style = function (labels, strings, markup, theme, defaultThemeName, style, defaultLabelStyle) {
-    fluid.each(labels, function (label, index) {
-        label = $(label);
-
-        var themeValue = strings[index];
-        label.html(fluid.stringTemplate(markup, {
-            theme: themeValue
-        }));
-
-        var labelTheme = theme[index];
-        if (labelTheme === defaultThemeName) {
-            label.addClass(defaultLabelStyle);
-        }
-        label.addClass(style[labelTheme]);
+fluid.prefs.panel.produceThemeRows = function (optionValues, optionLabels, classes/*, defaultClass*/) {
+    return optionValues.map(function (value, index) {
+        return {
+            rowValue: value,
+            rowLabel: optionLabels && optionLabels[index],
+            rowClass: classes[value]
+            // rowClasses: fluid.arrayToHash(fluid.makeArray(classes[value]).concat(value === "default" ? defaultClass : []))
+        };
     });
 };
 
@@ -228,6 +236,5 @@ fluid.defaults("fluid.prefs.panel.stepperAdjuster", {
                 scale: 1
             }
         }
-    },
-    labelId: "@expand:fluid.allocateGuid()"
+    }
 });

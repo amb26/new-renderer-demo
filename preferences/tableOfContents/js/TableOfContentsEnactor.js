@@ -13,26 +13,30 @@ https://github.com/fluid-project/infusion/raw/main/Infusion-LICENSE.txt
 
 "use strict";
 
-
 // Note that the implementors need to provide the container for this view component
 fluid.defaults("fluid.prefs.enactor.tableOfContents", {
     gradeNames: ["fluid.prefs.enactor", "fluid.viewComponent"],
-    preferenceMap: {
+    container: "{uiEnhancer}.container",
+    preferencesMap: {
         "fluid.prefs.tableOfContents": {
             "model.toc": "value"
         }
     },
-    components: {
+    dynamicComponents: { // TODO: relay the locale down into tableOfContents resourceLoader.locale field
         tableOfContents: {
             type: "fluid.tableOfContents",
-            container: "{fluid.prefs.enactor.tableOfContents}.container",
-            source: "{enactor}.model.toc"
-        }
-    },
-    distributeOptions: {
-        "tocEnactor.tableOfContents.ignoreForToC": {
-            source: "{that}.options.ignoreForToC",
-            target: "{that tableOfContents}.options.ignoreForToC"
+            container: "{enactor}.container",
+            source: "{enactor}.model.toc",
+            options: {
+                ignoreForToc: "{enactor}.options.ignoreForToc",
+                listeners: { // Note similarity with fluid.containerRenderingView - our idiom is currently that container is static in document
+                    "onDestroy.clearInjectedMarkup": {
+                        "this": "{that}.dom.tocContainer",
+                        method: "empty",
+                        args: []
+                    }
+                }
+            }
         }
     }
 });

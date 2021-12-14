@@ -23,7 +23,6 @@ https://github.com/fluid-project/infusion/raw/main/Infusion-LICENSE.txt
 fluid.defaults("fluid.prefs.panel.enhanceInputs", {
     gradeNames: ["fluid.prefs.panel.switchAdjuster"],
     container: ".flc-prefsEditor-enhanceInputs",
-    templateHasRoot: false,
     preferencesMap: {
         "fluid.prefs.enhanceInputs": {
             "model.value": "value"

@@ -1,0 +1,19 @@
+{
+    "name": "fluid-prefs-table-of-contents",
+    "description": "The table of contents preference for the Fluid preferences editor",   
+    "version": "1.0.0",
+    "license": "BSD-3-Clause",
+    "infusion": {
+        "bundleType": "fluid-renderer-module",
+        "cssFiles": [
+        ],
+        "jsCommonFiles": [
+            "./js/TableOfContents.js",
+            "./js/TableOfContentsEnactor.js",
+            "./js/TableOfContentsPanel.js"
+        ],
+        "htmlFiles": [
+            "./html/TableOfContents.html"
+        ]
+    }
+}

@@ -17,6 +17,87 @@ https://github.com/fluid-project/infusion/raw/master/Infusion-LICENSE.txt
 
 fluid.registerNamespace("fluid.tests.renderer");
 
+fluid.defaults("fluid.tests.renderer.fontSelect", {
+    gradeNames: "fluid.uiSelect",
+    model: {
+        value: "default",
+        optionValues: ["default", "times", "comic", "arial", "verdana", "open-dyslexic"],
+        optionLabels: ["Default", "Times New Roman", "Comic Sans", "Arial", "Verdana", "Open Dyslexic"]
+    }
+});
+
+fluid.tests.renderer.fontSelect.expectedNodes = function (that) {
+    return that.model.optionValues.map(function (value, index) {
+        var expected = {
+            nodeName: "option",
+            value: value,
+            nodeText: that.model.optionLabels[index]
+        };
+        return expected;
+    });
+};
+
+jqUnit.test("Test UISelect rendering and binding", function () {
+    var sel = fluid.tests.renderer.fontSelect("#uiselect-test");
+    var options = sel.locate("options");
+    jqUnit.assertEquals("Rendered correct number of options nodes", 6, options.length);
+    var expected = fluid.tests.renderer.fontSelect.expectedNodes(sel);
+    jqUnit.assertNode("Rendered expected markup", expected, options);
+    jqUnit.assertEquals("Expected value selected", "default", sel.container.val());
+    sel.container.val("arial");
+    jqUnit.assertEquals("Expected value selected through UI", "arial", sel.container.val());
+    sel.applier.change("value", "verdana");
+    jqUnit.assertEquals("Expected value selected through model", "verdana", sel.container.val());
+});
+
+fluid.defaults("fluid.tests.renderer.fontSelectNodes", {
+    gradeNames: "fluid.uiSelect",
+    styles: [undefined, "fl-font-times", "fl-font-comic-sans", "fl-font-arial", "fl-font-arial", "fl-font-open-dyslexic"],
+    model: {
+        value: "default",
+        optionValues: ["default", "times", "comic", "arial", "verdana", "open-dyslexic"],
+        optionLabels: ["Default", "Times New Roman", "Comic Sans", "Arial", "Verdana", "Open Dyslexic"]
+    },
+    modelRelay: {
+        target: "optionNodes",
+        func: "fluid.tests.renderer.fontSelect.makeNodes",
+        args: ["{that}.model.optionValues", "{that}.options.styles"]
+    }
+});
+
+jqUnit.test("Test UISelect rendering and binding with decorator, relabelling", function () {
+    var sel = fluid.tests.renderer.fontSelectNodes("#uiselect-test");
+    var options = sel.locate("options");
+    jqUnit.assertEquals("Rendered correct number of options nodes", 6, options.length);
+    var expected = fluid.tests.renderer.fontSelect.expectedNodes(sel);
+    expected.forEach(function (oneNode, index) {
+        oneNode["class"] = fluid.makeArray(sel.options.styles[index]).concat("fl-preview-theme").join(" ");
+        oneNode.index = "" + index;
+    });
+    jqUnit.assertNode("Rendered expected markup", expected, options);
+    var newLabels = sel.model.optionLabels.map(function (label) {
+        return "New " + label;
+    });
+    sel.applier.change("optionLabels", newLabels);
+    expected.forEach(function (oneNode, index) {
+        oneNode.nodeText = newLabels[index];
+    });
+    // Also verifies that the DOM nodes were not replaced
+    jqUnit.assertNode("Node labels updated", expected, options);
+});
+
+fluid.tests.renderer.fontSelect.makeNodes = function (values, styles) {
+    return values.map(function (value, index) {
+        return {
+            "class": fluid.arrayToHash(fluid.makeArray(styles[index]).concat("fl-preview-theme")),
+            "attr": {
+                index: "" + index
+            }
+        };
+    });
+};
+
+
 // This test used to rely on not actually rendering. Probably the only way to restore this is to white-box by producing
 // the "snapshot" mode that will be used by server rendering
 /*

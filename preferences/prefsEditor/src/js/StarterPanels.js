@@ -16,11 +16,20 @@ https://github.com/fluid-project/infusion/raw/main/Infusion-LICENSE.txt
 fluid.defaults("fluid.prefs.starterPanelHolder", {
     gradeNames: "fluid.newRendererComponent",
     components: {
+        textSize: {
+            type: "fluid.prefs.panel.textSize"
+        },
+        textFont: {
+            type: "fluid.prefs.panel.textFont"
+        },
         lineSpace: {
             type: "fluid.prefs.panel.lineSpace"
         },
-        textSize: {
-            type: "fluid.prefs.panel.textSize"
+        contrast: {
+            type: "fluid.prefs.panel.contrast"
+        },
+        tableOfContents: {
+            type: "fluid.prefs.panel.tableOfContents"
         },
         enhanceInputs: {
             type: "fluid.prefs.panel.enhanceInputs"

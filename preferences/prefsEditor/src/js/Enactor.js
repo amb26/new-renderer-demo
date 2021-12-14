@@ -69,7 +69,7 @@ fluid.prefs.enactor.styleElements.handleStyle = function (value, elements, cssCl
  *
  * Has a hash of classes it cares about and will remove all those classes from
  * its container before setting the new class.
- * This component tends to be used as a grade by textFont and contrast
+ * This component is a base grade for textFont and contrast
  *******************************************************************************/
 
 fluid.defaults("fluid.prefs.enactor.classSwapper", {

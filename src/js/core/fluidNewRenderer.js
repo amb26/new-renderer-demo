@@ -248,6 +248,8 @@ fluid.renderer.resolveRendererContainer = function (that, containerSpec) {
     var parentMarkup = fluid.renderer.useParentMarkup(that);
     var fragmentHolder = fluid.renderer.findFragmentHolder(that);
     // If a fragment render is in progress for some parent, use its container fragment for the search by preference
+    // TODO: We should really look up in the most closely nested container by preference - following component scoping model
+    // TODO: As well as taking the document from the most closely nested component's container
     var dokkument = fragmentHolder && fragmentHolder.dom.containerFragment || document;
     // Note that we can't use fluid.container here since there may be several or none of them
     var outerContainer = fluid.isJQuery(containerSpec) ? containerSpec : $(containerSpec, dokkument);

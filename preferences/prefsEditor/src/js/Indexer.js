@@ -115,6 +115,13 @@ fluid.defaults("fluid.prefs.withPreferencesMap", {
     }
 });
 
+fluid.defaults("fluid.prefs.withEnactorMap", {
+    gradeNames: ["fluid.component", "{that}.makeEnactorMapGrade"],
+    invokers: {
+        makeEnactorMapGrade: "fluid.prefs.makeEnactorMapGrade({that}, {fluid.prefs.indexer})"
+    }
+});
+
 // Construct a mixin grade which establishes model relay for an enactor or panel grade based on its preferencesMap by decoding
 // it against the grade index held in the supplied "indexer"
 fluid.prefs.makePrefsMapGrade = function (that, indexer) {
@@ -133,7 +140,7 @@ fluid.prefs.makePrefsMapGrade = function (that, indexer) {
     var prefsMap = fluid.getForComponent(that, ["options", "preferencesMap"]);
     var gradeName = that.typeName + ".withPrefsMap";
     var keys = Object.keys(prefsMap);
-    if (keys.length !== 1 && variety === "enactor") {
+    if (keys.length !== 1) {
         fluid.fail(variety + " preferencesMap grade must have exactly one key - has ", keys.join(", "));
     }
     var mapKey = keys[0];
@@ -157,10 +164,32 @@ fluid.prefs.makePrefsMapGrade = function (that, indexer) {
     return gradeName;
 };
 
+/** Given the schemaIndex structure held by a fluid.prefs.indexer, return the default preferences structure formed from
+ * each of defaults values held in its collection of indexed schemas
+ * @param {Object} schemaIndex - The schema index mapping preference names to schemas
+ * @return {Object} A preference set with each element set to its default value as recorded in its schema
+ */
 fluid.prefs.getDefaultPreferences = function (schemaIndex) {
     var schemaEntries = Object.entries(schemaIndex);
     var mappedEntries = schemaEntries.map(function (e) {
         return [fluid.prefs.flattenName(e[0]), e[1]["default"]];
     });
     return Object.fromEntries(mappedEntries);
+};
+
+fluid.prefs.makeEnactorMapGrade = function (that, indexer) {
+    var gradeName = that.typeName + ".withEnactorMap";
+    var enactorMap = fluid.getForComponent(that, ["options", "enactorMap"]);
+    var options = {};
+    fluid.each(enactorMap, function (mapValue, mapKey) {
+        var enactorIndex = fluid.getForComponent(indexer, ["options", "enactorIndex"]);
+        var defaults = fluid.defaults(enactorIndex[mapKey]);
+        fluid.each(mapValue, function (source, target) {
+            var enactorValue = fluid.get(defaults, source);
+            fluid.set(options, target, enactorValue);
+        });
+    });
+
+    fluid.defaults(gradeName, options);
+    return gradeName;
 };

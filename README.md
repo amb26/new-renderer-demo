@@ -11,7 +11,8 @@ functionality and near-identical interfaces to those in Infusion trunk
 - Port of standard TableOfContents demo at [demos/tableOfContents](demos/tableOfContents)
 - DOM manipulation performance test at [perftest](perftest)
 
-This work is packaged as a set of addons to the current (Infusion 4.x) [main](https://github.com/fluid-project/infusion) branch of Infusion.
+This work is packaged as a set of addons to the current (Infusion 4.x) [main](https://github.com/fluid-project/infusion)
+branch of Infusion.
 
 You may run the browser tests by opening [all-tests.html](all-tests.html) after hosting this project from the filesystem.
 
@@ -20,6 +21,7 @@ changed in a project, or a project is moved around in the filesyste - consult it
 
 There is an in-progress port of the Infusion preferences framework in [preferences](preferences).
 
-Right now the most functional driver demonstrating a prefs editor is at 
+Right now the most functional driver demonstrating a prefs editor is at
 [examples/framework/preferences/minimalPreview/index.html](examples/framework/preferences/minimalPreview/index.html).
-This fires up a "grouped-style" preference editor with a preview box. Currently three preference panels are functional.
+This fires up a "grouped-style" preference editor with a preview box. The starter six panels are now functional,
+with an issue with the text font enactor which currently spills out of its preview container.

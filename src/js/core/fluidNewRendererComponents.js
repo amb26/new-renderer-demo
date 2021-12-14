@@ -62,6 +62,94 @@ fluid.defaults("fluid.uiInput", {
     parentMarkup: true
 });
 
+// fluid.uiSelect's implementation uses a transitional "extremely lightweight materialised virtual DOM" strategy
+// since we are too afraid to create a whole component and relays for every <option> element. As well as optionLabels
+// and optionValues representing the names and values of the selection controls, a parallel array optionNodes
+// encodes any decorations to the nodes encoded as "attr" or "class" maps in the same format accepted by materialisers
+// of the same names. We currently only support single selection and a plain HTML <select> element.
+fluid.defaults("fluid.uiSelect", {
+    gradeNames: ["fluid.newRendererComponent", "fluid.uiValueBinding"],
+    parentMarkup: true,
+    selectors: {
+        options: "option"
+    },
+    model: {
+        // value: String
+        // optionLabels: String[]
+        // optionValues: String[]
+        // optional "virtual DOM" representation using the same addressing scheme as DOM materialisation - currently
+        // only supports attr and class
+        // optionNodes: Object[]
+    },
+    modelListeners: {
+        relabel: {
+            path: "optionLabels",
+            listener: "fluid.uiSelect.updateLabels",
+            args: ["{that}", "{change}.value"],
+            excludeSource: "init"
+        }
+    },
+    resources: {
+        template: {
+            resourceText: "<select></select>"
+        }
+    },
+    listeners: {
+        "onDomBind.render": {
+            funcName: "fluid.uiSelect.initialRender",
+            priority: "first" // TODO: The binding listeners in FluidView should have priorities
+        }
+    }
+});
+
+// A lightweight representation of the few materialisers we support for direct application - in theory we should
+// have factored fluid.materialiserRegistry better so we could access these functions, but they are very small
+fluid.registerNamespace("fluid.renderer.lightMaterialisers");
+
+fluid.renderer.lightMaterialisers.attr = function (jNode, payload) {
+    jNode.attr(payload);
+};
+
+fluid.renderer.lightMaterialisers["class"] = function (jNode, payload) {
+    fluid.each(payload, function (value, key) {
+        jNode.toggleClass(key, !!value);
+    });
+};
+
+// Very basic initial implementation that is unidirectional with respect to markup - any initial contents are
+// blasted on startup and written from model contents
+fluid.uiSelect.initialRender = function (that) {
+    var containerNode = that.container[0];
+    var dokkument = containerNode.ownerDocument;
+    var optionLabels = that.model.optionLabels,
+        optionValues = that.model.optionValues,
+        optionNodes = that.model.optionNodes;
+    that.container.empty();
+    if (!optionLabels || !optionValues) {
+        fluid.fail("UISelect component must be supplied optionLabels and optionValues arrays: " + fluid.dumpComponentAndPath(that));
+    }
+    if (optionLabels.length !== optionValues.length) {
+        fluid.fail("UISelect component must be supplied optionLabels and optionValues arrays of equal length: " + fluid.dumpComponentAndPath(that));
+    }
+    optionValues.forEach(function (optionValue, index) {
+        var node = dokkument.createElement("option");
+        var jNode = $(node);
+        jNode.attr("value", optionValues[index]);
+        jNode.text(optionLabels[index]);
+        fluid.each(optionNodes && optionNodes[index], function (mVal, mKey) {
+            fluid.renderer.lightMaterialisers[mKey](jNode, mVal);
+        });
+        containerNode.appendChild(node);
+    });
+};
+
+fluid.uiSelect.updateLabels = function (that, newLabels) {
+    var options = that.locate("options");
+    fluid.each(newLabels, function (label, index) {
+        options[index].textContent = label;
+    });
+};
+
 fluid.defaults("fluid.polyMarkupComponent", {
     gradeNames: "fluid.newRendererComponent"
 });
