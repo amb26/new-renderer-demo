@@ -60,34 +60,13 @@ fluid.defaults("fluid.prefs.arrowScrolling", {
         }
     },
     listeners: {
-        "onReady.scrollEvent": {
-            "this": "{that}.dom.scrollContainer",
-            method: "on",
-            args: [
-                "scroll",
-                {
-                    expander: {
-                        // Relaying the scroll event to onScroll but debounced to reduce the rate of fire.  A high rate
-                        // of fire may negatively effect performance for complex handlers.
-                        func: "fluid.debounce",
-                        args: ["{that}.events.onScroll.fire", "{that}.options.onScrollDelay"]
-                    }
-                }
-            ]
-        },
-        "onReady.windowResize": {
-            "this": "window",
-            method: "addEventListener",
-            args: ["resize", "{that}.events.onSignificantDOMChange.fire"]
-        },
-        "onDestroy.removeWindowResize": {
-            "this": "window",
-            method: "removeEventListener",
-            args: ["resize", "{that}.events.onSignificantDOMChange.fire"]
+        "onDomBind.bindScroll": {
+            funcName: "fluid.prefs.arrowScrolling.bindScroll",
+            args: ["{that}", "{that}.dom.scrollContainer"]
         },
         // Need to set panelMaxIndex after onPrefsEditorMarkupReady to ensure that the template has been
         // rendered before we try to get the number of panels.
-        "onPrefsEditorMarkupReady.setPanelMaxIndex": {
+        "onDomBind.setPanelMaxIndex": {
             changePath: "panelMaxIndex",
             value: {
                 expander: {
@@ -96,7 +75,9 @@ fluid.defaults("fluid.prefs.arrowScrolling", {
                 }
             }
         },
-        "beforeReset.resetPanelIndex": {
+        "{preferencesHolder}.events.reset": { // TODO: go to ordinary prefs model
+            namespace: "resetPanelIndex",
+            priority: "first",
             listener: "{that}.applier.fireChangeRequest",
             args: {path: "panelIndex", value: 0, type: "ADD", source: "reset"}
         },
@@ -120,16 +101,22 @@ fluid.defaults("fluid.prefs.arrowScrolling", {
     distributeOptions: {
         "arrowScrolling.panel.listeners.bindScrollArrows": {
             record: {
-                "afterRender.bindScrollArrows": {
+                "onDomBind.bindScrollArrows": {
                     "this": "{that}.dom.header",
                     method: "on",
                     args: ["click", "{prefsEditor}.eventToScrollIndex"]
                 }
             },
-            target: "{that > fluid.prefs.panel}.options.listeners"
+            target: "{that fluid.prefs.panel}.options.listeners"
         }
     }
 });
+
+fluid.prefs.arrowScrolling.bindScroll = function (that, scrollContainer) {
+    // Relaying the scroll event to onScroll but debounced to reduce the rate of fire. A high rate
+    // of fire may negatively effect performance for complex handlers.
+    scrollContainer.on("scroll", fluid.debounce(that.events.onScroll.fire, fluid.getForComponent(that, ["options", "onScrollDelay"])));
+};
 
 fluid.prefs.arrowScrolling.calculatePanelMaxIndex = function (panels) {
     return Math.max(0, panels.length - 1);

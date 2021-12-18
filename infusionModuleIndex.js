@@ -73,6 +73,11 @@ fluid.infusionModuleIndex = [
         "prefix": "preferences/textSize/"
     },
     {
+        "moduleName": "fluid-sliding-panel",
+        "suffix": "",
+        "prefix": "slidingPanel/"
+    },
+    {
         "moduleName": "fluid-switch",
         "suffix": "",
         "prefix": "switch/"

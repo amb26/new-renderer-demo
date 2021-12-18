@@ -86,16 +86,18 @@
 
         <script-symbolic src="%fluid-ui-options/src/js/UIOptions.js"></script-symbolic>            <script synthetic src="../../../../uiOptions/src/js/UIOptions.js"></script>            <script module-index synthetic src="../../../../infusionModuleIndex.js"></script>
 
-        <title>Preferences Editor: Full page with grouped styling</title>
+        <title>Preferences Editor: Full page with grouped styling and preview</title>
      </head>
 
     <body>
 
         <main class="content">
-            <h1>Preferences Editor: Full Page with grouped styling</h1>
+            <h1>Preferences Editor: Full Page with grouped styling and preview</h1>
             <div class="demo-prefsEditor-fullWithPreview"></div>
         </main>
-        <div class="flc-toc-tocContainer"></div>
+        <div class="fl-hidden">
+            <div class="flc-toc-tocContainer"></div>
+        </div>
 
         <script>
             fluid.uiOptions(".demo-prefsEditor-fullWithPreview", {
@@ -106,26 +108,6 @@
                 },
                 autoSave: false,
                 previewTemplatePath: "%new-renderer-demo/examples/framework/preferences/minimalPreview/html/prefsEditorPreview.html"
-
-
-/*                auxiliarySchema: {
-                    loaderGrades: ["fluid.prefs.fullNoPreview"],
-                    terms: {
-                        templatePrefix: "../../../../src/framework/preferences/html/",
-                        messagePrefix: "../../../../src/framework/preferences/messages/"
-                    },
-                    "fluid.prefs.tableOfContents": {
-                        enactor: {
-                            tocTemplate: "../../../../src/components/tableOfContents/html/TableOfContents.html",
-                            tocMessage: "%messagePrefix/tableOfContents-enactor.json"
-                        }
-                    }
-                },
-                prefsEditor: {
-                    gradeNames: ["fluid.prefs.arrowScrolling"],
-                    autoSave: true
-                }
-*/
             });
         </script>
     </body>

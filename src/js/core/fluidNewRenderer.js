@@ -66,7 +66,7 @@ fluid.defaults("fluid.newRendererComponent", {
         global: {
             render: {
                 funcName: "fluid.renderer.workflow.render",
-                priority: "after:resolveResourceModel",
+                priority: "after:fetchTemplates",
                 waitIO: true
             }
         }

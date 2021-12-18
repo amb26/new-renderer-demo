@@ -165,6 +165,7 @@ var skippedHeadingsForGradualIndentationModel = fluid.tests.tableOfContents.skip
 
 jqUnit.module("Table of Contents: Model Builder Tests");
 
+
 jqUnit.test("toModel: linear headings with gradual indentation models", function () {
     fluid.tests.tableOfContents.toModelTests(linearHeadings.headingInfo, linearHeadings.model, fluid.tableOfContents.modelBuilder.gradualModelLevelFn);
 });
@@ -302,11 +303,14 @@ jqUnit.asyncTest("Render toc: skipped headings for gradual indentation model", f
 });
 
 
-jqUnit.test("public function: headingTextToAnchorInfo", function () {
+jqUnit.asyncTest("public function: headingTextToAnchorInfo", function () {
     var toc = fluid.tableOfContents("#flc-toc");
-    var tocBodyHeading = $("#amphibians");
-    var anchorInfo = toc.headingTextToAnchorInfo(tocBodyHeading);
-    jqUnit.assertEquals("anchor url is the same as id except url has a '#' in front", anchorInfo.url.substr(1), anchorInfo.id);
+    toc.events.onCreate.then(function () {
+        var tocBodyHeading = $("#amphibians");
+        var anchorInfo = toc.headingTextToAnchorInfo(tocBodyHeading);
+        jqUnit.assertEquals("anchor url is the same as id except url has a '#' in front", anchorInfo.url.substr(1), anchorInfo.id);
+        jqUnit.start();
+    });
 });
 
 /**

@@ -17,6 +17,7 @@ https://github.com/fluid-project/infusion/raw/main/Infusion-LICENSE.txt
  * Full Preview Preferences Editor *
  ***********************************/
 
+// Addon grade for top-level Weaver which sets up preview enhancer and prefs editor grades
 fluid.defaults("fluid.prefs.withPreview", {
     // previewTemplatePath: ""
     components: {
@@ -44,9 +45,16 @@ fluid.defaults("fluid.prefs.withPreview", {
     }
 });
 
+// Addon grade for fluid.prefs.prefsEditor
 fluid.defaults("fluid.prefs.prefsEditorWithPreview", {
+    gradeNames: "fluid.prefs.prefsEditor.withButtons",
     selectors: {
         previewFrame: ".flc-prefsEditor-preview-frame"
+    },
+    resources: {
+        template: {
+            path: "%fluid-prefs-editor/src/html/FullPreviewPrefsEditor.html"
+        }
     },
     components: {
         preview: {

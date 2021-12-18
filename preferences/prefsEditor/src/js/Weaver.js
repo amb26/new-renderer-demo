@@ -24,8 +24,14 @@ fluid.defaults("fluid.prefs.weaver", {
     model: {
         prefsEditor: false // Whether the prefsEditor should be constructed
     },
+    mergePolicy: {
+        panelHolderGrades: "replace",
+        prefsEditorGrades: "replace"
+    },
     // Override to configure both panel templating style and panel choice - perhaps this should be a hash
-    panelHolderGrades: "fluid.prefs.starterPanelHolder",
+    panelHolderGrades: ["fluid.prefs.starterPanelHolder"],
+    // Override to configure, e.g. dynamic panel generation
+    prefsEditorGrades: [],
     // Override with desired container for prefsEditor - UIOptions naturally forwards its own container
     prefsEditorContainer: "",
 
@@ -46,6 +52,7 @@ fluid.defaults("fluid.prefs.weaver", {
             source: "{that}.model.prefsEditor",
             options: {
                 container: "{fluid.prefs.weaver}.options.prefsEditorContainer",
+                gradeNames: "{fluid.prefs.weaver}.options.prefsEditorGrades",
                 varietyPathPrefix: "{fluid.prefs.weaver}.model.livePreferences",
                 components: {
                     prefsHolder: "{fluid.prefs.preferencesHolder}",

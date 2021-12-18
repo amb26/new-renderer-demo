@@ -6,6 +6,7 @@
             "./demos/**/*.js",
             "./examples/**/*.js",
             "./preferences/**/*.js",
+            "./slidingPanel/**/*.js",
             "./textfieldControl/**/*.js",
             "./tableOfContents/**/*.js",
             "./perftest/**/*.js",
