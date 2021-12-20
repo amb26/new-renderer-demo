@@ -13,24 +13,15 @@ https://github.com/fluid-project/infusion/raw/main/Infusion-LICENSE.txt
 
 "use strict";
 
-fluid.defaults("fluid.prefs.schemas.contrast", {
+fluid.defaults("fluid.prefs.schemas.letterSpace", {
     gradeNames: ["fluid.prefs.schema"],
     schema: {
-        "fluid.prefs.contrast": {
-            "type": "string",
-            "default": "default",
-            "enum": ["default", "bw", "wb", "by", "yb", "lgdg", "gw", "gd", "bbr"],
-            "enumLabels": [
-                "contrast-default",
-                "contrast-bw",
-                "contrast-wb",
-                "contrast-by",
-                "contrast-yb",
-                "contrast-lgdg",
-                "contrast-gw",
-                "contrast-gd",
-                "contrast-bbr"
-            ]
+        "fluid.prefs.letterSpace": {
+            "type": "number",
+            "default": 1,
+            "minimum": 0.9,
+            "maximum": 2,
+            "multipleOf": 0.1
         }
     }
 });

@@ -92,7 +92,6 @@ fluid.defaults("fluid.prefs.prefsEditor", {
     gradeNames: ["fluid.newRendererComponent", "fluid.prefs.varietyPathHolder"],
     // varietyPathPrefix: must be overridden
     components: {
-        prefsHolder: "{fluid.prefs.preferencesHolder}",
         panelHolder: {
             type: "fluid.newRendererComponent",
             options: {
@@ -125,17 +124,17 @@ fluid.defaults("fluid.prefs.prefsEditor.withButtons", {
     modelListeners: {
         cancelButton: {
             path: "dom.cancel.click",
-            listener: "{prefsHolder}.events.cancel.fire",
+            listener: "{preferencesHolder}.events.cancel.fire",
             excludeSource: "init"
         },
         resetButton: {
             path: "dom.reset.click",
-            listener: "{prefsHolder}.events.reset.fire",
+            listener: "{preferencesHolder}.events.reset.fire",
             excludeSource: "init"
         },
         saveButton: {
             path: "dom.save.click",
-            listener: "{prefsHolder}.events.save.fire",
+            listener: "{preferencesHolder}.events.save.fire",
             excludeSource: "init"
         }
     }

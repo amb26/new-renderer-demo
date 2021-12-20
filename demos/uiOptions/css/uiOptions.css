@@ -171,3 +171,8 @@ main {
 .fl-prefsEditor-separatedPanel .fl-panelBar .fl-prefsEditor-reset {
     border-left: 1px solid #fff;
 }
+
+/* AMB: Override 19/12/21 from SeparatedPanelPrefsEditorFrame to make demos work */
+html {
+    overflow: auto;
+}

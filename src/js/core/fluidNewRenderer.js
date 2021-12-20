@@ -194,7 +194,7 @@ fluid.renderer.renderTemplate = function (that, outerContainer) {
     var templateRoot = fluid.cloneDom(templateElement);
     var templateContainer = fluid.indirectContainer(templateRoot, fluid.getForComponent(that, ["options", "selectors", "container"]));
     var binderRecords = outerContainer[$b];
-    if (binderRecords) {
+    if (binderRecords && !binderRecords.isBoolean) {
         fluid.renderer.insertAt(outerContainer, templateContainer, binderRecords);
     } else {
         if (outerContainer.length !== 1) {
@@ -258,9 +258,10 @@ fluid.renderer.resolveRendererContainer = function (that, containerSpec) {
     if (binderRecords) {
         if (binderRecords.isBoolean) {
             if (!parentMarkup) {
+                // TODO: This was simply commented out to make PrefsEditor sliding panel binary root component work - write a dedicated test
                 // TODO: not right. This should be the same as any ordinary rendering -
                 // Old comment read: Don't set return - but remember to process elision
-                fluid.renderer.renderTemplate(that, outerContainer);
+                // fluid.renderer.renderTemplate(that, outerContainer);
             }
         } else if (!binderRecords.isBoolean) { // It's an array case
             if (parentMarkup) { // Relay what the binder stored as the template into our own template structure
@@ -312,6 +313,9 @@ fluid.renderer.lastValue = function (array) {
 fluid.renderer.findRendererSelectors = function (that, dom) {
     var shadow = fluid.shadowForComponent(that);
     fluid.each(shadow.modelSourcedDynamicComponents, function (record, key) {
+        // This is rubbish because it is not responsive to options distributions. We really need to be able to introspect
+        // properly into some kind of "future potentia" - that is, the execution must actually BEGIN of things that are
+        // formally nonexistent.
         var lightMerge = shadow.lightMergeDynamicComponents[key];
         // Same dodgy approach as in fluid.expandComponentOptions
         var containers = fluid.getMembers(lightMerge.toMerge, ["options", "container"]).concat(fluid.getMembers(lightMerge.toMerge, "container"));

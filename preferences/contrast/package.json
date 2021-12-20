@@ -8,12 +8,12 @@
         "cssFiles": [
         ],
         "jsCommonFiles": [
-            "./js/EnhanceInputs.js",
-            "./js/EnhanceInputsEnactor.js",
-            "./js/EnhanceInputsPanel.js"
+            "./js/Contrast.js",
+            "./js/ContrastEnactor.js",
+            "./js/ContrastPanel.js"
         ],
         "htmlFiles": [
-            "./html/EnhanceInputs.html"
+            "./html/Contrast.html"
         ]
     }
 }

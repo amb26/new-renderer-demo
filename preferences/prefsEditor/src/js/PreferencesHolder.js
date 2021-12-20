@@ -21,7 +21,6 @@ fluid.defaults("fluid.prefs.preferencesHolder", {
         },
         livePreferences: {
             // always === "defaultPreferences" + "userPreferences" - what is shown in the PrefsEditor UI
-            // and in addition to any preview
         },
         persistentPreferences: "{that}.resources.initialPersistentPreferences.parsed.preferences", // Flushed from "userPreferences" on save
         local: { // for remoteModelComponent
@@ -71,6 +70,7 @@ fluid.defaults("fluid.prefs.preferencesHolder", {
     },
     resources: {
         initialPersistentPreferences: {
+            // TODO: Should really be a "read" pseudoevent which, e.g. slidingPanel can subscribe to
             promiseFunc: "{that}.fetchImpl"
         }
     },
@@ -96,9 +96,6 @@ fluid.defaults("fluid.prefs.preferencesHolder", {
         // ONE listener for the whole thing into the chain?
         // Probably. Note that our current entry point into reading and writing prefs is via RemoteModel's top-level
         // "fetch" invoked from "cancel"  and "write" invoked from "save".
-
-        // Note that the fetch in "finishInit" will be moved into the resource fetch, and the fetch in "cancel" will
-        // be removed since we will already have "persistentPreferences" to fall back on.
 
         // Some future UIO might have a "live read" capability like UIO+
         writeImpl: "fluid.prefs.write({that}, {arguments}.0)",
@@ -126,6 +123,12 @@ fluid.prefs.merge = function (defs, user) {
     return fluid.extend(true, {}, defs, user);
 };
 
+/** Transfer any "leaf preference change" operated by the user from one preference set to another - used to
+ * keep live preferencs (from the UI) in sync with user preferences.
+ * @param {PreferencesHolder} that - The preferencesHolder component storing the preference sets
+ * @param {Any} newLive - The new value of the preference
+ * @param {String} path - The path at which the preference has been updated
+ */
 fluid.prefs.transferPrefs = function (that, newLive, path) {
     var segs = that.applier.parseEL(path);
     that.applier.change(["userPreferences", fluid.peek(segs)], newLive);
@@ -138,6 +141,12 @@ fluid.prefs.reset = function (that) {
     fluid.prefs.setModelValue(that, "livePreferences", that.model.defaultPreferences);
 };
 
+/** Update one (possibly composite) model value to become identical with another, by operating a transaction
+ * in which any existing value at the target path is deleted and then set to the supplied value
+ * @param {fluid.modelComponent} that - The component holding the value to be updated
+ * @param {String} path - The path in the component's model at which the value is to be updated
+ * @param {Any} value - The new value to be stored at `path`
+ */
 fluid.prefs.setModelValue = function (that, path, value) {
     var transaction = that.applier.initiate();
     transaction.fireChangeRequest({path: path, type: "DELETE", source: "preferencesHolder"});

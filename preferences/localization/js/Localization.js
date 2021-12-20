@@ -13,23 +13,20 @@ https://github.com/fluid-project/infusion/raw/main/Infusion-LICENSE.txt
 
 "use strict";
 
-fluid.defaults("fluid.prefs.schemas.contrast", {
+fluid.defaults("fluid.prefs.schemas.localization", {
     gradeNames: ["fluid.prefs.schema"],
     schema: {
-        "fluid.prefs.contrast": {
+        "fluid.prefs.localization": {
             "type": "string",
-            "default": "default",
-            "enum": ["default", "bw", "wb", "by", "yb", "lgdg", "gw", "gd", "bbr"],
+            "default": "",
+            "enum": ["", "en", "en_CA", "en_US", "fr", "es", "fa", "pt_BR"],
             "enumLabels": [
-                "contrast-default",
-                "contrast-bw",
-                "contrast-wb",
-                "contrast-by",
-                "contrast-yb",
-                "contrast-lgdg",
-                "contrast-gw",
-                "contrast-gd",
-                "contrast-bbr"
+                "localization-default",
+                "localization-en",
+                "localization-fr",
+                "localization-es",
+                "localization-fa",
+                "localization-pt_BR"
             ]
         }
     }

@@ -34,11 +34,15 @@ fluid.tests.createSlidingPanel = function (options) {
 };
 
 fluid.tests.slidingPanel.assertAria = function (that, state) {
+    jqUnit.expect(10);
     var button = that.locate("toggleButton");
     var panel = that.locate("panel");
 
+    jqUnit.assertEquals("Panel visibility", state ? "block" : "none", panel.css("display"));
+
     jqUnit.assertEquals("Show/hide button has the button role", "button", button.attr("role"));
     jqUnit.assertEquals("Show/hide button has correct aria-pressed", "" + state, button.attr("aria-pressed"));
+    jqUnit.assertValue("Panel has been assigned an id", panel.attr("id"));
     jqUnit.assertEquals("Show/hide button has correct aria-controls", panel.attr("id"), button.attr("aria-controls"));
     jqUnit.assertEquals("Show/hide button has correct aria-expanded", "" + state, button.attr("aria-expanded"));
     jqUnit.assertEquals("Panel has the group role", "group", panel.attr("role"));
@@ -52,7 +56,7 @@ fluid.tests.slidingPanel.assertAria = function (that, state) {
 };
 
 jqUnit.test("Test Init", function () {
-    jqUnit.expect(9);
+    jqUnit.expect(1);
     var slidingPanel = fluid.tests.createSlidingPanel();
 
     jqUnit.assertTrue("The sliding panel is initialised", slidingPanel);
@@ -60,8 +64,10 @@ jqUnit.test("Test Init", function () {
 });
 
 jqUnit.asyncTest("Show Panel", function () {
-    jqUnit.expect(10);
+    jqUnit.expect(2);
     var slidingPanel = fluid.tests.createSlidingPanel();
+
+    fluid.tests.slidingPanel.assertAria(slidingPanel, false);
     slidingPanel.events.afterStateChange.addListener(function () {
         var toggleButton = slidingPanel.locate("toggleButton");
         var panel = slidingPanel.locate("panel");
@@ -76,12 +82,13 @@ jqUnit.asyncTest("Show Panel", function () {
 });
 
 jqUnit.asyncTest("Hide Panel", function () {
-    jqUnit.expect(10);
+    jqUnit.expect(2);
     var slidingPanel = fluid.tests.createSlidingPanel({
         model: {
             isShowing: true
         }
     });
+    fluid.tests.slidingPanel.assertAria(slidingPanel, true);
 
     slidingPanel.events.afterStateChange.addListener(function () {
         jqUnit.assertEquals("Hide panel", "none", slidingPanel.locate("panel").css("display"));

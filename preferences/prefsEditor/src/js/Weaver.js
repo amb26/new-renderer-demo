@@ -55,7 +55,6 @@ fluid.defaults("fluid.prefs.weaver", {
                 gradeNames: "{fluid.prefs.weaver}.options.prefsEditorGrades",
                 varietyPathPrefix: "{fluid.prefs.weaver}.model.livePreferences",
                 components: {
-                    prefsHolder: "{fluid.prefs.preferencesHolder}",
                     panelHolder: {
                         options: {
                             gradeNames: "{fluid.prefs.weaver}.options.panelHolderGrades"

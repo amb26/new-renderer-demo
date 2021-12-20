@@ -25,3 +25,9 @@ Right now the most functional driver demonstrating a prefs editor is at
 [examples/framework/preferences/minimalPreview/index.html](examples/framework/preferences/minimalPreview/index.html).
 This fires up a "grouped-style" preference editor with a preview box. The starter six panels are now functional,
 with an issue with the text font enactor which currently spills out of its preview container.
+
+The sliding panel and separate panel integrations are also functional, but need updates to the enactor
+strategies in order to allow the prefs editior UI to be insulated from changes in the parent document.
+
+The following panels are roughly ported but untested/nonfunctional - captions, letter space, localization, 
+self voicing, syllabification, word space.

@@ -48,9 +48,9 @@ fluid.defaults("fluid.slidingPanel", {
             funcName: "fluid.promise.fireTransformEvent",
             args: ["{that}.events.onStateChange", null, {
                 that: "{that}",
-                isShowing: "{change}.value"
-            }],
-            excludeSource: "init"
+                isShowing: "{change}.value",
+                sources: "{change}.transaction.sources"
+            }]
         }
     },
     animationDurations: {
@@ -113,10 +113,11 @@ fluid.defaults("fluid.slidingPanel", {
 fluid.slidingPanel.operateStateChange = function (payload, options) {
     var that = options.that,
         isShowing = options.isShowing,
+        init = options.sources.init,
         panel = that.dom.locate("panel"),
         togo = fluid.promise();
     panel.clearQueue();
-    that.dom.locate("panel")[isShowing ? "slideDown" : "slideUp"](
-        that.options.animationDurations[isShowing ? "show" : "hide"], togo.resolve);
+    var duration = init ? 0 : that.options.animationDurations[isShowing ? "show" : "hide"];
+    that.dom.locate("panel")[isShowing ? "slideDown" : "slideUp"](duration, togo.resolve);
     return togo;
 };
