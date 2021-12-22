@@ -21,13 +21,27 @@ changed in a project, or a project is moved around in the filesyste - consult it
 
 There is an in-progress port of the Infusion preferences framework in [preferences](preferences).
 
+## Preferences Framework Demos
+
 Right now the most functional driver demonstrating a prefs editor is at
 [examples/framework/preferences/minimalPreview/index.html](examples/framework/preferences/minimalPreview/index.html).
-This fires up a "grouped-style" preference editor with a preview box. The starter six panels are now functional,
+This fires up a "grouped-style" preferences editor with a preview box. The starter six panels are now functional,
 with an issue with the text font enactor which currently spills out of its preview container.
 
-The sliding panel and separate panel integrations are also functional, but need updates to the enactor
-strategies in order to allow the prefs editior UI to be insulated from changes in the parent document.
+The 2nd most functional driver is
+[examples/framework/preferences/fullPagePanelStyle/index.html](examples/framework/preferences/fullPagePanelStyle/index.html) -
+This fires up a "separated panel" style preferences editor with no preview and the same six panels as before,
+only with an auto-generated overall template that is produced simply from a "lookahead" at what panels are configured.
+This demonstration differs from the previous one only through swapping out a few grade names.
 
-The following panels are roughly ported but untested/nonfunctional - captions, letter space, localization, 
+Finally there is a full demonstration of the "sliding panel with separated panel" configuration, which is the most
+widely deployed UIOptions configuration, at [examples/framework/preferences/slidingPanel/index.html](examples/framework/preferences/slidingPanel/index.html).
+Whilst this is technically functional, there is a lot of "spillover" of preference application into the editor UI itself,
+since I have made this integration looking ahead to the "iframeless model" where we will be able to use CSS custom
+variables for scoping. The enactor strategies for these will need updates in order to allow the prefs editior and
+preview UIs to be insulated from changes in the parent document.
+
+The following panels are roughly ported but untested/nonfunctional - captions, letter space, localization,
 self voicing, syllabification, word space.
+
+Coming soon - test cases!
