@@ -152,7 +152,8 @@ var rewriteTags = function (document, tag, attr, prefix, lastNodeHolder) {
     return symbolic.length;
 };
 
-// These three functions fix for linkedom bug - all comment nodes automatically get XML-escaped one level
+// These three functions fix for linkedom bug https://github.com/WebReflection/linkedom/issues/97
+// all comment nodes automatically get XML-escaped one level
 var guardEntities = function (text) {
     return text.replace(/&/g, "~~&~~").replace(/</g, "~~<~~").replace(/>/g, "~~>~~");
 };

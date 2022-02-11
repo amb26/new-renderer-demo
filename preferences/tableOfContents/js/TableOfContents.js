@@ -14,7 +14,7 @@ https://github.com/fluid-project/infusion/raw/main/Infusion-LICENSE.txt
 "use strict";
 
 fluid.defaults("fluid.prefs.schemas.tableOfContents", {
-    gradeNames: ["fluid.prefs.schema"],
+    gradeNames: ["fluid.prefs.schemas"],
     schema: {
         "fluid.prefs.tableOfContents": {
             "type": "boolean",
