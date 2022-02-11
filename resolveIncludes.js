@@ -100,7 +100,7 @@ var fileToRelative = function (fileName, suffix) {
 };
 
 var normaliseWhitespace = function (white) {
-    return "\r" + white.match(/[^\S\n\r]*$/) || "";
+    return "\n" + white.match(/[^\S\n\r]*$/) || "";
 };
 
 var addSyntheticNode = function (document, relative, tag, attr, value) {
@@ -152,27 +152,7 @@ var rewriteTags = function (document, tag, attr, prefix, lastNodeHolder) {
     return symbolic.length;
 };
 
-// These three functions fix for linkedom bug https://github.com/WebReflection/linkedom/issues/97
-// all comment nodes automatically get XML-escaped one level
-var guardEntities = function (text) {
-    return text.replace(/&/g, "~~&~~").replace(/</g, "~~<~~").replace(/>/g, "~~>~~");
-};
 
-var unguardEntities = function (text) {
-    return text.replace(/~~&amp;~~/g, "&").replace(/~~&lt;~~/g, "<").replace(/~~&gt;~~/g, ">");
-};
-
-var unescapeComments = function (document) {
-    var node, ni = document.createNodeIterator(document.documentElement);
-
-    while (node = ni.nextNode()) { // eslint-disable-line no-cond-assign
-        if (node.nodeType === 8) {
-            var text = node.data; // linkedom doesn't even supply any method to access or set the unescaped text
-            var unescaped = guardEntities(text);
-            node.data = unescaped;
-        }
-    }
-};
 
 fluid.each(htmls, function (htmlFileName) {
     console.log("Parsing " + htmlFileName);
@@ -180,7 +160,6 @@ fluid.each(htmls, function (htmlFileName) {
     var depth = htmlFileName.split("/").length - 1;
     var prefix = fluid.generate(depth, "../").join("");
     var document = linkedom.parseHTML(text).document;
-    unescapeComments(document);
     var lastNodeHolder = {};
     var links = rewriteTags(document, "link", "href", prefix, lastNodeHolder);
     var scripts = rewriteTags(document, "script", "src", prefix, lastNodeHolder);
@@ -193,9 +172,8 @@ fluid.each(htmls, function (htmlFileName) {
         var outFile = fileToRelative(htmlFileName, "-out.html");
         var data = "<!DOCTYPE html>\n" + document.documentElement.outerHTML + "\n";
         var dataR = data.replace(/=\"PLACEHOLDER_NULL\"/g, "");
-        var dataR2 = unguardEntities(dataR);
 
-        writeFile(outFile, dataR2);
+        writeFile(outFile, dataR);
         fs.unlinkSync(htmlFileName);
         fs.renameSync(outFile, htmlFileName);
     }

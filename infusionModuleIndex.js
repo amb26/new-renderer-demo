@@ -33,6 +33,11 @@ fluid.infusionModuleIndex = [
         "prefix": "perftest/"
     },
     {
+        "moduleName": "fluid-prefs-captions",
+        "suffix": "",
+        "prefix": "preferences/captions/"
+    },
+    {
         "moduleName": "fluid-prefs-contrast",
         "suffix": "",
         "prefix": "preferences/contrast/"
@@ -43,9 +48,19 @@ fluid.infusionModuleIndex = [
         "prefix": "preferences/enhanceInputs/"
     },
     {
+        "moduleName": "fluid-prefs-letter-space",
+        "suffix": "",
+        "prefix": "preferences/letterSpace/"
+    },
+    {
         "moduleName": "fluid-prefs-line-space",
         "suffix": "",
         "prefix": "preferences/lineSpace/"
+    },
+    {
+        "moduleName": "fluid-prefs-self-voicing",
+        "suffix": "",
+        "prefix": "preferences/selfVoicing/"
     },
     {
         "moduleName": "fluid-preferences",
@@ -56,6 +71,11 @@ fluid.infusionModuleIndex = [
         "moduleName": "fluid-prefs-editor",
         "suffix": "",
         "prefix": "preferences/prefsEditor/"
+    },
+    {
+        "moduleName": "fluid-prefs-syllabification",
+        "suffix": "",
+        "prefix": "preferences/syllabification/"
     },
     {
         "moduleName": "fluid-prefs-table-of-contents",
@@ -71,6 +91,11 @@ fluid.infusionModuleIndex = [
         "moduleName": "fluid-prefs-text-size",
         "suffix": "",
         "prefix": "preferences/textSize/"
+    },
+    {
+        "moduleName": "fluid-prefs-word-space",
+        "suffix": "",
+        "prefix": "preferences/wordSpace/"
     },
     {
         "moduleName": "fluid-sliding-panel",
