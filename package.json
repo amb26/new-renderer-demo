@@ -10,16 +10,16 @@
         "lint": "fluid-lint-all"
     },
     "dependencies": {
-        "infusion": "4.0.0-dev.20211216T180403Z.d5f6173fc.FLUID-6703",
+        "infusion": "4.0.0-dev.20220209T141225Z.50bdbf8d1.main",
         "kettle": "amb26/kettle#KETTLE-78",
-        "linkedom": "0.14.0"
+        "linkedom": "0.14.1"
     },
     "devDependencies": {
         "node-jqunit": "1.1.9",
         "json-diff": "0.7.1",
         "glob": "7.2.0",
-        "eslint": "8.8.0",
-        "eslint-config-fluid": "2.0.0",
+        "eslint": "8.9.0",
+        "eslint-config-fluid": "2.0.1",
         "fluid-lint-all": "1.1.5",
         "stylelint": "14.5.0",
         "stylelint-config-fluid": "0.2.1"
