@@ -24,9 +24,9 @@ There is an in-progress port of the Infusion preferences framework in [preferenc
 ## Preferences Framework Demos
 
 Right now the most functional driver demonstrating a prefs editor is at
-[examples/framework/preferences/minimalPreview/index.html](examples/framework/preferences/minimalPreview/index.html).
+[examples/framework/preferences/minimalPreview/index.html](examples/framework/preferences/withPreview/index.html).
 This fires up a "grouped-style" preferences editor with a preview box. The starter six panels are now functional,
-with an issue with the text font enactor which currently spills out of its preview container.
+with an issue with the text size enactor which currently spills out of its preview container.
 
 The 2nd most functional driver is
 [examples/framework/preferences/fullPagePanelStyle/index.html](examples/framework/preferences/fullPagePanelStyle/index.html) -
