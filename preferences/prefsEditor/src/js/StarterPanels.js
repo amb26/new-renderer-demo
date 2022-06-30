@@ -14,7 +14,6 @@ https://github.com/fluid-project/infusion/raw/main/Infusion-LICENSE.txt
 "use strict";
 
 fluid.defaults("fluid.prefs.starterPanelHolder", {
-    gradeNames: "fluid.newRendererComponent",
     components: {
         textSize: {
             type: "fluid.prefs.panel.textSize"

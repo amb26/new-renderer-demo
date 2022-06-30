@@ -18,6 +18,7 @@ https://github.com/fluid-project/infusion/raw/main/Infusion-LICENSE.txt
  */
 fluid.defaults("fluid.prefs.staticPanelHolder", {
     gradeNames: "fluid.newRendererComponent",
+    templateHasRoot: false,
     resources: {
         template: {
             path: "%fluid-prefs-editor/src/html/StaticPanelHolder.html"
