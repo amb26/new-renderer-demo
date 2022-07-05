@@ -22,7 +22,7 @@
 html {
     overflow: hidden;
 
-    &.fl-textSize-enabled {
+    .fl-textSize-enabled {
         font-size: var(--fl-textSize);
     }
 

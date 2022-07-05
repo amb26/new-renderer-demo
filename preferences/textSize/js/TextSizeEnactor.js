@@ -73,12 +73,12 @@ fluid.prefs.enactor.textSize.set = function (that, factor) {
 
     if (that.initialSize && factor !== 1) {
         var targetSize = fluid.roundToDecimal(factor * that.initialSize);
-        that.root.addClass(that.options.styles.enabled);
-        that.root.css(that.options.cssCustomProp.size, `${targetSize}px`);
-        that.root.css(that.options.cssCustomProp.factor, factor);
+        that.container.addClass(that.options.styles.enabled);
+        that.container.css(that.options.cssCustomProp.size, `${targetSize}px`);
+        that.container.css(that.options.cssCustomProp.factor, factor);
     } else {
-        that.root.removeClass(that.options.styles.enabled);
-        that.root.css(that.options.cssCustomProp.size, "");
-        that.root.css(that.options.cssCustomProp.factor, "");
+        that.container.removeClass(that.options.styles.enabled);
+        that.container.css(that.options.cssCustomProp.size, "");
+        that.container.css(that.options.cssCustomProp.factor, "");
     }
 };
