@@ -206,7 +206,7 @@ fluid.defaults("fluid.prefs.enactor.spacingSetter", {
         unit: {
             listener: "{that}.set",
             args: ["{change}.value"],
-            namespace: "setAdaptation"
+            namespace: "setAdaptationUnit"
         },
         // Replace default model listener, because `value` needs be transformed before being applied.
         // The `unit` model value should be used for setting the adaptation.
@@ -242,6 +242,7 @@ fluid.prefs.enactor.spacingSetter.getSpacing = function (that, cssProp, getTextS
 };
 
 fluid.prefs.enactor.spacingSetter.set = function (that, cssProp, units) {
+    console.log("spacingSetter " + units);
     var targetSize = that.originalSpacing;
 
     if (units) {

@@ -34,14 +34,17 @@ This fires up a "separated panel" style preferences editor with no preview and t
 only with an auto-generated overall template that is produced simply from a "lookahead" at what panels are configured.
 This demonstration differs from the previous one only through swapping out a few grade names.
 
-Finally there is a full demonstration of the "sliding panel with separated panel" configuration, which is the most
-widely deployed UIOptions configuration, at [examples/framework/preferences/slidingPanel/index.html](examples/framework/preferences/slidingPanel/index.html).
+A full demonstration of the "sliding panel with separated panel" configuration, which is the most
+widely deployed UIOptions configuration, is at [examples/framework/preferences/slidingPanel/index.html](examples/framework/preferences/slidingPanel/index.html).
 Whilst this is technically functional, there is a lot of "spillover" of preference application into the editor UI itself,
 since I have made this integration looking ahead to the "iframeless model" where we will be able to use CSS custom
 variables for scoping. The enactor strategies for these will need updates in order to allow the prefs editior and
 preview UIs to be insulated from changes in the parent document.
 
-The following panels are roughly ported but untested/nonfunctional - captions, letter space, localization,
-self voicing, syllabification, word space.
+A variant of the previous demo showing all currently implemented panels, rather than just the "starter" set of 6, is at
+[examples/framework/preferences/slidingPanelAll/index.html](examples/framework/preferences/slidingPanelAll/index.html).
+
+The following panels are roughly ported but untested/nonfunctional - captions, localization,
+self voicing, syllabification.
 
 Coming soon - test cases!

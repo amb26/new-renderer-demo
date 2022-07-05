@@ -58,9 +58,9 @@ fluid.infusionModuleIndex = [
         "prefix": "preferences/lineSpace/"
     },
     {
-        "moduleName": "fluid-prefs-self-voicing",
+        "moduleName": "fluid-prefs-localization",
         "suffix": "",
-        "prefix": "preferences/selfVoicing/"
+        "prefix": "preferences/localization/"
     },
     {
         "moduleName": "fluid-preferences",
@@ -71,6 +71,11 @@ fluid.infusionModuleIndex = [
         "moduleName": "fluid-prefs-editor",
         "suffix": "",
         "prefix": "preferences/prefsEditor/"
+    },
+    {
+        "moduleName": "fluid-prefs-self-voicing",
+        "suffix": "",
+        "prefix": "preferences/selfVoicing/"
     },
     {
         "moduleName": "fluid-prefs-syllabification",

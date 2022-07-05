@@ -1,6 +1,6 @@
 {
     "name": "fluid-prefs-letter-space",
-    "description": "The letter spacing preference for the Fluid preferences editor",   
+    "description": "The letter spacing preference for the Fluid preferences editor",
     "version": "1.0.0",
     "license": "BSD-3-Clause",
     "infusion": {

@@ -1,6 +1,6 @@
 {
     "name": "fluid-prefs-syllabification",
-    "description": "The syllabification preference for the Fluid preferences editor",   
+    "description": "The syllabification preference for the Fluid preferences editor",
     "version": "1.0.0",
     "license": "BSD-3-Clause",
     "infusion": {

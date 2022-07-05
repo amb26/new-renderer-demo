@@ -11,10 +11,11 @@
             "./tableOfContents/**/*.js",
             "./perftest/**/*.js",
             "./uiOptions/**/*.js",
-            "!./preferences/test/**/*.js",
-            "!./preferences/src/**/*.js",
             "./*.js"],
-        "json": ["./*.json"],
+        "json": [
+            "./*.json",
+            "./preferences/**/*.json"
+            ],
         "md": ["./*.md"],
         "other": ["./.*"]
     },

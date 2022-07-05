@@ -1,6 +1,6 @@
 {
     "name": "fluid-prefs-self-voicing",
-    "description": "The self voicing preference for the Fluid preferences editor",   
+    "description": "The self voicing preference for the Fluid preferences editor",
     "version": "1.0.0",
     "license": "BSD-3-Clause",
     "infusion": {

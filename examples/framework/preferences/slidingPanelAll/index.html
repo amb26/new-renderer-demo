@@ -127,6 +127,20 @@
         <script-symbolic src="%fluid-prefs-table-of-contents/js/TableOfContentsPanel.js"></script-symbolic>
             <script synthetic src="../../../../preferences/tableOfContents/js/TableOfContentsPanel.js"></script>
 
+        <script-symbolic src="%fluid-prefs-letter-space/js/LetterSpace.js"></script-symbolic>
+            <script synthetic src="../../../../preferences/letterSpace/js/LetterSpace.js"></script>
+        <script-symbolic src="%fluid-prefs-letter-space/js/LetterSpaceEnactor.js"></script-symbolic>
+            <script synthetic src="../../../../preferences/letterSpace/js/LetterSpaceEnactor.js"></script>
+        <script-symbolic src="%fluid-prefs-letter-space/js/LetterSpacePanel.js"></script-symbolic>
+            <script synthetic src="../../../../preferences/letterSpace/js/LetterSpacePanel.js"></script>
+
+        <script-symbolic src="%fluid-prefs-word-space/js/WordSpace.js"></script-symbolic>
+            <script synthetic src="../../../../preferences/wordSpace/js/WordSpace.js"></script>
+        <script-symbolic src="%fluid-prefs-word-space/js/WordSpaceEnactor.js"></script-symbolic>
+            <script synthetic src="../../../../preferences/wordSpace/js/WordSpaceEnactor.js"></script>
+        <script-symbolic src="%fluid-prefs-word-space/js/WordSpacePanel.js"></script-symbolic>
+            <script synthetic src="../../../../preferences/wordSpace/js/WordSpacePanel.js"></script>
+
         <script-symbolic src="%fluid-prefs-editor/src/js/ArrowScrolling.js"></script-symbolic>
             <script synthetic src="../../../../preferences/prefsEditor/src/js/ArrowScrolling.js"></script>
         <script-symbolic src="%fluid-prefs-editor/src/js/Enactor.js"></script-symbolic>
@@ -156,7 +170,7 @@
             <script synthetic src="../../../../uiOptions/src/js/UIOptions.js"></script>
             <script module-index synthetic src="../../../../infusionModuleIndex.js"></script>
 
-        <title>Preferences Editor: Sliding panel with panel styling</title>
+        <title>Preferences Editor: Sliding panel with panel styling and all preferences</title>
      </head>
 
     <body>
@@ -293,9 +307,40 @@
         </main>
 
         <script>
+
+
+            fluid.defaults("fluid.prefs.examples.allPanelHolder", {
+                components: {
+                    textSize: {
+                        type: "fluid.prefs.panel.textSize"
+                    },
+                    textFont: {
+                        type: "fluid.prefs.panel.textFont"
+                    },
+                    lineSpace: {
+                        type: "fluid.prefs.panel.lineSpace"
+                    },
+                    contrast: {
+                        type: "fluid.prefs.panel.contrast"
+                    },
+                    tableOfContents: {
+                        type: "fluid.prefs.panel.tableOfContents"
+                    },
+                    enhanceInputs: {
+                        type: "fluid.prefs.panel.enhanceInputs"
+                    },
+                    letterSpace: {
+                        type: "fluid.prefs.panel.letterSpace"
+                    },
+                    wordSpace: {
+                        type: "fluid.prefs.panel.wordSpace"
+                    }
+                }
+            });
+
             fluid.uiOptions(".flc-prefsEditor-slidingPanel", {
                 gradeNames: ["fluid.prefs.withSeparatedPanel", "fluid.prefs.withSlidingPanel"],
-                panelHolderGrades: ["fluid.prefs.starterPanelHolder", "fluid.prefs.dynamicPanelHolder"],
+                panelHolderGrades: ["fluid.prefs.examples.allPanelHolder", "fluid.prefs.dynamicPanelHolder"],
                 model: {
                     prefsEditor: true
                 },

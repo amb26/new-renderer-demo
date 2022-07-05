@@ -25,7 +25,7 @@ https://github.com/fluid-project/infusion/raw/main/Infusion-LICENSE.txt
 // TODO: aux schema used to have fontSizeMap
 fluid.defaults("fluid.prefs.enactor.wordSpace", {
     gradeNames: ["fluid.prefs.enactor.spacingSetter"],
-    preferenceMap: {
+    preferencesMap: {
         "fluid.prefs.wordSpace": {
             "model.value": "value"
         }
