@@ -1,0 +1,31 @@
+{
+    "name": "new-renderer-demo",
+    "description": "Demo of the new 'antigenic' Fluid Renderer",
+    "version": "1.0.0",
+    "author": "GPII",
+    "license": "BSD-3-Clause",
+    "repository": "git@github.com:amb26/new-renderer-demo.git",
+    "scripts": {
+        "test": "node tests/node/all-tests.js",
+        "lint": "fluid-lint-all"
+    },
+    "dependencies": {
+        "infusion": "4.2.0",
+        "kettle": "amb26/kettle#KETTLE-78",
+        "linkedom": "0.14.12"
+    },
+    "devDependencies": {
+        "node-jqunit": "1.1.9",
+        "json-diff": "0.7.1",
+        "glob": "8.0.3",
+        "eslint": "8.19.0",
+        "eslint-config-fluid": "2.0.1",
+        "fluid-lint-all": "1.2.2",
+        "stylelint": "14.9.1",
+        "stylelint-config-fluid": "0.2.1"
+    },
+    "main": "src/serverRendererIndex.js",
+    "infusion": {
+        "bundleType": "fluid-renderer-module"
+    }
+}

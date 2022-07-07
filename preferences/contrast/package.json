@@ -1,0 +1,19 @@
+{
+    "name": "fluid-prefs-contrast",
+    "description": "The contrast or theme preference for the Fluid preferences editor",
+    "version": "1.0.0",
+    "license": "BSD-3-Clause",
+    "infusion": {
+        "bundleType": "fluid-renderer-module",
+        "cssFiles": [
+        ],
+        "jsCommonFiles": [
+            "./js/Contrast.js",
+            "./js/ContrastEnactor.js",
+            "./js/ContrastPanel.js"
+        ],
+        "htmlFiles": [
+            "./html/Contrast.html"
+        ]
+    }
+}

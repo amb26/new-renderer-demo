@@ -1,0 +1,36 @@
+{
+    "sources": {
+        "js": [
+            "./src/**/*.js",
+            "./tests/**/*.js",
+            "./demos/**/*.js",
+            "./examples/**/*.js",
+            "./preferences/**/*.js",
+            "./slidingPanel/**/*.js",
+            "./textfieldControl/**/*.js",
+            "./tableOfContents/**/*.js",
+            "./perftest/**/*.js",
+            "./uiOptions/**/*.js",
+            "./*.js"],
+        "json": [
+            "./*.json",
+            "./preferences/**/*.json"
+            ],
+        "md": ["./*.md"],
+        "other": ["./.*"]
+    },
+    "eslint": {
+        "js": {
+            "options": {
+            }
+        }
+    },
+    "markdownlint": {
+        "options": {
+            "config": {
+                "single-h1": false,
+                "line-length": false
+            }
+        }
+    }
+}

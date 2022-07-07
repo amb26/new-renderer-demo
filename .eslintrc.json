@@ -1,0 +1,13 @@
+{
+    "env": {
+        "es6": true,
+        "node": true
+    },
+    "rules": {
+        "no-console": "off"
+    },
+    "extends": "eslint-config-fluid",
+    "globals": {
+        "fluid_3_0_0": true
+    }
+}

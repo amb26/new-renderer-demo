@@ -1,0 +1,128 @@
+<!DOCTYPE html>
+<html lang="en">
+    <head>
+        <meta http-equiv="Content-Type" content="text/html; charset=utf-8">
+        <title>Fluid New Renderer Tests</title>
+
+        <link-symbolic rel="Stylesheet" media="screen" href="%infusion/tests/lib/qunit/css/qunit.css"></link-symbolic>
+            <link media="screen" rel="Stylesheet" synthetic href="../../../node_modules/infusion/tests/lib/qunit/css/qunit.css">
+
+        <script-symbolic src="%infusion/src/lib/jquery/core/js/jquery.js"></script-symbolic>
+            <script synthetic src="../../../node_modules/infusion/src/lib/jquery/core/js/jquery.js"></script>
+        <script-symbolic src="%infusion/src/framework/core/js/Fluid.js"></script-symbolic>
+            <script synthetic src="../../../node_modules/infusion/src/framework/core/js/Fluid.js"></script>
+        <script-symbolic src="%infusion/src/framework/core/js/FluidPromises.js"></script-symbolic>
+            <script synthetic src="../../../node_modules/infusion/src/framework/core/js/FluidPromises.js"></script>
+        <script-symbolic src="%infusion/src/framework/core/js/FluidDocument.js"></script-symbolic>
+            <script synthetic src="../../../node_modules/infusion/src/framework/core/js/FluidDocument.js"></script>
+        <script-symbolic src="%infusion/src/framework/core/js/FluidDOMUtilities.js"></script-symbolic>
+            <script synthetic src="../../../node_modules/infusion/src/framework/core/js/FluidDOMUtilities.js"></script>
+        <script-symbolic src="%infusion/src/framework/core/js/FluidIoC.js"></script-symbolic>
+            <script synthetic src="../../../node_modules/infusion/src/framework/core/js/FluidIoC.js"></script>
+        <script-symbolic src="%infusion/src/framework/core/js/DataBinding.js"></script-symbolic>
+            <script synthetic src="../../../node_modules/infusion/src/framework/core/js/DataBinding.js"></script>
+        <script-symbolic src="%infusion/src/framework/core/js/ResourceLoader.js"></script-symbolic>
+            <script synthetic src="../../../node_modules/infusion/src/framework/core/js/ResourceLoader.js"></script>
+        <script-symbolic src="%infusion/src/framework/core/js/DataSource.js"></script-symbolic>
+            <script synthetic src="../../../node_modules/infusion/src/framework/core/js/DataSource.js"></script>
+        <script-symbolic src="%infusion/src/framework/core/js/ResourceLoader-browser.js"></script-symbolic>
+            <script synthetic src="../../../node_modules/infusion/src/framework/core/js/ResourceLoader-browser.js"></script>
+        <script-symbolic src="%infusion/src/framework/enhancement/js/ContextAwareness.js"></script-symbolic>
+            <script synthetic src="../../../node_modules/infusion/src/framework/enhancement/js/ContextAwareness.js"></script>
+        <script-symbolic src="%infusion/src/framework/enhancement/js/ProgressiveEnhancement.js"></script-symbolic>
+            <script synthetic src="../../../node_modules/infusion/src/framework/enhancement/js/ProgressiveEnhancement.js"></script>
+        <script-symbolic src="%infusion/src/framework/core/js/ModelTransformation.js"></script-symbolic>
+            <script synthetic src="../../../node_modules/infusion/src/framework/core/js/ModelTransformation.js"></script>
+        <script-symbolic src="%infusion/src/framework/core/js/ModelTransformationTransforms.js"></script-symbolic>
+            <script synthetic src="../../../node_modules/infusion/src/framework/core/js/ModelTransformationTransforms.js"></script>
+        <script-symbolic src="%infusion/src/framework/core/js/FluidView.js"></script-symbolic>
+            <script synthetic src="../../../node_modules/infusion/src/framework/core/js/FluidView.js"></script>
+        <script-symbolic src="%infusion/src/framework/core/js/NewViewSupport.js"></script-symbolic>
+            <script synthetic src="../../../node_modules/infusion/src/framework/core/js/NewViewSupport.js"></script>
+        <script-symbolic src="%infusion/src/framework/core/js/FluidView-browser.js"></script-symbolic>
+            <script synthetic src="../../../node_modules/infusion/src/framework/core/js/FluidView-browser.js"></script>
+
+        <script-symbolic src="%infusion/tests/lib/qunit/js/qunit.js"></script-symbolic>
+            <script synthetic src="../../../node_modules/infusion/tests/lib/qunit/js/qunit.js"></script>
+        <script-symbolic src="%infusion/tests/test-core/jqUnit/js/jqUnit.js"></script-symbolic>
+            <script synthetic src="../../../node_modules/infusion/tests/test-core/jqUnit/js/jqUnit.js"></script>
+        <script-symbolic src="%infusion/tests/test-core/jqUnit/js/jqUnit-browser.js"></script-symbolic>
+            <script synthetic src="../../../node_modules/infusion/tests/test-core/jqUnit/js/jqUnit-browser.js"></script>
+
+        <script-symbolic src="%new-renderer-demo/src/js/core/fluidNewRenderer.js"></script-symbolic>
+            <script synthetic src="../../../src/js/core/fluidNewRenderer.js"></script>
+        <script-symbolic src="%new-renderer-demo/src/js/core/fluidNewRendererComponents.js"></script-symbolic>
+            <script synthetic src="../../../src/js/core/fluidNewRendererComponents.js"></script>
+        <script-symbolic src="%new-renderer-demo/src/js/core/htmlParser.js"></script-symbolic>
+            <script synthetic src="../../../src/js/core/htmlParser.js"></script>
+        <script-symbolic src="%new-renderer-demo/src/js/core/ResourceRewriter.js"></script-symbolic>
+            <script synthetic src="../../../src/js/core/ResourceRewriter.js"></script>
+        <script-symbolic src="%new-renderer-demo/src/js/client/ClientRenderer.js"></script-symbolic>
+            <script synthetic src="../../../src/js/client/ClientRenderer.js"></script>
+            <script module-index synthetic src="../../../infusionModuleIndex.js"></script>
+
+    </head>
+    <body>
+        <h1 id="qunit-header">Fluid New Renderer Tests</h1>
+        <h2 id="qunit-banner"></h2>
+        <div id="qunit-testrunner-toolbar"></div>
+        <h2 id="qunit-userAgent"></h2>
+        <ol id="qunit-tests"></ol>
+
+        <!-- Test HTML -->
+        <div id="qunit-fixture">
+            <select id="uiselect-test">
+            </select>
+	        <div id="frontier-test">
+	            <div class="renderer-selector first"> <!-- potentially template-forming markup for first component -->
+	                <div>
+	                    <div class="renderer-selector spoiler"> <!-- spoiler that should not be on the frontier -->
+	                    </div>
+	                    <div class="nonrenderer-selector spoiler"> <!-- also a spoiler -->
+	                    </div>
+	                </div>
+	            </div>
+	            <div class="renderer-selector second"> <!-- dummy preview markup -->
+	            </div>
+	            <div>
+	                <div class="nonrenderer-selector top"> <!-- these are fine and should not be blasted -->
+	                    <div class="nonrenderer-selector nested">
+	                    </div>
+	                </div>
+	            </div>
+	        </div>
+	        
+	        <div id="bad-template">
+	            <div class="renderer-selector first">
+	            </div>
+	            <div>
+	                <div class="renderer-selector second"> <!-- badly nested 2nd instance of renderer selector -->
+	                </div>
+	            </div>
+	        </div>
+	        
+	        <div><div id="sentinel-test"></div></div> <!-- essential that this line is written without internal whitespace -->
+	
+	        <div id="render-test">
+	            <div class="renderer-selector first">
+	                 <div class="nested-leaf"></div>
+	            </div>
+	            <div class="renderer-selector second">
+	            </div>
+	        </div>
+	        
+	        <div id="static-selector">
+	        </div>
+	        
+	        <div id="static-selector-error">
+            </div>
+	        
+	        <input id="poly-test-input" type="text">
+	        
+	        <textarea id="poly-test-textarea">
+	        </textarea>
+	
+	        <script src="../js/FluidNewRendererTests.js"></script>
+        </div>
+    </body>
+</html>

@@ -1,0 +1,9 @@
+{
+    "name": "fluid-prefs-editor",
+    "description": "The preferences editor",
+    "version": "1.0.0",
+    "license": "BSD-3-Clause",
+    "infusion": {
+        "bundleType": "fluid-renderer-module"
+    }
+}

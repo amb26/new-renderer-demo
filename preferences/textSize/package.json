@@ -1,0 +1,19 @@
+{
+    "name": "fluid-prefs-text-size",
+    "description": "The text size preference for the Fluid preferences editor",
+    "version": "1.0.0",
+    "license": "BSD-3-Clause",
+    "infusion": {
+        "bundleType": "fluid-renderer-module",
+        "cssFiles": [
+        ],
+        "jsCommonFiles": [
+            "./js/TextSize.js",
+            "./js/TextSizeEnactor.js",
+            "./js/TextSizePanel.js"
+        ],
+        "htmlFiles": [
+            "./html/TextSize.html"
+        ]
+    }
+}

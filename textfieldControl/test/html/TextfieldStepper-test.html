@@ -1,0 +1,92 @@
+<!DOCTYPE html>
+<html lang="en">
+    <head>
+        <meta http-equiv="Content-Type" content="text/html; charset=utf-8">
+        <title>TextfieldStepper Tests</title>
+
+        <link-symbolic rel="Stylesheet" media="screen" href="%infusion/tests/lib/qunit/css/qunit.css"></link-symbolic>
+            <link media="screen" rel="Stylesheet" synthetic href="../../../node_modules/infusion/tests/lib/qunit/css/qunit.css">
+
+        <script-symbolic src="%infusion/src/lib/jquery/core/js/jquery.js"></script-symbolic>
+            <script synthetic src="../../../node_modules/infusion/src/lib/jquery/core/js/jquery.js"></script>
+        <script-symbolic src="%infusion/src/framework/core/js/Fluid.js"></script-symbolic>
+            <script synthetic src="../../../node_modules/infusion/src/framework/core/js/Fluid.js"></script>
+        <script-symbolic src="%infusion/src/framework/core/js/FluidPromises.js"></script-symbolic>
+            <script synthetic src="../../../node_modules/infusion/src/framework/core/js/FluidPromises.js"></script>
+        <script-symbolic src="%infusion/src/framework/core/js/FluidDocument.js"></script-symbolic>
+            <script synthetic src="../../../node_modules/infusion/src/framework/core/js/FluidDocument.js"></script>
+        <script-symbolic src="%infusion/src/framework/core/js/FluidIoC.js"></script-symbolic>
+            <script synthetic src="../../../node_modules/infusion/src/framework/core/js/FluidIoC.js"></script>
+        <script-symbolic src="%infusion/src/framework/core/js/DataBinding.js"></script-symbolic>
+            <script synthetic src="../../../node_modules/infusion/src/framework/core/js/DataBinding.js"></script>
+        <script-symbolic src="%infusion/src/framework/core/js/ResourceLoader.js"></script-symbolic>
+            <script synthetic src="../../../node_modules/infusion/src/framework/core/js/ResourceLoader.js"></script>
+        <script-symbolic src="%infusion/src/framework/core/js/DataSource.js"></script-symbolic>
+            <script synthetic src="../../../node_modules/infusion/src/framework/core/js/DataSource.js"></script>
+        <script-symbolic src="%infusion/src/framework/core/js/ResourceLoader-browser.js"></script-symbolic>
+            <script synthetic src="../../../node_modules/infusion/src/framework/core/js/ResourceLoader-browser.js"></script>
+        <script-symbolic src="%infusion/src/framework/enhancement/js/ContextAwareness.js"></script-symbolic>
+            <script synthetic src="../../../node_modules/infusion/src/framework/enhancement/js/ContextAwareness.js"></script>
+        <script-symbolic src="%infusion/src/framework/enhancement/js/ProgressiveEnhancement.js"></script-symbolic>
+            <script synthetic src="../../../node_modules/infusion/src/framework/enhancement/js/ProgressiveEnhancement.js"></script>
+        <script-symbolic src="%infusion/src/framework/core/js/ModelTransformation.js"></script-symbolic>
+            <script synthetic src="../../../node_modules/infusion/src/framework/core/js/ModelTransformation.js"></script>
+        <script-symbolic src="%infusion/src/framework/core/js/ModelTransformationTransforms.js"></script-symbolic>
+            <script synthetic src="../../../node_modules/infusion/src/framework/core/js/ModelTransformationTransforms.js"></script>
+        <script-symbolic src="%infusion/src/framework/core/js/FluidView.js"></script-symbolic>
+            <script synthetic src="../../../node_modules/infusion/src/framework/core/js/FluidView.js"></script>
+        <script-symbolic src="%infusion/src/framework/core/js/NewViewSupport.js"></script-symbolic>
+            <script synthetic src="../../../node_modules/infusion/src/framework/core/js/NewViewSupport.js"></script>
+        <script-symbolic src="%infusion/src/framework/core/js/FluidView-browser.js"></script-symbolic>
+            <script synthetic src="../../../node_modules/infusion/src/framework/core/js/FluidView-browser.js"></script>
+
+        <script-symbolic src="%infusion/tests/lib/qunit/js/qunit.js"></script-symbolic>
+            <script synthetic src="../../../node_modules/infusion/tests/lib/qunit/js/qunit.js"></script>
+        <script-symbolic src="%infusion/tests/test-core/jqUnit/js/jqUnit.js"></script-symbolic>
+            <script synthetic src="../../../node_modules/infusion/tests/test-core/jqUnit/js/jqUnit.js"></script>
+        <script-symbolic src="%infusion/tests/test-core/utils/js/IoCTestUtils.js"></script-symbolic>
+            <script synthetic src="../../../node_modules/infusion/tests/test-core/utils/js/IoCTestUtils.js"></script>
+
+        <script-symbolic src="%new-renderer-demo/src/js/core/fluidNewRenderer.js"></script-symbolic>
+            <script synthetic src="../../../src/js/core/fluidNewRenderer.js"></script>
+        <script-symbolic src="%new-renderer-demo/src/js/core/htmlParser.js"></script-symbolic>
+            <script synthetic src="../../../src/js/core/htmlParser.js"></script>
+        <script-symbolic src="%new-renderer-demo/src/js/core/ResourceRewriter.js"></script-symbolic>
+            <script synthetic src="../../../src/js/core/ResourceRewriter.js"></script>
+        <script-symbolic src="%new-renderer-demo/src/js/client/ClientRenderer.js"></script-symbolic>
+            <script synthetic src="../../../src/js/client/ClientRenderer.js"></script>
+
+        <script-symbolic src="%fluid-textfield-controls/src/js/Textfield.js"></script-symbolic>
+            <script synthetic src="../../../textfieldControl/src/js/Textfield.js"></script>
+        <script-symbolic src="%fluid-textfield-controls/src/js/TextfieldStepper.js"></script-symbolic>
+            <script synthetic src="../../../textfieldControl/src/js/TextfieldStepper.js"></script>
+            <script module-index synthetic src="../../../infusionModuleIndex.js"></script>
+
+        <!-- Required to send coverage data at the end of the test run on this page -->
+        <script src="/testem.js"></script>
+        <script src="/coverage/client/coverageSender.js"></script>
+    </head>
+    <body>
+    <h1 id="qunit-header">TextfieldStepper Test Suite</h1>
+    <h2 id="qunit-banner"></h2>
+    <div id="qunit-testrunner-toolbar"></div>
+    <h2 id="qunit-userAgent"></h2>
+    <ol id="qunit-tests"></ol>
+
+    <!-- Test HTML -->
+    <div id="qunit-fixture" class="container">
+        <button class="flc-textfieldStepper-button">step</button>
+    </div>
+
+    <label id="label-nativeHTML">Textfield Stepper</label>
+    <div class="flc-textfieldStepper">
+        <button class="flc-textfieldStepper-decrease">-</button>
+        <input aria-labelledby="text-size-label" class="flc-textfieldStepper-field" type="number">
+        <button class="flc-textfieldStepper-increase">+</button>
+    </div>
+
+    <script src="../js/TextfieldControlTestUtils.js"></script>
+    <script src="../js/TextfieldStepperTests.js"></script>
+
+    </body>
+</html>

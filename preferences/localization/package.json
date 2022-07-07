@@ -1,0 +1,19 @@
+{
+    "name": "fluid-prefs-localization",
+    "description": "The localization preference for the Fluid preferences editor",
+    "version": "1.0.0",
+    "license": "BSD-3-Clause",
+    "infusion": {
+        "bundleType": "fluid-renderer-module",
+        "cssFiles": [
+        ],
+        "jsCommonFiles": [
+            "./js/Localization.js",
+            "./js/LocalizationEnactor.js",
+            "./js/LocaliztionPanel.js"
+        ],
+        "htmlFiles": [
+            "./html/Localization.html"
+        ]
+    }
+}
