@@ -25,21 +25,40 @@ fluid.defaults("fluid.renderer.client", {
 fluid.defaults("fluid.clientRootPage", {
     gradeNames: "fluid.rootPage",
     container: "html",
-    parentMarkup: true, // We could never render our own exterior document
+    parentMarkup: true, // We could never render the browser's entire page
     members: {
         markupSnapshot: true
     }
 });
 
+// These two definitions go into ResourceLoader-browser.js
+
+// Very similar to fluid.module.resolvePath for use on the client side - perhaps unify?
+/** Use the ResourceLoader's "static mount table" as written either by the resolveIncludes script, or a server-side
+ * renderer, to interpolate a path beginnig with a module-relative path such as %infusion/src/framework/core/js/Fluid.js
+ * into a real path which can be used for an XHR fetch, e.g. ../../../../node_modules/infusion/src/framework/core/js/Fluid.js
+ * @param {String} path - The possibly-module-relative path to be rewritten
+ * @return {String} The rewritten path as a browser-resolvable URL
+ */
+fluid.resourceLoader.rewritePath = function (path) {
+    return fluid.resourceLoader.rewriteUrlWithDiagnostic(fluid.resourceLoader.staticMountTable, path);
+};
+
 // Use the table in fluid.resourceLoader.staticMountTable to rewrite "path" resources to "url" resources and load them -
-// Presumably this should be eventually made into some more general patten of resource interception
+// This needs to be eventually made into some more general patten of resource interception, e.g. converting "path"
+// records into fetches to compiled resources
 fluid.resourceLoader.loaders.path = function (resourceSpec) {
-    var rewritten = fluid.resourceLoader.rewriteUrlWithDiagnostic(fluid.resourceLoader.staticMountTable, resourceSpec.path);
+    var rewritten = fluid.resourceLoader.rewritePath(resourceSpec.path);
     var specCopy = fluid.censorKeys(resourceSpec, ["path"]);
     specCopy.url = rewritten;
     return fluid.resourceLoader.loaders.XHR(specCopy);
 };
 
+/** Convert a "short path" through a component tree to a set of full paths into the component tree options where
+ * initial model values can be applied
+ * @param {String[]} segs - An array of path segments as a "short path" into a component tree
+ * @return {String[]} The segments expanded as a full EL path into the tree suitable for applying an initial model value
+ */
 fluid.renderer.pathToSkeletonPath = function (segs) {
     var outSegs = [];
     segs.forEach(function (seg) {

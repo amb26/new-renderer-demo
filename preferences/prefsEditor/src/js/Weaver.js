@@ -63,16 +63,6 @@ fluid.defaults("fluid.prefs.weaver", {
                 }
             }
         }
-    },
-    distributeOptions: {
-        weaveEnactors: {
-            target: "{that fluid.prefs.enactor}.options.gradeNames",
-            record: "fluid.prefs.withPreferencesMap"
-        },
-        weavePanels: {
-            target: "{that fluid.prefs.panel}.options.gradeNames",
-            record: "fluid.prefs.withPreferencesMap"
-        }
     }
 });
 

@@ -31,5 +31,12 @@ fluid.defaults("fluid.prefs.enactor.letterSpace", {
             "model.value": "value"
         }
     },
-    cssProp: "letter-spacing"
+    styles: {
+        enabled: "fl-letterSpace-enabled"
+    },
+    cssProp: "letter-spacing",
+    cssCustomProp: {
+        factor: "--fl-letterSpace-factor",
+        size: "--fl-letterSpace"
+    }
 });

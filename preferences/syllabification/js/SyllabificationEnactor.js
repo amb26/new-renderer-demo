@@ -18,6 +18,8 @@ https://github.com/fluid-project/infusion/raw/main/Infusion-LICENSE.txt
  *
  * An enactor that is capable of breaking words down into syllables
  *******************************************************************************/
+// TODO: Move textNodeParser into its own package, it is pretty specialised (although used in Orator too)
+// Also, mutationObserver could go into its own micro-module?
 
 /*
  * `fluid.prefs.enactor.syllabification` makes use of the "hypher" library to split up words into their phonetic
@@ -28,7 +30,7 @@ https://github.com/fluid-project/infusion/raw/main/Infusion-LICENSE.txt
  */
 fluid.defaults("fluid.prefs.enactor.syllabification", {
     gradeNames: ["fluid.prefs.enactor", "fluid.prefs.enactor.syllabification.patterns", "fluid.viewComponent"],
-    preferenceMap: {
+    preferencesMap: {
         "fluid.prefs.syllabification": {
             "model.enabled": "value"
         }
@@ -369,8 +371,12 @@ fluid.prefs.enactor.syllabification.syllabify = function (that, node, lang) {
  *                     severed text node.
  */
 fluid.prefs.enactor.syllabification.insertIntoTextNode = function (node, toInsert, position) {
-    node = node.splitText(position);
-    node.parentNode.insertBefore(toInsert, node);
+    if (!node.parentNode) {
+        console.log("Skipping node which has been removed from the document", node);
+    } else {
+        node = node.splitText(position);
+        node.parentNode.insertBefore(toInsert, node);
+    }
     return node;
 };
 

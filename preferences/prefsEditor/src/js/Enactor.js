@@ -15,6 +15,7 @@ https://github.com/fluid-project/infusion/raw/main/Infusion-LICENSE.txt
 
 fluid.defaults("fluid.prefs.enactor", {
     gradeNames: ["fluid.modelComponent", "fluid.prefs.withPreferencesMap"],
+    container: "{uiEnhancer}.container",
     prefsMapVariety: "enactor"
 });
 
@@ -191,11 +192,18 @@ fluid.defaults("fluid.prefs.enactor.spacingSetter", {
             }
         }
     },
-    cssProp: "",
+    styles: {
+        enabled: ""
+    },
+    cssProp: "", // Overridden to read original spacing on startup
+    cssCustomProp: {
+        factor: "",
+        size: ""
+    },
     invokers: {
         set: {
             funcName: "fluid.prefs.enactor.spacingSetter.set",
-            args: ["{that}", "{that}.options.cssProp", "{arguments}.0"]
+            args: ["{that}", "{arguments}.0"]
         },
         getSpacing: {
             funcName: "fluid.prefs.enactor.spacingSetter.getSpacing",
@@ -220,18 +228,6 @@ fluid.defaults("fluid.prefs.enactor.spacingSetter", {
         target: "unit",
         namespace: "toUnit",
         func: x => fluid.roundToDecimal(x - 1, 1)
-        /*
-        singleTransform: {
-            type: "fluid.transforms.round",
-            scale: 1,
-            input: {
-                transform: {
-                    "type": "fluid.transforms.linearScale",
-                    "offset": -1,
-                    "input": "{that}.model.value"
-                }
-            }
-        }*/
     }
 });
 
@@ -241,15 +237,19 @@ fluid.prefs.enactor.spacingSetter.getSpacing = function (that, cssProp, getTextS
     return fluid.roundToDecimal(current / textSize, 2);
 };
 
-fluid.prefs.enactor.spacingSetter.set = function (that, cssProp, units) {
-    console.log("spacingSetter " + units);
-    var targetSize = that.originalSpacing;
+/**
+ * Sets the spacing related classes and CSS custom properties on the component's container.
+ * If the application will set the space to its initial value, the "enabled" class and CSS custom properties are
+ * removed.
+ *
+ * @param {fluid.prefs.enactor.spacingSetter} that - An instance of a `fluid.prefs.enactor.spacingSetter` component
+ * @param {Number} [units] - (optional) The amount to increase the intial line height by.
+ */
+fluid.prefs.enactor.spacingSetter.set = function (that, units) {
+    units = units || 0;
+    var rounded = fluid.roundToDecimal(that.originalSpacing + units, 2);
 
-    if (units) {
-        targetSize = targetSize + units;
-    }
-
-    // setting the style value to "" will remove it.
-    var spacingSetter = targetSize ?  fluid.roundToDecimal(targetSize, 2) + "em" : "";
-    that.container.css(cssProp, spacingSetter);
+    that.container.toggleClass(that.options.styles.enabled, true);
+    that.container.css(that.options.cssCustomProp.size, rounded + "em");
+    that.container.css(that.options.cssCustomProp.factor, units);
 };

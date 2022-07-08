@@ -58,6 +58,15 @@
             <script synthetic src="../../../../node_modules/infusion/src/framework/core/js/NewViewSupport.js"></script>
         <script-symbolic src="%infusion/src/framework/core/js/FluidView-browser.js"></script-symbolic>
             <script synthetic src="../../../../node_modules/infusion/src/framework/core/js/FluidView-browser.js"></script>
+              
+        <!-- Special dependencies for SyllabificationEnactor -->
+        <script-symbolic src="%infusion/src/lib/hypher/jquery.hypher.js"></script-symbolic>
+            <script synthetic src="../../../../node_modules/infusion/src/lib/hypher/jquery.hypher.js"></script>
+        <script-symbolic src="%infusion/src/framework/core/js/TextNodeParser.js"></script-symbolic>
+            <script synthetic src="../../../../node_modules/infusion/src/framework/core/js/TextNodeParser.js"></script>
+        <script-symbolic src="%infusion/src/framework/core/js/MutationObserver.js"></script-symbolic>
+            <script synthetic src="../../../../node_modules/infusion/src/framework/core/js/MutationObserver.js"></script>
+
         <script-symbolic src="%fluid-table-of-contents/src/js/TableOfContents.js"></script-symbolic>
             <script synthetic src="../../../../tableOfContents/src/js/TableOfContents.js"></script>
 
@@ -140,6 +149,20 @@
             <script synthetic src="../../../../preferences/wordSpace/js/WordSpaceEnactor.js"></script>
         <script-symbolic src="%fluid-prefs-word-space/js/WordSpacePanel.js"></script-symbolic>
             <script synthetic src="../../../../preferences/wordSpace/js/WordSpacePanel.js"></script>
+
+        <script-symbolic src="%fluid-prefs-word-space/js/WordSpace.js"></script-symbolic>
+            <script synthetic src="../../../../preferences/wordSpace/js/WordSpace.js"></script>
+        <script-symbolic src="%fluid-prefs-word-space/js/WordSpaceEnactor.js"></script-symbolic>
+            <script synthetic src="../../../../preferences/wordSpace/js/WordSpaceEnactor.js"></script>
+        <script-symbolic src="%fluid-prefs-word-space/js/WordSpacePanel.js"></script-symbolic>
+            <script synthetic src="../../../../preferences/wordSpace/js/WordSpacePanel.js"></script>
+
+        <script-symbolic src="%fluid-prefs-syllabification/js/Syllabification.js"></script-symbolic>
+            <script synthetic src="../../../../preferences/syllabification/js/Syllabification.js"></script>
+        <script-symbolic src="%fluid-prefs-syllabification/js/SyllabificationEnactor.js"></script-symbolic>
+            <script synthetic src="../../../../preferences/syllabification/js/SyllabificationEnactor.js"></script>
+        <script-symbolic src="%fluid-prefs-syllabification/js/SyllabificationPanel.js"></script-symbolic>
+            <script synthetic src="../../../../preferences/syllabification/js/SyllabificationPanel.js"></script>
 
         <script-symbolic src="%fluid-prefs-editor/src/js/ArrowScrolling.js"></script-symbolic>
             <script synthetic src="../../../../preferences/prefsEditor/src/js/ArrowScrolling.js"></script>
@@ -334,6 +357,9 @@
                     },
                     wordSpace: {
                         type: "fluid.prefs.panel.wordSpace"
+                    },
+                    syllabification: {
+                        type: "fluid.prefs.panel.syllabification"
                     }
                 }
             });

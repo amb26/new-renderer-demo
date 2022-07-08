@@ -22,7 +22,6 @@ https://github.com/fluid-project/infusion/raw/main/Infusion-LICENSE.txt
  * default word space.
  *******************************************************************************/
 
-// TODO: aux schema used to have fontSizeMap
 fluid.defaults("fluid.prefs.enactor.wordSpace", {
     gradeNames: ["fluid.prefs.enactor.spacingSetter"],
     preferencesMap: {
@@ -30,5 +29,12 @@ fluid.defaults("fluid.prefs.enactor.wordSpace", {
             "model.value": "value"
         }
     },
-    cssProp: "word-spacing"
+    styles: {
+        enabled: "fl-wordSpace-enabled"
+    },
+    cssProp: "word-spacing",
+    cssCustomProp: {
+        factor: "--fl-wordSpace-factor",
+        size: "--fl-wordSpace"
+    }
 });

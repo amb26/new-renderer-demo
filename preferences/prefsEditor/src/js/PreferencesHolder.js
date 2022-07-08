@@ -17,7 +17,7 @@ fluid.defaults("fluid.prefs.preferencesHolder", {
     gradeNames: ["fluid.modelComponent", "fluid.remoteModelComponent", "fluid.resourceLoader"],
     model: {
         defaultPreferences: "@expand:fluid.prefs.getDefaultPreferences({that}.options.schemaIndex)",
-        userPreferences: { // Any preferences which have been written by the user - this goes to UIEnhancer
+        userPreferences: { // Any preferences which have been written by the user - this goes to root page's UIEnhancer
         },
         livePreferences: {
             // always === "defaultPreferences" + "userPreferences" - what is shown in the PrefsEditor UI
@@ -104,13 +104,10 @@ fluid.defaults("fluid.prefs.preferencesHolder", {
 });
 
 fluid.prefs.write = function (that, persistentPrefs) {
-    if (!$.isEmptyObject(persistentPrefs)) { // "Don't save a reset model"
-        return that.store.set(null, {
-            preferences: persistentPrefs
-        });
-    } else {
-        return fluid.promise().resolve();
-    }
+    // Used to say "don't save a reset model" but that doesn't seem consistent
+    return that.store.set(null, {
+        preferences: persistentPrefs
+    });
 };
 
 fluid.prefs.read = function (that, getter) {

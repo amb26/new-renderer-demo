@@ -36,13 +36,7 @@ fluid.defaults("fluid.prefs.enactor.textSize", {
     },
     scale: 1,
     members: {
-        root: {
-            expander: {
-                "this": "{that}.container",
-                "method": "closest", // ensure that the correct document is being used. i.e. in an iframe
-                "args": ["html"]
-            }
-        }
+        root: "@expand:fluid.prefs.enactor.textSize.computeRoot({that}.container)"
     },
     invokers: {
         set: {
@@ -55,6 +49,18 @@ fluid.defaults("fluid.prefs.enactor.textSize", {
     }
 });
 
+// See tech checkin notes from 2022-07-07 at https://docs.google.com/document/d/1_W89CeZZh69T8NtKzdHQblvuD344Cr3hYlcw1oBNwLc/edit#heading=h.umodf4oiza8d
+// Note that a size in rems is taken from the document's html element, not body - https://stackoverflow.com/a/48451850
+// Other properties may not be legal to appear on the html element (check this) - in the case the enhancer has targeted
+// us at the body element, hop up one element to the body.
+/** Given a container element, determine whether text size CSS properties should be set on it or its parent <html> element
+ * @param {jQuery} container - The container element
+ * @return {jQuery} Either the supplied container element, or its parent <html> element if it is a <body> element
+ */
+fluid.prefs.enactor.textSize.computeRoot = function (container) {
+    return container[0].tagName.toLowerCase() === "body" ? container.closest("html") : container;
+};
+
 /**
  * Sets the text size related classes and CSS custom properties of the element specified at `that.root`.
  * If the application will set the text size to its initial value, the "enabled" class and CSS custom properties
@@ -66,19 +72,13 @@ fluid.defaults("fluid.prefs.enactor.textSize", {
 fluid.prefs.enactor.textSize.set = function (that, factor) {
     factor = fluid.roundToDecimal(factor, that.options.scale) || 1;
     // Calculating the initial size here rather than using a members expand because the "font-size"
-    // cannot be detected on hidden containers such as separated paenl iframe.
+    // cannot be detected on hidden containers such as separated panel iframe.
     if (!that.initialSize) {
         that.initialSize = that.getTextSizeInPx();
     }
 
-    if (that.initialSize && factor !== 1) {
-        var targetSize = fluid.roundToDecimal(factor * that.initialSize);
-        that.root.addClass(that.options.styles.enabled);
-        that.root.css(that.options.cssCustomProp.size, `${targetSize}px`);
-        that.root.css(that.options.cssCustomProp.factor, factor);
-    } else {
-        that.root.removeClass(that.options.styles.enabled);
-        that.root.css(that.options.cssCustomProp.size, "");
-        that.root.css(that.options.cssCustomProp.factor, "");
-    }
+    var targetSize = fluid.roundToDecimal(factor * that.initialSize);
+    that.root.addClass(that.options.styles.enabled);
+    that.root.css(that.options.cssCustomProp.size, `${targetSize}px`);
+    that.root.css(that.options.cssCustomProp.factor, factor);
 };

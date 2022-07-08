@@ -25,6 +25,18 @@ fluid.defaults("fluid.uiEnhancer.starterEnactors", {
 
 */
 
+fluid.defaults("fluid.prefs.moduleSyllabificationPattern", {
+    gradeNames: "fluid.component",
+    // This value and mechanism should become the default
+    modulePatternPrefix: "%infusion/src/lib/hypher/patterns",
+    terms: {
+        patternPrefix: "@expand:fluid.resourceLoader.rewritePath({that}.options.modulePatternPrefix)"
+    }
+});
+
+fluid.makeGradeLinkage("fluid.prefs.moduleSyllabificationPatternDistributor",
+    ["fluid.prefs.enactor.syllabification.patterns"], "fluid.prefs.moduleSyllabificationPattern");
+
 /***********************************************
  * UI Enhancer                                 *
  *                                             *
@@ -42,8 +54,9 @@ fluid.defaults("fluid.prefs.uiEnhancer", {
     dynamicComponents: {
         enactors: {
             sources: "{uiEnhancer}.options.enactorRegistry",
-            type: "{source}.type",
-            options: "{source}.options" // Currently none of these - could be configured by hand
+            type: "{source}.type"
+            // Comment out next line for FLUID-6744
+            // options: "{source}.options" // Currently none of these - could be configured by hand
         }
     },
     enactorRegistry: { // populated by higher-level "weaver"
