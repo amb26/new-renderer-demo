@@ -13,23 +13,23 @@ https://github.com/fluid-project/infusion/raw/main/Infusion-LICENSE.txt
 
 "use strict";
 
-/**********************************************************************************
-* speakPanel
-**********************************************************************************/
-fluid.defaults("fluid.prefs.panel.speak", {
-    gradeNames: ["fluid.prefs.panel.switchAdjuster"],
-    container: ".flc-prefsEditor-speak",
-    preferenceMap: {
-        "fluid.prefs.speak": {
-            "model.value": "value"
+fluid.defaults("fluid.prefs.panel.lineSpace", {
+    gradeNames: ["fluid.prefs.panel.stepperAdjuster"],
+    container: ".flc-prefsEditor-line-space", // with "new view" we can now put this into options
+    preferencesMap: {
+        "fluid.prefs.lineSpace": {
+            "model.value": "value",
+            "range.min": "minimum",
+            "range.max": "maximum",
+            "step": "multipleOf"
         }
     },
     resources: {
         template: {
-            path: "%fluid-prefs-self-voicing/src/html/SelfVoicing.html"
+            path: "%fluid-prefs-line-space/src/html/LineSpace.html"
         },
         messages: {
-            path: "%fluid-prefs-self-voicing/src/messages/speak.json"
+            path: "%fluid-prefs-line-space/src/messages/lineSpace.json"
         }
     }
 });

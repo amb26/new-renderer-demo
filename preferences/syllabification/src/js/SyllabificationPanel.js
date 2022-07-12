@@ -14,22 +14,22 @@ https://github.com/fluid-project/infusion/raw/main/Infusion-LICENSE.txt
 "use strict";
 
 /**********************************************************************************
-* speakPanel
+* Captions Panel
 **********************************************************************************/
-fluid.defaults("fluid.prefs.panel.speak", {
+fluid.defaults("fluid.prefs.panel.syllabification", {
+    container: ".flc-prefsEditor-syllabification",
     gradeNames: ["fluid.prefs.panel.switchAdjuster"],
-    container: ".flc-prefsEditor-speak",
-    preferenceMap: {
-        "fluid.prefs.speak": {
+    preferencesMap: {
+        "fluid.prefs.syllabification": {
             "model.value": "value"
         }
     },
     resources: {
         template: {
-            path: "%fluid-prefs-self-voicing/src/html/SelfVoicing.html"
+            path: "%fluid-prefs-syllabification/src/html/Syllabification.html"
         },
         messages: {
-            path: "%fluid-prefs-self-voicing/src/messages/speak.json"
+            path: "%fluid-prefs-syllabification/src/messages/syllabification.json"
         }
     }
 });

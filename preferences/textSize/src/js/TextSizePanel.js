@@ -13,23 +13,24 @@ https://github.com/fluid-project/infusion/raw/main/Infusion-LICENSE.txt
 
 "use strict";
 
-/**********************************************************************************
-* speakPanel
-**********************************************************************************/
-fluid.defaults("fluid.prefs.panel.speak", {
-    gradeNames: ["fluid.prefs.panel.switchAdjuster"],
-    container: ".flc-prefsEditor-speak",
-    preferenceMap: {
-        "fluid.prefs.speak": {
-            "model.value": "value"
+
+fluid.defaults("fluid.prefs.panel.textSize", {
+    gradeNames: ["fluid.prefs.panel.stepperAdjuster"],
+    container: ".flc-prefsEditor-text-size",
+    preferencesMap: {
+        "fluid.prefs.textSize": {
+            "model.value": "value",
+            "range.min": "minimum",
+            "range.max": "maximum",
+            "step": "multipleOf"
         }
     },
     resources: {
         template: {
-            path: "%fluid-prefs-self-voicing/src/html/SelfVoicing.html"
+            path: "%fluid-prefs-text-size/src/html/TextSize.html"
         },
         messages: {
-            path: "%fluid-prefs-self-voicing/src/messages/speak.json"
+            path: "%fluid-prefs-text-size/src/messages/textSize.json"
         }
     }
 });

@@ -13,23 +13,25 @@ https://github.com/fluid-project/infusion/raw/main/Infusion-LICENSE.txt
 
 "use strict";
 
-/**********************************************************************************
-* speakPanel
-**********************************************************************************/
-fluid.defaults("fluid.prefs.panel.speak", {
+
+/**
+ * A sub-component of fluid.prefs that renders the "Table of Contents" panel of the user preferences interface.
+ */
+fluid.defaults("fluid.prefs.panel.tableOfContents", {
     gradeNames: ["fluid.prefs.panel.switchAdjuster"],
-    container: ".flc-prefsEditor-speak",
-    preferenceMap: {
-        "fluid.prefs.speak": {
+    container: ".flc-prefsEditor-table-of-contents",
+    preferencesMap: {
+        "fluid.prefs.tableOfContents": {
             "model.value": "value"
         }
     },
     resources: {
         template: {
-            path: "%fluid-prefs-self-voicing/src/html/SelfVoicing.html"
+            path: "%fluid-prefs-table-of-contents/src/html/TableOfContentsPanel.html"
         },
         messages: {
-            path: "%fluid-prefs-self-voicing/src/messages/speak.json"
+            path: "%fluid-prefs-table-of-contents/src/messages/tableOfContents.json",
+            defaultLocale: "en"
         }
     }
 });
