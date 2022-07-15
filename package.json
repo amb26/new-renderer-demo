@@ -7,7 +7,7 @@
     "repository": "git@github.com:amb26/new-renderer-demo.git",
     "scripts": {
         "test": "node tests/node/all-tests.js",
-        "build:sass": "sass src/framework/preferences/css/sass/:src/framework/preferences/css/",
+        "build:sass": "node doSassBuild.js",
         "deps:fonts": "run-p deps:fonts:**",
         "deps:fonts:openSans": "cpy node_modules/infusion/src/lib/opensans/fonts/OpenSans-*.woff src/lib/opensans/fonts/",
         "deps:fonts:openDyslexic": "cpy node_modules/infusion/src/lib/open-dyslexic/fonts/OpenDyslexic-*.woff src/lib/open-dyslexic/fonts/",
