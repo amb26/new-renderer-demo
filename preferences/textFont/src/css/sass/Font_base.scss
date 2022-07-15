@@ -5,3 +5,7 @@
 
 // Font family classes
 @include fonts.build-fonts-properties(fonts.$fonts);
+
+.fl-blocking-font {
+    --fl-font-family: arial;
+}
