@@ -4,16 +4,22 @@
     "version": "1.0.0",
     "license": "BSD-3-Clause",
     "infusion": {
-        "bundleType": "fluid-renderer-module",
+        "bundleType": ["fluid-renderer-module", "fluid-preference-module"],
         "cssFiles": [
         ],
         "jsCommonFiles": [
-            "./js/Contrast.js",
-            "./js/ContrastEnactor.js",
-            "./js/ContrastPanel.js"
+            "./src/js/Contrast.js",
+            "./src/js/ContrastEnactor.js",
+            "./src/js/ContrastPanel.js"
         ],
         "htmlFiles": [
-            "./html/Contrast.html"
+            "./src/html/Contrast.html"
+        ],
+        "sassFiles": [
+            "./src/css/sass/Contrast.scss"
+        ],
+        "baseSassFiles": [
+            "./src/css/sass/Contrast_base.scss"
         ]
     }
 }

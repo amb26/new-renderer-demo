@@ -7,9 +7,11 @@
 $icon-font: 'PrefsFramework-Icons';
 
 .fl-prefsEditor {
-    background-color: var(--fl-bgColor);
-    color: var(--fl-fgColor);
-    font-family: var(--fl-font-family, "Myriad Pro", Helvetica, Arial, sans-serif);
+// Commenting these out since the "blocking" definition will override any direct styles
+// Is this approach actually workable?
+//    background-color: var(--fl-bgColor);
+//    color: var(--fl-fgColor);
+//    font-family: var(--fl-font-family, "Myriad Pro", Helvetica, Arial, sans-serif);
 
     // Controls
     .fl-prefsEditor-panels {
@@ -169,12 +171,14 @@ $icon-font: 'PrefsFramework-Icons';
         }
     }
 
+// TODO: Fix up these relative paths when this is imported into Infusion 5
+
     // Textfield Stepper
-    @import "../../../../components/textfieldControl/css/TextfieldStepper";
+    @import "../../../../../textfieldControl/src/css/TextfieldStepper";
 
     // ON/OFF Switch
     .fl-prefsEditor-onoff {
-        @import "../../../../components/switch/css/Switch";
+        @import "../../../../../switch/src/css/Switch";
     }
 
     // Font Icons

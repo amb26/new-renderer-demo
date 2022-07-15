@@ -4,16 +4,22 @@
     "version": "1.0.0",
     "license": "BSD-3-Clause",
     "infusion": {
-        "bundleType": "fluid-renderer-module",
+        "bundleType": ["fluid-renderer-module", "fluid-preference-module"],
         "cssFiles": [
         ],
         "jsCommonFiles": [
-            "./js/EnhanceInputs.js",
-            "./js/EnhanceInputsEnactor.js",
-            "./js/EnhanceInputsPanel.js"
+            "./src/js/EnhanceInputs.js",
+            "./src/js/EnhanceInputsEnactor.js",
+            "./src/js/EnhanceInputsPanel.js"
         ],
         "htmlFiles": [
-            "./html/EnhanceInputs.html"
+            "./src/html/EnhanceInputs.html"
+        ],
+        "sassFiles": [
+            "./src/css/sass/EnhanceInputs.scss"
+        ],
+        "baseSassFiles": [
+            "./src/css/sass/EnhanceInputs.scss"
         ]
     }
 }

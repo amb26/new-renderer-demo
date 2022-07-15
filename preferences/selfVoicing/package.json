@@ -4,16 +4,16 @@
     "version": "1.0.0",
     "license": "BSD-3-Clause",
     "infusion": {
-        "bundleType": "fluid-renderer-module",
+        "bundleType": ["fluid-renderer-module", "fluid-preference-module"],
         "cssFiles": [
         ],
         "jsCommonFiles": [
-            "./js/SelfVoicing.js",
-            "./js/SelfVoicingEnactor.js",
-            "./js/SelfVoicingPanel.js"
+            "./src/js/SelfVoicing.js",
+            "./src/js/SelfVoicingEnactor.js",
+            "./src/js/SelfVoicingPanel.js"
         ],
         "htmlFiles": [
-            "./html/SelfVoicing.html"
+            "./src/html/SelfVoicing.html"
         ]
     }
 }

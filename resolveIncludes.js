@@ -94,6 +94,11 @@ var stringTemplate = function (template, func) {
     return template.replace(templateRegex, replacer);
 };
 
+/** Insert a suffix just before the extension portion of a filename
+ * @param {String} fileName - The file name in which the suffix is to be interpolated, e.g. "%infusion/FluidTest.html"
+ * @param {String} suffix - The suffix to be interpolated, e.g. "-out"
+ * @return {String} The value of fileName with interpolation, e.g. "%infusion/FluidTest-out.html"
+ */
 var fileToRelative = function (fileName, suffix) {
     var lastdotpos = fileName.lastIndexOf(".");
     return fileName.substring(0, lastdotpos) + suffix;

@@ -4,16 +4,16 @@
     "version": "1.0.0",
     "license": "BSD-3-Clause",
     "infusion": {
-        "bundleType": "fluid-renderer-module",
+        "bundleType": ["fluid-renderer-module", "fluid-preference-module"],
         "cssFiles": [
         ],
         "jsCommonFiles": [
-            "./js/TableOfContents.js",
-            "./js/TableOfContentsEnactor.js",
-            "./js/TableOfContentsPanel.js"
+            "./src/js/TableOfContents.js",
+            "./src/js/TableOfContentsEnactor.js",
+            "./src/js/TableOfContentsPanel.js"
         ],
         "htmlFiles": [
-            "./html/TableOfContents.html"
+            "./src/html/TableOfContents.html"
         ]
     }
 }

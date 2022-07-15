@@ -4,16 +4,16 @@
     "version": "1.0.0",
     "license": "BSD-3-Clause",
     "infusion": {
-        "bundleType": "fluid-renderer-module",
+        "bundleType": ["fluid-renderer-module", "fluid-preference-module"],
         "cssFiles": [
         ],
         "jsCommonFiles": [
-            "./js/Captions.js",
-            "./js/CaptionsEnactor.js",
-            "./js/CaptionsPanel.js"
+            "./src/js/Captions.js",
+            "./src/js/CaptionsEnactor.js",
+            "./src/js/CaptionsPanel.js"
         ],
         "htmlFiles": [
-            "./html/Captions.html"
+            "./src/html/Captions.html"
         ]
     }
 }

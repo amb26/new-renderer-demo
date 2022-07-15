@@ -4,16 +4,19 @@
     "version": "1.0.0",
     "license": "BSD-3-Clause",
     "infusion": {
-        "bundleType": "fluid-renderer-module",
+        "bundleType": ["fluid-renderer-module", "fluid-preference-module"],
         "cssFiles": [
         ],
         "jsCommonFiles": [
-            "./js/LetterSpace.js",
-            "./js/LetterSpaceEnactor.js",
-            "./js/LetterSpacePanel.js"
+            "./src/js/LetterSpace.js",
+            "./src/js/LetterSpaceEnactor.js",
+            "./src/js/LetterSpacePanel.js"
         ],
         "htmlFiles": [
-            "./html/LetterSpace.html"
+            "./src/html/LetterSpace.html"
+        ],
+        "sassFiles": [
+            "./src/css/sass/LetterSpace.scss"
         ]
     }
 }

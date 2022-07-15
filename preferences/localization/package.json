@@ -4,16 +4,16 @@
     "version": "1.0.0",
     "license": "BSD-3-Clause",
     "infusion": {
-        "bundleType": "fluid-renderer-module",
+        "bundleType": ["fluid-renderer-module", "fluid-preference-module"],
         "cssFiles": [
         ],
         "jsCommonFiles": [
-            "./js/Localization.js",
-            "./js/LocalizationEnactor.js",
-            "./js/LocaliztionPanel.js"
+            "./src/js/Localization.js",
+            "./src/js/LocalizationEnactor.js",
+            "./src/js/LocaliztionPanel.js"
         ],
         "htmlFiles": [
-            "./html/Localization.html"
+            "./src/html/Localization.html"
         ]
     }
 }

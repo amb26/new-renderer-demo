@@ -19,11 +19,18 @@ var fluid = require("infusion");
 fluid.registerNamespace("fluid.renderer");
 
 // TODO: This to go into Infusion - which will then indirect to fluid.renderer.loadModule via bundleType
+// TODO: This file untested since we went to multiple bundle types 13/7/22
 fluid.module.modulesByBundleType = {};
 
 fluid.module.registerModuleBundle = function (pkg) {
-    fluid.set(fluid.module.modulesByBundleType, [pkg.infusion.bundleType, pkg.name],
-        fluid.filterKeys(pkg, ["name", "version", "infusion"]));
+    pkg.infusion.bundleType.forEach(function (bundleType) {
+        fluid.set(fluid.module.modulesByBundleType, [bundleType, pkg.name],
+            fluid.filterKeys(pkg, ["name", "version", "infusion"]));
+    });
+};
+
+fluid.renderer.upgradeBundleType = function (bundleType) {
+    return fluid.makeArray(bundleType);
 };
 
 // TODO: support relative paths from point of view of requestor
@@ -31,13 +38,16 @@ fluid.renderer.loadModule = function (path) {
     console.log("RENDERER LOADMODULE for " + path);
     var basePath = fluid.module.resolvePath(path);
     var pkg = require(basePath + "/package.json");
+    if (pkg.infusion) {
+        pkg.infusion.bundleType = fluid.renderer.upgradeBundleType(pkg.infusion.bundleType);
+    }
     if (!pkg) {
         fluid.fail("Cannot find package.json file at path " + basePath);
     } else {
         if (!pkg.infusion) {
             fluid.fail("Cannot load renderer module without \"infusion\" section in package.json");
         }
-        if (pkg.infusion.bundleType !== "fluid-renderer-module") {
+        if (!pkg.infusion.bundleType.includes("fluid-renderer-module")) {
             fluid.fail("Cannot load renderer module which does not have bundle type of \"fluid-renderer-module\"" +
                " - actual bundle type was ", pkg.infusion.bundleType);
         }

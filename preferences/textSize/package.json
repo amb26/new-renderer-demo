@@ -4,16 +4,19 @@
     "version": "1.0.0",
     "license": "BSD-3-Clause",
     "infusion": {
-        "bundleType": "fluid-renderer-module",
+        "bundleType": ["fluid-renderer-module", "fluid-preference-module"],
         "cssFiles": [
         ],
         "jsCommonFiles": [
-            "./js/TextSize.js",
-            "./js/TextSizeEnactor.js",
-            "./js/TextSizePanel.js"
+            "./src/js/TextSize.js",
+            "./src/js/TextSizeEnactor.js",
+            "./src/js/TextSizePanel.js"
         ],
         "htmlFiles": [
-            "./html/TextSize.html"
+            "./src/html/TextSize.html"
+        ],
+        "sassFiles": [
+            "./src/css/sass/TextSize.scss"
         ]
     }
 }

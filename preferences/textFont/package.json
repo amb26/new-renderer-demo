@@ -4,16 +4,22 @@
     "version": "1.0.0",
     "license": "BSD-3-Clause",
     "infusion": {
-        "bundleType": "fluid-renderer-module",
+        "bundleType": ["fluid-renderer-module", "fluid-preference-module"],
         "cssFiles": [
         ],
         "jsCommonFiles": [
-            "./js/TextFont.js",
-            "./js/TextFontEnactor.js",
-            "./js/TextFontPanel.js"
+            "./src/js/TextFont.js",
+            "./src/js/TextFontEnactor.js",
+            "./src/js/TextFontPanel.js"
         ],
         "htmlFiles": [
-            "./html/TextFont.html"
+            "./src/html/TextFont.html"
+        ],
+        "sassFiles": [
+            "./src/css/sass/Font.scss"
+        ],
+        "baseSassFiles": [
+            "./src/css/sass/Font_base.scss"
         ]
     }
 }

@@ -4,16 +4,19 @@
     "version": "1.0.0",
     "license": "BSD-3-Clause",
     "infusion": {
-        "bundleType": "fluid-renderer-module",
+        "bundleType": ["fluid-renderer-module", "fluid-preference-module"],
         "cssFiles": [
         ],
         "jsCommonFiles": [
-            "./js/Syllabification.js",
-            "./js/SyllabificationEnactor.js",
-            "./js/SyllabificationPanel.js"
+            "./src/js/Syllabification.js",
+            "./src/js/SyllabificationEnactor.js",
+            "./src/js/SyllabificationPanel.js"
         ],
         "htmlFiles": [
-            "./html/Syllabification.html"
+            "./src/html/Syllabification.html"
+        ],
+        "baseSassFiles": [
+            "./src/css/sass/Syllabification.scss"
         ]
     }
 }
