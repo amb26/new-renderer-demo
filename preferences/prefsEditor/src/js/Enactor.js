@@ -75,7 +75,7 @@ fluid.prefs.enactor.styleElements.handleStyle = function (value, elements, cssCl
 
 fluid.defaults("fluid.prefs.enactor.classSwapper", {
     gradeNames: ["fluid.prefs.enactor", "fluid.viewComponent"],
-    classes: {},  // Must be supplied by implementors
+    classes: {},  // Must be supplied by implementors - a map of model values to applied CSS classes
     invokers: {
         clearClasses: {
             funcName: "fluid.prefs.enactor.classSwapper.clearClasses",

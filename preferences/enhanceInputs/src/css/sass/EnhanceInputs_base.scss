@@ -5,11 +5,9 @@
     --fl-enhance-text-decoration: underline;
 }
 
-.fl-blocking-input-enhanced {
+.fl-input-enhanced-off {
     --fl-enhance-font-size-factor: 1.0;
-// Unsatisfactory - we really need to adjust the enactor so that it applies a "blocking class" doing nothing
-// rather than creating jank in this way
-    --fl-enhance-font-size: 13.333px;
+    --fl-enhance-font-size: initial;
     --fl-enhance-font-weight: normal;
     --fl-enhance-text-decoration: none;    
 }

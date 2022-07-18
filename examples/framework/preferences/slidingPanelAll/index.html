@@ -157,6 +157,13 @@
         <script-symbolic src="%fluid-prefs-syllabification/src/js/SyllabificationPanel.js"></script-symbolic>
             <script synthetic src="../../../../preferences/syllabification/src/js/SyllabificationPanel.js"></script>
 
+        <script-symbolic src="%fluid-prefs-captions/src/js/Captions.js"></script-symbolic>
+            <script synthetic src="../../../../preferences/captions/src/js/Captions.js"></script>
+        <script-symbolic src="%fluid-prefs-captions/src/js/CaptionsEnactor.js"></script-symbolic>
+            <script synthetic src="../../../../preferences/captions/src/js/CaptionsEnactor.js"></script>
+        <script-symbolic src="%fluid-prefs-captions/src/js/CaptionsPanel.js"></script-symbolic>
+            <script synthetic src="../../../../preferences/captions/src/js/CaptionsPanel.js"></script>
+
         <script-symbolic src="%fluid-prefs-editor/src/js/ArrowScrolling.js"></script-symbolic>
             <script synthetic src="../../../../preferences/prefsEditor/src/js/ArrowScrolling.js"></script>
         <script-symbolic src="%fluid-prefs-editor/src/js/Enactor.js"></script-symbolic>
@@ -190,7 +197,7 @@
      </head>
 
     <body>
-        <div class="flc-prefsEditor-slidingPanel fl-prefsEditor-separatedPanel fl-blocking-theme fl-blocking-input-enhanced fl-blocking-font" ></div>
+        <div class="flc-prefsEditor-slidingPanel fl-prefsEditor-separatedPanel fl-blocking-theme fl-blocking-font"></div>
         <main class="fl-centered">
             <div class="flc-toc-tocContainer toc"> </div>
 
@@ -353,6 +360,9 @@
                     },
                     syllabification: {
                         type: "fluid.prefs.panel.syllabification"
+                    },
+                    captions: {
+                        type: "fluid.prefs.panel.captions"
                     }
                 }
             });

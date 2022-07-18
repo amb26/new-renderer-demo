@@ -19,14 +19,16 @@ https://github.com/fluid-project/infusion/raw/main/Infusion-LICENSE.txt
  * The enactor to enhance inputs in the container according to the value
  *******************************************************************************/
 
-// Note that the implementors need to provide the container for this view component
 fluid.defaults("fluid.prefs.enactor.enhanceInputs", {
-    gradeNames: ["fluid.prefs.enactor.styleElements", "fluid.viewComponent"],
+    gradeNames: ["fluid.prefs.enactor.classSwapper", "fluid.viewComponent"],
     preferencesMap: {
         "fluid.prefs.enhanceInputs": {
             "model.value": "value"
         }
     },
-    cssClass: "fl-input-enhanced",  // Can be overridden by implementors
+    classes: {
+        "true": "fl-input-enhanced",
+        "false": "fl-input-enhanced-off"
+    },
     elementsToStyle: "{that}.container"
 });

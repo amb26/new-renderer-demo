@@ -1,3 +1,10 @@
-﻿.fl-syllabification-separator::before{content:"‧"}.fl-syllabification-softHyphenPlaceholder::before{content:"­"}
+@charset "UTF-8";
+.fl-syllabification-separator::before {
+  content: "‧";
+}
+
+.fl-syllabification-softHyphenPlaceholder::before {
+  content: "­";
+}
 
 /*# sourceMappingURL=Syllabification.css.map */

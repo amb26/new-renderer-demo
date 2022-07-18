@@ -48,7 +48,7 @@ console.log(fluid.module.modulesOfType);
 var preferenceModules = fluid.module.modulesOfType["fluid-preference-module"];
 
 fluid.module.defaultSassOptions = {
-    outputStyle: "compressed"
+//    outputStyle: "compressed"
 };
 
 /** Compile a single SASS file, writing the output CSS to the parent "css" directory together with a

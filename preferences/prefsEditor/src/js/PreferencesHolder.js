@@ -20,7 +20,8 @@ fluid.defaults("fluid.prefs.preferencesHolder", {
         userPreferences: { // Any preferences which have been written by the user - this goes to root page's UIEnhancer
         },
         livePreferences: {
-            // always === "defaultPreferences" + "userPreferences" - what is shown in the PrefsEditor UI
+            // always === "defaultPreferences" + "userPreferences" - what is shown in the PrefsEditor UI - eventually it
+            // will consume both separately in order to display unchanged preferences indicator
         },
         persistentPreferences: "{that}.resources.initialPersistentPreferences.parsed.preferences", // Flushed from "userPreferences" on save
         local: { // for remoteModelComponent
@@ -56,7 +57,7 @@ fluid.defaults("fluid.prefs.preferencesHolder", {
             listener: "{that}.write"
         },
         "handleAutoSave": {
-            path: "livePreferences",
+            path: "userPreferences",
             listener: "fluid.prefs.handleAutoSave",
             args: ["{that}"],
             excludeSource: "init"
