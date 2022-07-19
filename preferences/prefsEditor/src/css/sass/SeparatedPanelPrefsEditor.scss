@@ -31,6 +31,11 @@ body {
     border-bottom: 1px solid var(--fl-fgColor, #ccc);
     display: flex;
     flex-direction: column;
+    font-size: 16px;
+    // Override this builtin definition so that enhance inputs size is stable
+    input, textarea, select, button {
+        font-size: 16px;
+    }
 //    font-size: 1rem;
 
     .fl-panelBar {
