@@ -20,15 +20,12 @@ https://github.com/fluid-project/infusion/raw/main/Infusion-LICENSE.txt
  *******************************************************************************/
 
 fluid.defaults("fluid.prefs.enactor.enhanceInputs", {
-    gradeNames: ["fluid.prefs.enactor.classSwapper", "fluid.viewComponent"],
+    gradeNames: ["fluid.prefs.enactor.styleElements", "fluid.viewComponent"],
     preferencesMap: {
         "fluid.prefs.enhanceInputs": {
             "model.value": "value"
         }
     },
-    classes: {
-        "true": "fl-input-enhanced",
-        "false": "fl-input-enhanced-off"
-    },
+    cssClass: "fl-input-enhanced",
     elementsToStyle: "{that}.container"
 });

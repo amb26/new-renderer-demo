@@ -6,3 +6,7 @@
 html.fl-textSize-enabled {
     font-size: var(--fl-textSize) !important;
 }
+
+.fl-blocking-textSize {
+    --fl-textSize: 100%
+}

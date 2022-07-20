@@ -13,9 +13,9 @@ https://github.com/fluid-project/infusion/raw/main/Infusion-LICENSE.txt
 
 "use strict";
 
-// Note that the implementors need to provide the container for this view component
 fluid.defaults("fluid.prefs.enactor.tableOfContents", {
-    gradeNames: ["fluid.prefs.enactor", "fluid.viewComponent"],
+    gradeNames: ["fluid.prefs.enactor", "fluid.viewComponent", "fluid.prefs.enactor.ignorableSelectorHolder",
+        "fluid.prefs.enactor.excludeFromPrefsEditor"],
     container: "{uiEnhancer}.container",
     preferencesMap: {
         "fluid.prefs.tableOfContents": {
@@ -28,7 +28,9 @@ fluid.defaults("fluid.prefs.enactor.tableOfContents", {
             container: "{enactor}.container",
             source: "{enactor}.model.toc",
             options: {
-                ignoreForToc: "{enactor}.options.ignoreForToc",
+                ignoreForToC: {
+                    ignoreForEnactor: "{enactor}.options.ignoreSelectorForEnactor"
+                },
                 listeners: { // Note similarity with fluid.containerRenderingView - our idiom is currently that container is static in document
                     "onDestroy.clearInjectedMarkup": {
                         "this": "{that}.dom.tocContainer",

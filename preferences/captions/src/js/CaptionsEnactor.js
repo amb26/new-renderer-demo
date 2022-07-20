@@ -22,7 +22,7 @@ https://github.com/fluid-project/infusion/raw/main/Infusion-LICENSE.txt
  *******************************************************************************/
 
 fluid.defaults("fluid.prefs.enactor.captions", {
-    gradeNames: ["fluid.prefs.enactor", "fluid.viewComponent"],
+    gradeNames: ["fluid.prefs.enactor", "fluid.viewComponent", "fluid.prefs.enactor.excludeFromPrefsEditor"],
     container: "body",
     preferencesMap: {
         "fluid.prefs.captions": {

@@ -18,6 +18,9 @@ https://github.com/fluid-project/infusion/raw/main/Infusion-LICENSE.txt
  ***********************************/
 
 // Addon grade for top-level Weaver which sets up sliding panel grades and accompanying interaction for a separated panel
+// TODO: Naming is somewhat confusing here in that it's not clear there is huge value to a "separated panel" without
+// also a "sliding panel" - and it is not the "slidingness" of the panel which is responsible for it needing its
+// own set of enactors etc.
 
 fluid.defaults("fluid.prefs.withSlidingPanel", {
     // Turn the Weaver into a renderer component so that we can displace all of its markup down one level
@@ -28,6 +31,12 @@ fluid.defaults("fluid.prefs.withSlidingPanel", {
     resources: {
         template: {
             path: "%fluid-prefs-editor/src/html/SlidingPanel.html"
+        }
+    },
+    distributeOptions: {
+        ignorableSelectors: {
+            target: "{that fluid.prefs.enactor.ignorableSelectorHolder}.options.ignoreSelectorForEnactor",
+            source: "{that}.options.selectors.containerMarker"
         }
     },
     model: {
@@ -62,7 +71,9 @@ fluid.defaults("fluid.prefs.withSlidingPanel", {
     templateHasRoot: false,
     selectors: {
         slidingPanelPanel: ".flc-slidingPanel-panel",
-        reset: ".flc-prefsEditor-reset"
+        reset: ".flc-prefsEditor-reset",
+        // Selector demarcating our own container which is used to receive blocking selectors as well as the ignoring boundary for enactors
+        containerMarker: ".flc-prefsEditor-slidingPanel"
     },
     // This would be better as an options distribution but the renderer couldn't see the container override because of FLUID-6707
     dynamicComponents: {
@@ -95,7 +106,7 @@ fluid.defaults("fluid.prefs.prefsEditor.withSlidingPanel", {
             type: "fluid.prefs.uiEnhancer",
             options: {
                 container: "{prefsEditor}.container",
-                enactorRegistry: "{fluid.prefs.weaver}.options.enactorRegistry",
+                enactorRegistry: "@expand:fluid.prefs.indexer.filterPrefsEditorEnactors({fluid.prefs.weaver}.options.enactorRegistry)",
                 varietyPathPrefix: "{fluid.prefs.weaver}.model.appliedLaggingPreferences"
             }
         },

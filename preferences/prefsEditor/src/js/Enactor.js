@@ -19,6 +19,19 @@ fluid.defaults("fluid.prefs.enactor", {
     prefsMapVariety: "enactor"
 });
 
+// A tag grade added to an enactor to signal that it should not be instantiated as part of a preference editor's own
+// enactor set
+fluid.defaults("fluid.prefs.enactor.excludeFromPrefsEditor", {
+    gradeNames: "fluid.component"
+});
+
+// A tag grade used to hold selectors which should be ignored by the action of an enactor scanning the DOM for material
+// to act on - currently consumed by the SyllabificationEnactor and the TableOfContentsEnactor
+fluid.defaults("fluid.prefs.enactor.ignorableSelectorHolder", {
+    gradeNames: "fluid.component"
+    // ignoreSelectorForEnactor - an enactor receives a selector in this field which marks material in the document to be ignored
+});
+
 /**********************************************************************************
  * styleElements
  *

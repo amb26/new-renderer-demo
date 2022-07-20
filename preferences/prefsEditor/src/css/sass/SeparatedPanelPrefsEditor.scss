@@ -31,12 +31,11 @@ body {
     border-bottom: 1px solid var(--fl-fgColor, #ccc);
     display: flex;
     flex-direction: column;
-    font-size: 16px;
+    // font-size: 16px;
     // Override this builtin definition so that enhance inputs size is stable
     input, textarea, select, button {
         font-size: 16px;
     }
-//    font-size: 1rem;
 
     .fl-panelBar {
         background-color: var(--fl-bgColor, #fff);
@@ -66,7 +65,7 @@ body {
         border: none;
         color: var(--fl-fgColor, #2f2b2a);
         font-family: var(--fl-font-family, OpenSans, "Myriad Pro", Helvetica, Arial, sans-serif);
-        font-size: calc(var(--fl-enhance-font-size-factor, 1) * var(--fl-textSize, 1rem) * 1.3);
+        font-size: calc(var(--fl-enhance-font-size-factor, 1) * var(--fl-textSize, 1rem));
         letter-spacing: var(--fl-letterSpace);
         overflow: hidden;
         padding: 0;
@@ -146,7 +145,7 @@ body {
         .fl-prefsEditor-showHide,
         .fl-prefsEditor-reset {
             border: none;
-            font-size: calc(var(--fl-enhance-font-size-factor, 1) * var(--fl-textSize, 1rem) * 1.1);
+            font-size: calc(var(--fl-enhance-font-size-factor, 1) * var(--fl-textSize, 1rem));
             font-weight: bold;
             min-height: 1.8em;
             padding: 0;

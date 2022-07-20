@@ -5,13 +5,6 @@
   --fl-enhance-text-decoration: underline;
 }
 
-.fl-input-enhanced-off {
-  --fl-enhance-font-size-factor: 1.0;
-  --fl-enhance-font-size: 100%;
-  --fl-enhance-font-weight: normal;
-  --fl-enhance-text-decoration: none;
-}
-
 .fl-blocking-input-enhanced {
   --fl-enhance-font-size-factor: 1.0;
   --fl-enhance-font-size: 100%;

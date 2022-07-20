@@ -75,7 +75,7 @@ fluid.prefs.indexer.indexUnique = function (indexName, indexPayload, dereference
  * An index function that indexes all enactors based on their preference name.
  *
  * @param {Object} defaults - Registered default options for an enactor grade.
- * @return {String[]} - The preference name.
+ * @return {String[]} - The preference name for all preferences handled by the enactor
  */
 fluid.prefs.indexer.enactorIndexer = function (defaults) {
     return fluid.keys(defaults.preferencesMap);
@@ -98,6 +98,13 @@ fluid.prefs.indexer.allEnactorRegistry = function (enactorIndex) {
         };
     });
     return togo;
+};
+
+fluid.prefs.indexer.filterPrefsEditorEnactors = function (enactorRegistry) {
+    return fluid.transform(enactorRegistry, function (record) {
+        var upDefaults = fluid.defaults(record.type);
+        return fluid.hasGrade(upDefaults, "fluid.prefs.enactor.excludeFromPrefsEditor") ? fluid.NO_VALUE : record;
+    });
 };
 
 /*******************************************************************************

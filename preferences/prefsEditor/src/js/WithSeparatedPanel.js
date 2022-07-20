@@ -17,6 +17,7 @@ https://github.com/fluid-project/infusion/raw/main/Infusion-LICENSE.txt
  * Separated Panel Preferences Editor *
  ***********************************/
 
+// Addon grade for fluid.prefs.weaver/fluid.prefs.preferencesHolder
 fluid.defaults("fluid.prefs.withSeparatedPanel", {
     gradeNames: "fluid.component",
     distributeOptions: {

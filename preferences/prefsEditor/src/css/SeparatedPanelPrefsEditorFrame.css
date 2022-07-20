@@ -29,6 +29,7 @@
 }
 .fl-prefsEditor-separatedPanel .fl-prefsEditor {
   font-family: var(--fl-font-family, "OpenSans", "Myriad Pro", Helvetica, Arial, sans-serif);
+  font-size: calc(var(--fl-enhance-font-size-factor, 1) * var(--fl-textSize, 16px)) !important;
   line-height: 1.2 !important;
   min-width: 100%;
   overflow-x: scroll;
@@ -44,14 +45,14 @@
   border: 1px solid var(--fl-fgColor, #615e59);
   display: table-cell;
   min-width: calc(100vw - 2px);
-  padding: 16px 0.5rem;
+  padding: 16px 0.5em;
   white-space: normal;
 }
 .fl-prefsEditor-separatedPanel .fl-prefsEditor-panels .fl-prefsEditor-panel h2 {
   align-items: center;
   display: flex;
   justify-content: space-between;
-  min-height: 3.6rem;
+  min-height: 3.6em;
   pointer-events: none;
   text-transform: lowercase;
   white-space: nowrap;
@@ -67,7 +68,7 @@
 }
 .fl-prefsEditor-separatedPanel .fl-prefsEditor-panels .fl-prefsEditor-panel h2::before, .fl-prefsEditor-separatedPanel .fl-prefsEditor-panels .fl-prefsEditor-panel h2::after {
   font-family: "Times New Roman", Georgia, Times, serif !important;
-  font-size: 3rem;
+  font-size: 3em;
   -webkit-font-smoothing: antialiased;
   font-style: normal;
   font-variant: normal;
@@ -77,11 +78,11 @@
 }
 .fl-prefsEditor-separatedPanel .fl-prefsEditor-panels .fl-prefsEditor-panel h2::before {
   content: "‹";
-  margin-left: 1rem;
+  margin-left: 1em;
 }
 .fl-prefsEditor-separatedPanel .fl-prefsEditor-panels .fl-prefsEditor-panel h2::after {
   content: "›";
-  margin-right: 1rem;
+  margin-right: 1em;
 }
 @media screen and (-ms-high-contrast: active), screen and (-ms-high-contrast: none) {
   .fl-prefsEditor-separatedPanel .fl-prefsEditor-panels .fl-prefsEditor-panel h2 {
@@ -106,7 +107,7 @@
   width: 1px;
 }
 .fl-prefsEditor-separatedPanel .fl-prefsEditor-panels .fl-prefsEditor-panel label {
-  font-size: 1rem;
+  font-size: 1em;
 }
 .fl-prefsEditor-separatedPanel .fl-prefsEditor-panels .fl-prefsEditor-panel .fl-textfieldStepper [class*=fl-icon-] {
   display: none;
@@ -123,22 +124,22 @@
   }
   .fl-prefsEditor-separatedPanel .fl-prefsEditor-panels {
     border-spacing: 20px 0;
-    margin: 1rem auto;
+    margin: 1em auto;
   }
   .fl-prefsEditor-separatedPanel .fl-prefsEditor-panels .fl-prefsEditor-panel {
     border-radius: 5px;
     box-shadow: 2px 2px #7a766d;
-    min-width: 25rem;
-    padding: 1.5rem;
-    padding-top: 1rem;
+    min-width: 25em;
+    padding: 1.5em;
+    padding-top: 1em;
   }
   .fl-prefsEditor-separatedPanel .fl-prefsEditor-panels .fl-prefsEditor-panel h2 {
     border-bottom: solid var(--fl-fgColor, #ccc) 1px;
     box-shadow: 0 6px 7px -6px rgba(0, 0, 0, 0.3);
-    font-size: 1.2rem;
-    height: 3rem;
+    font-size: 1.2em;
+    height: 3em;
     justify-content: flex-start;
-    margin: 0 0 1.8rem 0;
+    margin: 0 0 1.8em 0;
     white-space: normal;
   }
   .fl-prefsEditor-separatedPanel .fl-prefsEditor-panels .fl-prefsEditor-panel h2 [class*=fl-icon-] {
@@ -150,7 +151,7 @@
   .fl-prefsEditor-separatedPanel .fl-prefsEditor-panels .fl-prefsEditor-panel .fl-prefsEditor-panel-descr {
     height: auto;
     margin: 0;
-    margin-bottom: 1rem;
+    margin-bottom: 1em;
     overflow: visible;
     position: inherit;
     width: 100%;
