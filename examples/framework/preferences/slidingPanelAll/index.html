@@ -164,6 +164,19 @@
         <script-symbolic src="%fluid-prefs-captions/src/js/CaptionsPanel.js"></script-symbolic>
             <script synthetic src="../../../../preferences/captions/src/js/CaptionsPanel.js"></script>
 
+        <!-- Special dependencies for SelfVoicingEnactor - note - we should have a way to express this in package.json etc! -->
+        <script-symbolic src="%infusion/src/components/textToSpeech/js/TextToSpeech.js"></script-symbolic>
+            <script synthetic src="../../../../node_modules/infusion/src/components/textToSpeech/js/TextToSpeech.js"></script>
+        <script-symbolic src="%infusion/src/components/orator/js/Orator.js"></script-symbolic>
+            <script synthetic src="../../../../node_modules/infusion/src/components/orator/js/Orator.js"></script>
+
+        <script-symbolic src="%fluid-prefs-self-voicing/src/js/SelfVoicing.js"></script-symbolic>
+            <script synthetic src="../../../../preferences/selfVoicing/src/js/SelfVoicing.js"></script>
+        <script-symbolic src="%fluid-prefs-self-voicing/src/js/SelfVoicingEnactor.js"></script-symbolic>
+            <script synthetic src="../../../../preferences/selfVoicing/src/js/SelfVoicingEnactor.js"></script>
+        <script-symbolic src="%fluid-prefs-self-voicing/src/js/SelfVoicingPanel.js"></script-symbolic>
+            <script synthetic src="../../../../preferences/selfVoicing/src/js/SelfVoicingPanel.js"></script>
+
         <script-symbolic src="%fluid-prefs-editor/src/js/ArrowScrolling.js"></script-symbolic>
             <script synthetic src="../../../../preferences/prefsEditor/src/js/ArrowScrolling.js"></script>
         <script-symbolic src="%fluid-prefs-editor/src/js/Enactor.js"></script-symbolic>
@@ -363,6 +376,9 @@
                     },
                     captions: {
                         type: "fluid.prefs.panel.captions"
+                    },
+                    selfVoicing: {
+                        type: "fluid.prefs.panel.selfVoicing"
                     }
                 }
             });

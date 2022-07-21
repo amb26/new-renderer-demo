@@ -145,6 +145,9 @@ fluid.prefs.makePrefsMapGrade = function (that, indexer) {
         fluid.fail("fluid.prefs.varietyPathHolder component" + fluid.dumpComponentAndPath(pathHolder) + " was not configured with a varietyPathPrefix");
     }
     var prefsMap = fluid.getForComponent(that, ["options", "preferencesMap"]);
+    if (!prefsMap) {
+        fluid.fail("withPreferencesMap grade " + that.typeName + " does not have a preferencesMap option defined");
+    }
     var gradeName = that.typeName + ".withPrefsMap";
     var keys = Object.keys(prefsMap);
     if (keys.length !== 1) {

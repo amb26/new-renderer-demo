@@ -16,10 +16,10 @@ https://github.com/fluid-project/infusion/raw/main/Infusion-LICENSE.txt
 /**********************************************************************************
 * speakPanel
 **********************************************************************************/
-fluid.defaults("fluid.prefs.panel.speak", {
+fluid.defaults("fluid.prefs.panel.selfVoicing", {
     gradeNames: ["fluid.prefs.panel.switchAdjuster"],
-    container: ".flc-prefsEditor-speak",
-    preferenceMap: {
+    container: ".flc-prefsEditor-selfVoicing",
+    preferencesMap: {
         "fluid.prefs.speak": {
             "model.value": "value"
         }
@@ -29,7 +29,7 @@ fluid.defaults("fluid.prefs.panel.speak", {
             path: "%fluid-prefs-self-voicing/src/html/SelfVoicing.html"
         },
         messages: {
-            path: "%fluid-prefs-self-voicing/src/messages/speak.json"
+            path: "%fluid-prefs-self-voicing/src/messages/selfVoicing.json"
         }
     }
 });
