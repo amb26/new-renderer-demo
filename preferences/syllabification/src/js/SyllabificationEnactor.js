@@ -29,7 +29,8 @@ https://github.com/fluid-project/infusion/raw/main/Infusion-LICENSE.txt
  * populated by the `fluid.prefs.enactor.syllabification.patterns` grade.
  */
 fluid.defaults("fluid.prefs.enactor.syllabification", {
-    gradeNames: ["fluid.prefs.enactor", "fluid.prefs.enactor.syllabification.patterns", "fluid.viewComponent"],
+    gradeNames: ["fluid.prefs.enactor", "fluid.prefs.enactor.syllabification.patterns",
+        "fluid.prefs.enactor.ignorableSelectorHolder", "fluid.prefs.enactor.excludeFromPrefsEditor", "fluid.viewComponent"],
     preferencesMap: {
         "fluid.prefs.syllabification": {
             "model.enabled": "value"
@@ -79,12 +80,9 @@ fluid.defaults("fluid.prefs.enactor.syllabification", {
                     "afterParse.boil": "{syllabification}.events.afterParse",
                     "onParsedTextNode.boil": "{syllabification}.events.onParsedTextNode"
                 },
-                invokers: {
-                    hasTextToRead: {
-                        // apply to text nodes even if they have the ariaHidden attribute set
-                        funcName: "fluid.textNodeParser.hasTextToRead",
-                        args: ["{arguments}.0", true]
-                    }
+                ignoredSelectors: {
+                    // apply to text nodes even if they have the ariaHidden attribute set
+                    ariaHidden: null
                 }
             }
         },
@@ -111,6 +109,12 @@ fluid.defaults("fluid.prefs.enactor.syllabification", {
                     }
                 }
             }
+        }
+    },
+    distributeOptions: {
+        ignoreSelectorForEnactor: {
+            source: "{that}.options.ignoreSelectorForEnactor",
+            target: "{that > parser}.options.ignoredSelectors.forEnactor"
         }
     },
     members: {

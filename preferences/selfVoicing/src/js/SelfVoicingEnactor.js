@@ -20,14 +20,20 @@ https://github.com/fluid-project/infusion/raw/main/Infusion-LICENSE.txt
  *******************************************************************************/
 
 fluid.defaults("fluid.prefs.enactor.selfVoicing", {
-    gradeNames: ["fluid.prefs.enactor", "fluid.viewComponent", "fluid.prefs.enactor.excludeFromPrefsEditor"],
+    gradeNames: ["fluid.prefs.enactor", "fluid.viewComponent", "fluid.prefs.enactor.ignorableSelectorHolder",
+        "fluid.prefs.enactor.excludeFromPrefsEditor"],
     preferencesMap: {
         "fluid.prefs.speak": {
             "model.enabled": "value"
         }
     },
+    // from ignorableSelectorHolder:
+    // ignoreSelectorForEnactor - an enactor receives a selector in this field which marks material in the document to be ignored
     selectors: {
-        controller: ".flc-prefs-selfVoicingWidget"
+        controller: ".flc-prefs-selfVoicingWidget",
+        // Note that we can't supply "body" as a selector here since fluid.container always needs to return a node strictly
+        // nested in its own container/context - which in this case is also "body"
+        content: document.body
     },
     events: {
         onInitOrator: null
@@ -42,6 +48,7 @@ fluid.defaults("fluid.prefs.enactor.selfVoicing", {
     components: {
         orator: {
             type: "fluid.orator",
+            // We use an old-style createOnEvent so that we lazily construct this possibly expensive component
             createOnEvent: "onInitOrator",
             container: "{fluid.prefs.enactor.selfVoicing}.container",
             options: {
@@ -50,16 +57,24 @@ fluid.defaults("fluid.prefs.enactor.selfVoicing", {
                 },
                 controller: {
                     parentContainer: "{fluid.prefs.enactor.selfVoicing}.dom.controller"
+                },
+                selectors: {
+                    content: "{fluid.prefs.enactor.selfVoicing}.options.selectors.content"
                 }
             }
         }
     },
-    distributeOptions: [{
-        source: "{that}.options.orator",
-        target: "{that > orator}.options",
-        removeSource: true,
-        namespace: "oratorOpts"
-    }]
+    distributeOptions: {
+        oratorOpts: {
+            source: "{that}.options.orator",
+            target: "{that > orator}.options",
+            namespace: "oratorOpts"
+        },
+        ignoreSelectorForEnactor: {
+            source: "{that}.options.ignoreSelectorForEnactor",
+            target: "{that > orator > domReader > parser}.options.ignoredSelectors.forEnactor"
+        }
+    }
 });
 
 fluid.prefs.enactor.selfVoicing.initOrator = function (that, enabled) {

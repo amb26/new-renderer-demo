@@ -15,7 +15,7 @@
         "lint": "fluid-lint-all"
     },
     "dependencies": {
-        "infusion": "4.2.0",
+        "infusion": "4.3.0",
         "kettle": "amb26/kettle#KETTLE-78",
         "linkedom": "0.14.12"
     },
