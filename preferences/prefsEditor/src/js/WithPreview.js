@@ -56,6 +56,7 @@ fluid.defaults("fluid.prefs.prefsEditorWithPreview", {
             path: "%fluid-prefs-editor/src/html/FullPreviewPrefsEditor.html"
         }
     },
+    // TODO: Should have a model relay between userPreferences locale and prefsEditor locale
     components: {
         preview: {
             type: "fluid.newRendererComponent",

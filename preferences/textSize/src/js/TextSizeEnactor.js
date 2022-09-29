@@ -21,7 +21,8 @@ https://github.com/fluid-project/infusion/raw/main/Infusion-LICENSE.txt
 
 // Note that the implementors need to provide the container for this view component
 fluid.defaults("fluid.prefs.enactor.textSize", {
-    gradeNames: ["fluid.prefs.enactor.textRelatedSizer"],
+    gradeNames: ["fluid.prefs.enactor.textRelatedSizer", "fluid.prefs.enactor.withBlockingClass"],
+    blockingClass: "fl-blocking-textSize",
     preferencesMap: {
         "fluid.prefs.textSize": {
             "model.value": "value"

@@ -39,6 +39,7 @@ fluid.defaults("fluid.prefs.withSlidingPanel", {
             source: "{that}.options.selectors.containerMarker"
         }
     },
+    blockingClasses: "@expand:fluid.prefs.indexer.collectBlockingClasses({fluid.prefs.weaver}.options.enactorRegistry)",
     model: {
         // Note: Depends that the weaver is also the preferencesHolder, and also on its workflow - should really listen
         // a "read" event and update whenever we go to persistence
@@ -66,7 +67,8 @@ fluid.defaults("fluid.prefs.withSlidingPanel", {
         "reset.updateLaggingPreferences": {
             func: "{that}.updateLaggingPreferences",
             priority: "after:main"
-        }
+        },
+        "onCreate.applyBlockingClasses": "fluid.prefs.prefsEditor.applyBlockingClasses({that}.container, {that}.options.blockingClasses)"
     },
     templateHasRoot: false,
     selectors: {
@@ -93,6 +95,10 @@ fluid.defaults("fluid.prefs.withSlidingPanel", {
     }
 });
 
+fluid.prefs.prefsEditor.applyBlockingClasses = function (container, classes) {
+    container[0].classList.add(...classes);
+};
+
 // Addon grade for fluid.prefs.prefsEditor
 fluid.defaults("fluid.prefs.prefsEditor.withSlidingPanel", {
     gradeNames: "fluid.messageLoader",
@@ -100,6 +106,10 @@ fluid.defaults("fluid.prefs.prefsEditor.withSlidingPanel", {
         messages: {
             path: "%fluid-prefs-editor/src/messages/prefsEditor.json"
         }
+    },
+    // Perhaps this should be done optionally, in case the prefsEditor doesn't want to/can't be localised
+    model: {
+        locale: "{weaver}.model.appliedLaggingPreferences.fluid_prefs_localization"
     },
     components: {
         selfEnhancer: {

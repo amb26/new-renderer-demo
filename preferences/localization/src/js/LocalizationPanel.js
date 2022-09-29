@@ -13,28 +13,30 @@ https://github.com/fluid-project/infusion/raw/main/Infusion-LICENSE.txt
 
 "use strict";
 
-// TODO: Port this over to new renderer
-
 fluid.defaults("fluid.prefs.panel.localization", {
-    gradeNames: ["fluid.prefs.panel"],
+    gradeNames: ["fluid.prefs.panel", "fluid.prefs.withEnactorMap", "fluid.prefs.panel.localisedEnumLabels"],
     container: ".flc-prefsEditor-localization",
     preferencesMap: {
         "fluid.prefs.localization": {
             "model.value": "value",
-            "controlValues.localization": "enum",
-            "stringArrayIndex.localization": "enumLabels"
+            "model.optionValues": "enum",
+            "model.enumLabels": "enumLabels"
         }
     },
     selectors: {
-        localization: ".flc-prefsEditor-localization"
+        select: ".flc-prefsEditor-localization-select"
     },
-    protoTree: {
-        label: {messagekey: "label"},
-        localizationDescr: {messagekey: "description"},
-        localization: {
-            optionnames: "${{that}.msgLookup.localization}",
-            optionlist: "${{that}.options.controlValues.localization}",
-            selection: "${value}"
+    components: {
+        select: {
+            type: "fluid.uiSelect",
+            options: {
+                container: "{panel}.dom.select",
+                model: {
+                    value: "{panel}.model.value",
+                    optionValues: "{panel}.model.optionValues",
+                    optionLabels: "{panel}.model.optionLabels"
+                }
+            }
         }
     },
     resources: {

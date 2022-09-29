@@ -83,6 +83,10 @@ fluid.prefs.dynamicPanelHolder.resolve = function (templateHolder) {
     return templateHolder.dynamicTemplate;
 };
 
+// Marker grade allowing panels or other localised components to find their locale
+fluid.defaults("fluid.prefs.localeHolder", {
+});
+
 /*
  * A component that works in conjunction with the UI Enhancer component
  * to allow users to set personal user interface preferences. The Preferences Editor component provides a user
@@ -90,8 +94,8 @@ fluid.prefs.dynamicPanelHolder.resolve = function (templateHolder) {
  * work of applying those preferences to the user interface.
  */
 fluid.defaults("fluid.prefs.prefsEditor", {
-    gradeNames: ["fluid.newRendererComponent", "fluid.prefs.varietyPathHolder"],
-    // varietyPathPrefix: must be overridden
+    gradeNames: ["fluid.newRendererComponent", "fluid.prefs.varietyPathHolder", "fluid.prefs.localeHolder"],
+    // varietyPathPrefix: must be overridden, in order to determine which model path nested panels will end up bound to
     components: {
         panelHolder: {
             type: "fluid.newRendererComponent",
@@ -104,9 +108,13 @@ fluid.defaults("fluid.prefs.prefsEditor", {
         panelHolder: ".flc-prefsEditor-panelHolder",
         panels: ".flc-prefsEditor-panel" // used by ArrowScrolling
     },
+    defaultLocale: "en",
+    model: {
+        // locale: relayed in from WithSeparatedPanel's appliedLaggingPreferences
+    },
     events: {
-        //beforeReset: null, // <-- Unnecessary - only listener is arrowScrolling - it should instead contribute its own init value of {panelIndex: 0}
-        //afterReset: null, // NoPreview listened to this and does "applyChanges" followed by "save"
+        // beforeReset: null, // <-- Unnecessary - only listener is arrowScrolling - it should instead contribute its own init value of {panelIndex: 0}
+        // afterReset: null, // NoPreview listened to this and does "applyChanges" followed by "save"
     },
     templateHasRoot: false,
     resources: {

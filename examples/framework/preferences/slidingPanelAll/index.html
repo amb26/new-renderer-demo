@@ -180,6 +180,13 @@
         <script-symbolic src="%fluid-prefs-self-voicing/src/js/SelfVoicingPanel.js"></script-symbolic>
             <script synthetic src="../../../../preferences/selfVoicing/src/js/SelfVoicingPanel.js"></script>
 
+        <script-symbolic src="%fluid-prefs-localization/src/js/Localization.js"></script-symbolic>
+            <script synthetic src="../../../../preferences/localization/src/js/Localization.js"></script>
+        <script-symbolic src="%fluid-prefs-localization/src/js/LocalizationEnactor.js"></script-symbolic>
+            <script synthetic src="../../../../preferences/localization/src/js/LocalizationEnactor.js"></script>
+        <script-symbolic src="%fluid-prefs-localization/src/js/LocalizationPanel.js"></script-symbolic>
+            <script synthetic src="../../../../preferences/localization/src/js/LocalizationPanel.js"></script>
+
         <script-symbolic src="%fluid-prefs-editor/src/js/ArrowScrolling.js"></script-symbolic>
             <script synthetic src="../../../../preferences/prefsEditor/src/js/ArrowScrolling.js"></script>
         <script-symbolic src="%fluid-prefs-editor/src/js/Enactor.js"></script-symbolic>
@@ -348,7 +355,6 @@
 
         <script>
 
-
             fluid.defaults("fluid.prefs.examples.allPanelHolder", {
                 components: {
                     textSize: {
@@ -383,17 +389,16 @@
                     },
                     selfVoicing: {
                         type: "fluid.prefs.panel.selfVoicing"
+                    },
+                    localization: {
+                        type: "fluid.prefs.panel.localization"
                     }
                 }
             });
 
             fluid.uiOptions(".flc-prefsEditor-slidingPanel", {
                 gradeNames: ["fluid.prefs.withSeparatedPanel", "fluid.prefs.withSlidingPanel"],
-                panelHolderGrades: ["fluid.prefs.examples.allPanelHolder", "fluid.prefs.dynamicPanelHolder"],
-                model: {
-                    prefsEditor: true
-                },
-                autoSave: true
+                panelHolderGrades: ["fluid.prefs.examples.allPanelHolder", "fluid.prefs.dynamicPanelHolder"]
             });
         </script>
     </body>

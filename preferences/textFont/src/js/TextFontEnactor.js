@@ -20,7 +20,8 @@ https://github.com/fluid-project/infusion/raw/main/Infusion-LICENSE.txt
  *******************************************************************************/
 // Note that the implementors need to provide the container for this view component
 fluid.defaults("fluid.prefs.enactor.textFont", {
-    gradeNames: ["fluid.prefs.enactor.classSwapper"],
+    gradeNames: ["fluid.prefs.enactor.classSwapper", "fluid.prefs.enactor.withBlockingClass"],
+    blockingClass: "fl-blocking-font",
     preferencesMap: {
         "fluid.prefs.textFont": {
             "model.value": "value"

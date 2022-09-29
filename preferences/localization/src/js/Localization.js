@@ -23,6 +23,8 @@ fluid.defaults("fluid.prefs.schemas.localization", {
             "enumLabels": [
                 "localization-default",
                 "localization-en",
+                "localization-en_CA",
+                "localization-en_US",
                 "localization-fr",
                 "localization-es",
                 "localization-fa",

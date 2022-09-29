@@ -20,7 +20,8 @@ https://github.com/fluid-project/infusion/raw/main/Infusion-LICENSE.txt
  *******************************************************************************/
 // Note that the implementors need to provide the container for this view component
 fluid.defaults("fluid.prefs.enactor.contrast", {
-    gradeNames: ["fluid.prefs.enactor.classSwapper"],
+    gradeNames: ["fluid.prefs.enactor.classSwapper", "fluid.prefs.enactor.withBlockingClass"],
+    blockingClass: "fl-blocking-theme",
     preferencesMap: {
         "fluid.prefs.contrast": {
             "model.value": "value"

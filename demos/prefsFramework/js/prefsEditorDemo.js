@@ -13,64 +13,13 @@ https://github.com/fluid-project/infusion/raw/main/Infusion-LICENSE.txt
 
 "use strict";
 
-var demo = demo || {};
-
-fluid.registerNamespace("demo.prefsEditor");
-
 // add extra prefs to the starter primary schemas
 fluid.defaults("demo.schemas.simplify", {
-    gradeNames: ["fluid.prefs.schemas"],
+    gradeNames: ["fluid.prefs.schema"],
     schema: {
         "demo.prefs.simplify": {
             "type": "boolean",
             "default": false
-        }
-    }
-});
-
-fluid.contextAware.makeChecks({
-    "fluid.supportsTTS": "fluid.textToSpeech.isSupported"
-});
-
-fluid.defaults("demo.prefsEditor.progressiveEnhancement", {
-    gradeNames: ["fluid.contextAware"],
-    contextAwareness: {
-        textToSpeech: {
-            checks: {
-                supportsTTS: {
-                    contextValue: "{fluid.supportsTTS}",
-                    gradeNames: "demo.prefsEditor.speak"
-                }
-            }
-        }
-    }
-});
-
-// Fine-tune the starter aux schema and add simplify panel
-fluid.defaults("demo.prefsEditor.auxSchema.simplify", {
-    gradeNames: ["fluid.prefs.auxSchema"],
-    auxiliarySchema: {
-        // add panels and enactors for extra settings
-        "demo.prefs.simplify": {
-            enactor: {
-                type: "demo.prefsEditor.simplifyEnactor",
-                container: "body"
-            },
-            panel: {
-                type: "demo.prefsEditor.simplifyPanel",
-                container: ".demo-prefsEditor-simplify",
-                template: "html/SimplifyPanelTemplate.html",
-                message: "messages/simplify.json"
-            }
-        }
-    }
-});
-
-// Fine-tune the starter aux schema and add speak panel
-fluid.defaults("demo.prefsEditor.speak", {
-    prefsPrioritized: {
-        "fluid.prefs.speak": {
-            priority: "after:demo.prefs.simplify"
         }
     }
 });
@@ -81,9 +30,18 @@ fluid.defaults("demo.prefsEditor.speak", {
 
 fluid.defaults("demo.prefsEditor.simplifyPanel", {
     gradeNames: ["fluid.prefs.panel.switchAdjuster"],
+    container: ".demo-simplifyPanel",
     preferencesMap: {
         "demo.prefs.simplify": {
             "model.value": "value"
+        }
+    },
+    resources: {
+        template: {
+            path: "%fluid-prefs-demo/html/SimplifyPanelTemplate.html"
+        },
+        messages: {
+            path: "%fluid-prefs-demo/messages/simplify.json"
         }
     }
 });
@@ -104,17 +62,17 @@ fluid.defaults("demo.prefsEditor.simplifyEnactor", {
             "model.simplify": "value"
         }
     },
+    container: "body",
     styles: {
         simplified: "demo-content-simplified"
     },
     model: {
         simplify: false
     },
-    modelListeners: {
-        simplify: {
-            "this": "{that}.container",
-            method: "toggleClass",
-            args: ["{that}.options.styles.simplified", "{change}.value"]
+    modelRelay: {
+        source: "{that}.model.simplify",
+        target: {
+            segs: ["dom", "container", "class", "{that}.options.styles.simplified"]
         }
     }
 });

@@ -11,11 +11,14 @@ You may obtain a copy of the ECL 2.0 License and BSD License at
 https://github.com/fluid-project/infusion/raw/main/Infusion-LICENSE.txt
 */
 
-// TODO: What on earth was this doing?
-// TODO: Don't see any site outside tests which sets localizationScheme
-
+// TODO: There is a site in tests and also in example.prefs.localization which sets localizationScheme and uses
+// all this infrastructure
 
 "use strict";
+
+// There is an example at /fluid-infusion-master/examples/framework/preferences/localizationPreference/urlPath/js/localization which
+// derives from this - it defines a example.prefs.localization which in the end is applied as a mixin to
+// example.prefs.localization.localized.prefsEditor, the overall prefsEditor grade
 
 fluid.defaults("fluid.prefs.localizationPrefsEditorConfig", {
     gradeNames: ["fluid.contextAware"],

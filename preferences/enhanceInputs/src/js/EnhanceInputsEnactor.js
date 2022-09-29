@@ -20,7 +20,8 @@ https://github.com/fluid-project/infusion/raw/main/Infusion-LICENSE.txt
  *******************************************************************************/
 
 fluid.defaults("fluid.prefs.enactor.enhanceInputs", {
-    gradeNames: ["fluid.prefs.enactor.styleElements", "fluid.viewComponent"],
+    gradeNames: ["fluid.prefs.enactor.styleElements", "fluid.prefs.enactor.withBlockingClass", "fluid.viewComponent"],
+    blockingClass: "fl-blocking-input-enhanced",
     preferencesMap: {
         "fluid.prefs.enhanceInputs": {
             "model.value": "value"

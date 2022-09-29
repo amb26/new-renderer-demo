@@ -3,88 +3,228 @@
     <head>
         <meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
         <meta content="width=device-width, initial-scale=1.0" name="viewport">
+        
+        <!-- TODO: restore OverviewPanel which has not been ported to new renderer and used to be sourced from "shared" demo folder -->
 
-        <link rel="stylesheet" type="text/css" href="../../src/framework/core/css/fluid.css" />
+        <link-symbolic rel="stylesheet" type="text/css" href="%infusion/src/framework/core/css/fluid.css"></link-symbolic>
+            <link type="text/css" rel="stylesheet" synthetic href="../../node_modules/infusion/src/framework/core/css/fluid.css">
 
-        <!-- CSS required for the Prefs Editor -->
-        <link rel="stylesheet" type="text/css" href="../../src/framework/preferences/css/Enactors.css" />
-        <link rel="stylesheet" type="text/css" href="../../src/framework/preferences/css/PrefsEditor.css" />
-        <link rel="stylesheet" type="text/css" href="../../src/framework/preferences/css/SeparatedPanelPrefsEditor.css" />
-        <link rel="stylesheet" type="text/css" href="../../src/components/orator/css/Orator.css" />
-        <link rel="stylesheet" type="text/css" href="../../src/components/overviewPanel/css/OverviewPanel.css" />
+        <!-- Component styles -->
+        <link-symbolic rel="stylesheet" type="text/css" href="%infusion/src/components/orator/css/Orator.css"></link-symbolic>
+            <link type="text/css" rel="stylesheet" synthetic href="../../node_modules/infusion/src/components/orator/css/Orator.css">
+
+        <link-symbolic rel="stylesheet" type="text/css" href="%fluid-prefs-editor/src/css/Enactors.css"></link-symbolic>
+            <link type="text/css" rel="stylesheet" synthetic href="../../preferences/prefsEditor/src/css/Enactors.css">
+        <link-symbolic rel="stylesheet" type="text/css" href="%fluid-prefs-editor/src/css/PrefsEditor.css"></link-symbolic>
+            <link type="text/css" rel="stylesheet" synthetic href="../../preferences/prefsEditor/src/css/PrefsEditor.css">
+        <link-symbolic rel="stylesheet" type="text/css" href="%fluid-prefs-editor/src/css/SeparatedPanelPrefsEditor.css"></link-symbolic>
+            <link type="text/css" rel="stylesheet" synthetic href="../../preferences/prefsEditor/src/css/SeparatedPanelPrefsEditor.css">
+        
+        <!-- Warning: This one contains html -> overflow: hidden -->
+        <link-symbolic rel="stylesheet" type="text/css" href="%fluid-prefs-editor/src/css/SeparatedPanelPrefsEditorFrame.css"></link-symbolic>
+            <link type="text/css" rel="stylesheet" synthetic href="../../preferences/prefsEditor/src/css/SeparatedPanelPrefsEditorFrame.css">
+
+        <link-symbolic rel="stylesheet" type="text/css" href="%new-renderer-demo/demos/uiOptions/css/uiOptions.css"></link-symbolic>
+            <link type="text/css" rel="stylesheet" synthetic href="../../demos/uiOptions/css/uiOptions.css">
 
         <link href="css/main.css" rel="stylesheet" type="text/css" media="screen">
         <link href="css/simplify.css" rel="stylesheet" type="text/css" media="screen">
 
-        <script src="../../src/lib/jquery/core/js/jquery.js"></script>
-        <script src="../../src/lib/jquery/ui/js/version.js"></script>
-        <script src="../../src/lib/jquery/ui/js/keycode.js"></script>
+        <script-symbolic src="%infusion/src/lib/jquery/core/js/jquery.js"></script-symbolic>
+            <script synthetic src="../../node_modules/infusion/src/lib/jquery/core/js/jquery.js"></script>
+        <script-symbolic src="%infusion/src/framework/core/js/Fluid.js"></script-symbolic>
+            <script synthetic src="../../node_modules/infusion/src/framework/core/js/Fluid.js"></script>
+        <script-symbolic src="%infusion/src/framework/core/js/FluidPromises.js"></script-symbolic>
+            <script synthetic src="../../node_modules/infusion/src/framework/core/js/FluidPromises.js"></script>
+        <script-symbolic src="%infusion/src/framework/core/js/FluidDocument.js"></script-symbolic>
+            <script synthetic src="../../node_modules/infusion/src/framework/core/js/FluidDocument.js"></script>
+        <script-symbolic src="%infusion/src/framework/core/js/DataBinding.js"></script-symbolic>
+            <script synthetic src="../../node_modules/infusion/src/framework/core/js/DataBinding.js"></script>
+        <script-symbolic src="%infusion/src/framework/core/js/FluidIoC.js"></script-symbolic>
+            <script synthetic src="../../node_modules/infusion/src/framework/core/js/FluidIoC.js"></script>
+        <script-symbolic src="%infusion/src/framework/enhancement/js/ContextAwareness.js"></script-symbolic>
+            <script synthetic src="../../node_modules/infusion/src/framework/enhancement/js/ContextAwareness.js"></script>
+        <script-symbolic src="%infusion/src/framework/core/js/DataSource.js"></script-symbolic>
+            <script synthetic src="../../node_modules/infusion/src/framework/core/js/DataSource.js"></script>
+        <script-symbolic src="%infusion/src/framework/core/js/ResourceLoader.js"></script-symbolic>
+            <script synthetic src="../../node_modules/infusion/src/framework/core/js/ResourceLoader.js"></script>
+        <script-symbolic src="%infusion/src/framework/core/js/ResourceLoader-browser.js"></script-symbolic>
+            <script synthetic src="../../node_modules/infusion/src/framework/core/js/ResourceLoader-browser.js"></script>
+        <script-symbolic src="%infusion/src/framework/core/js/ModelTransformation.js"></script-symbolic>
+            <script synthetic src="../../node_modules/infusion/src/framework/core/js/ModelTransformation.js"></script>
+        <script-symbolic src="%infusion/src/framework/core/js/ModelTransformationTransforms.js"></script-symbolic>
+            <script synthetic src="../../node_modules/infusion/src/framework/core/js/ModelTransformationTransforms.js"></script>
+        <script-symbolic src="%infusion/src/framework/core/js/DataBinding.js"></script-symbolic>
+            <script synthetic src="../../node_modules/infusion/src/framework/core/js/DataBinding.js"></script>
+        <script-symbolic src="%infusion/src/framework/core/js/RemoteModel.js"></script-symbolic>
+            <script synthetic src="../../node_modules/infusion/src/framework/core/js/RemoteModel.js"></script>
+        <script-symbolic src="%infusion/src/framework/core/js/FluidDOMUtilities.js"></script-symbolic>
+            <script synthetic src="../../node_modules/infusion/src/framework/core/js/FluidDOMUtilities.js"></script>
+        <script-symbolic src="%infusion/src/framework/core/js/FluidView.js"></script-symbolic>
+            <script synthetic src="../../node_modules/infusion/src/framework/core/js/FluidView.js"></script>
+        <script-symbolic src="%infusion/src/framework/core/js/NewViewSupport.js"></script-symbolic>
+            <script synthetic src="../../node_modules/infusion/src/framework/core/js/NewViewSupport.js"></script>
+        <script-symbolic src="%infusion/src/framework/core/js/FluidView-browser.js"></script-symbolic>
+            <script synthetic src="../../node_modules/infusion/src/framework/core/js/FluidView-browser.js"></script>
+              
+        <!-- Special dependencies for SyllabificationEnactor -->
+        <script-symbolic src="%infusion/src/lib/hypher/jquery.hypher.js"></script-symbolic>
+            <script synthetic src="../../node_modules/infusion/src/lib/hypher/jquery.hypher.js"></script>
+        <script-symbolic src="%infusion/src/framework/core/js/TextNodeParser.js"></script-symbolic>
+            <script synthetic src="../../node_modules/infusion/src/framework/core/js/TextNodeParser.js"></script>
+        <script-symbolic src="%infusion/src/framework/core/js/MutationObserver.js"></script-symbolic>
+            <script synthetic src="../../node_modules/infusion/src/framework/core/js/MutationObserver.js"></script>
 
-        <script src="../../src/lib/hypher/jquery.hypher.js"></script>
+        <script-symbolic src="%fluid-table-of-contents/src/js/TableOfContents.js"></script-symbolic>
+            <script synthetic src="../../tableOfContents/src/js/TableOfContents.js"></script>
 
-        <script src="../../src/framework/core/js/FluidDocument.js"></script>
-        <script src="../../src/framework/core/js/jquery.keyboard-a11y.js"></script>
-        <script src="../../src/framework/core/js/Fluid.js"></script>
-        <script src="../../src/framework/core/js/FluidPromises.js"></script>
-        <script src="../../src/framework/core/js/DataSource.js"></script>
-        <script src="../../src/framework/core/js/FluidDOMUtilities.js"></script>
-        <script src="../../src/framework/core/js/FluidIoC.js"></script>
-        <script src="../../src/framework/core/js/DataBinding.js"></script>
-        <script src="../../src/framework/core/js/RemoteModel.js"></script>
-        <script src="../../src/framework/core/js/ModelTransformation.js"></script>
-        <script src="../../src/framework/core/js/ModelTransformationTransforms.js"></script>
-        <script src="../../src/framework/core/js/FluidView.js"></script>
-        <script src="../../src/framework/core/js/FluidView-browser.js"></script>
-        <script src="../../src/framework/core/js/NewViewSupport.js"></script>
-        <script src="../../src/framework/core/js/MutationObserver.js"></script>
-        <script src="../../src/framework/core/js/TextNodeParser.js"></script>
-        <script src="../../src/framework/core/js/ResourceLoader.js"></script>
-        <script src="../../src/framework/core/js/ResourceLoader-browser.js"></script>
-        <script src="../../src/lib/fastXmlPull/js/fastXmlPull.js"></script>
-        <script src="../../src/framework/renderer/js/fluidParser.js"></script>
-        <script src="../../src/framework/core/js/MessageResolver.js"></script>
-        <script src="../../src/framework/renderer/js/fluidRenderer.js"></script>
-        <script src="../../src/framework/renderer/js/RendererUtilities.js"></script>
-        <script src="../../src/framework/enhancement/js/ContextAwareness.js"></script>
-        <script src="../../src/framework/enhancement/js/ProgressiveEnhancement.js"></script>
+        <script-symbolic src="%new-renderer-demo/src/js/core/fluidNewRenderer.js"></script-symbolic>
+            <script synthetic src="../../src/js/core/fluidNewRenderer.js"></script>
+        <script-symbolic src="%new-renderer-demo/src/js/core/fluidNewRendererComponents.js"></script-symbolic>
+            <script synthetic src="../../src/js/core/fluidNewRendererComponents.js"></script>
+        <script-symbolic src="%new-renderer-demo/src/js/core/htmlParser.js"></script-symbolic>
+            <script synthetic src="../../src/js/core/htmlParser.js"></script>
+        <script-symbolic src="%new-renderer-demo/src/js/core/ResourceRewriter.js"></script-symbolic>
+            <script synthetic src="../../src/js/core/ResourceRewriter.js"></script>
+        <script-symbolic src="%new-renderer-demo/src/js/client/ClientRenderer.js"></script-symbolic>
+            <script synthetic src="../../src/js/client/ClientRenderer.js"></script>
 
-        <script src="../../src/framework/preferences/js/URLUtilities.js"></script>
-        <script src="../../src/framework/preferences/js/Store.js"></script>
-        <script src="../../src/components/textfieldControl/js/Textfield.js"></script>
-        <script src="../../src/components/textfieldControl/js/TextfieldStepper.js"></script>
-        <script src="../../src/framework/preferences/js/UIEnhancer.js"></script>
-        <script src="../../src/framework/preferences/js/ArrowScrolling.js"></script>
-        <script src="../../src/framework/preferences/js/PrefsEditor.js"></script>
-        <script src="../../src/framework/preferences/js/Panels.js"></script>
-        <script src="../../src/framework/preferences/js/SelfVoicingPanel.js"></script>
-        <script src="../../src/framework/preferences/js/LetterSpacePanel.js"></script>
-        <script src="../../src/framework/preferences/js/WordSpacePanel.js"></script>
-        <script src="../../src/framework/preferences/js/SyllabificationPanel.js"></script>
-        <script src="../../src/framework/preferences/js/Enactors.js"></script>
-        <script src="../../src/framework/preferences/js/SelfVoicingEnactor.js"></script>
-        <script src="../../src/framework/preferences/js/LetterSpaceEnactor.js"></script>
-        <script src="../../src/framework/preferences/js/WordSpaceEnactor.js"></script>
-        <script src="../../src/framework/preferences/js/SyllabificationEnactor.js"></script>
-        <script src="../../src/framework/preferences/js/SeparatedPanelPrefsEditor.js"></script>
-        <script src="../../src/components/slidingPanel/js/SlidingPanel.js"></script>
-        <script src="../../src/components/switch/js/Switch.js"></script>
-        <script src="../../src/components/tableOfContents/js/TableOfContents.js"></script>
-        <script src="../../src/framework/preferences/js/PrimaryBuilder.js"></script>
-        <script src="../../src/framework/preferences/js/AuxBuilder.js"></script>
-        <script src="../../src/framework/preferences/js/StarterSchemas.js"></script>
-        <script src="../../src/framework/preferences/js/SelfVoicingSchemas.js"></script>
-        <script src="../../src/framework/preferences/js/LetterSpaceSchemas.js"></script>
-        <script src="../../src/framework/preferences/js/WordSpaceSchemas.js"></script>
-        <script src="../../src/framework/preferences/js/SyllabificationSchemas.js"></script>
-        <script src="../../src/framework/preferences/js/Builder.js"></script>
-        <script src="../../src/components/textToSpeech/js/TextToSpeech.js"></script>
-        <script src="../../src/components/orator/js/Orator.js"></script>
-        <script src="../../src/components/uiOptions/js/UIOptions.js"></script>
+        <script-symbolic src="%fluid-textfield-controls/src/js/Textfield.js"></script-symbolic>
+            <script synthetic src="../../textfieldControl/src/js/Textfield.js"></script>
+        <script-symbolic src="%fluid-textfield-controls/src/js/TextfieldStepper.js"></script-symbolic>
+            <script synthetic src="../../textfieldControl/src/js/TextfieldStepper.js"></script>
+        <script-symbolic src="%fluid-textfield-controls/src/js/TextfieldSlider.js"></script-symbolic>
+            <script synthetic src="../../textfieldControl/src/js/TextfieldSlider.js"></script>
+
+        <script-symbolic src="%fluid-switch/src/js/Switch.js"></script-symbolic>
+            <script synthetic src="../../switch/src/js/Switch.js"></script>
+
+        <script-symbolic src="%fluid-sliding-panel/src/js/SlidingPanel.js"></script-symbolic>
+            <script synthetic src="../../slidingPanel/src/js/SlidingPanel.js"></script>
+        
+        <script-symbolic src="%fluid-prefs-line-space/src/js/LineSpace.js"></script-symbolic>
+            <script synthetic src="../../preferences/lineSpace/src/js/LineSpace.js"></script>
+        <script-symbolic src="%fluid-prefs-line-space/src/js/LineSpaceEnactor.js"></script-symbolic>
+            <script synthetic src="../../preferences/lineSpace/src/js/LineSpaceEnactor.js"></script>
+        <script-symbolic src="%fluid-prefs-line-space/src/js/LineSpacePanel.js"></script-symbolic>
+            <script synthetic src="../../preferences/lineSpace/src/js/LineSpacePanel.js"></script>
+
+        <script-symbolic src="%fluid-prefs-text-size/src/js/TextSize.js"></script-symbolic>
+            <script synthetic src="../../preferences/textSize/src/js/TextSize.js"></script>
+        <script-symbolic src="%fluid-prefs-text-size/src/js/TextSizeEnactor.js"></script-symbolic>
+            <script synthetic src="../../preferences/textSize/src/js/TextSizeEnactor.js"></script>
+        <script-symbolic src="%fluid-prefs-text-size/src/js/TextSizePanel.js"></script-symbolic>
+            <script synthetic src="../../preferences/textSize/src/js/TextSizePanel.js"></script>
+
+        <script-symbolic src="%fluid-prefs-enhance-inputs/src/js/EnhanceInputs.js"></script-symbolic>
+            <script synthetic src="../../preferences/enhanceInputs/src/js/EnhanceInputs.js"></script>
+        <script-symbolic src="%fluid-prefs-enhance-inputs/src/js/EnhanceInputsEnactor.js"></script-symbolic>
+            <script synthetic src="../../preferences/enhanceInputs/src/js/EnhanceInputsEnactor.js"></script>
+        <script-symbolic src="%fluid-prefs-enhance-inputs/src/js/EnhanceInputsPanel.js"></script-symbolic>
+            <script synthetic src="../../preferences/enhanceInputs/src/js/EnhanceInputsPanel.js"></script>
+
+        <script-symbolic src="%fluid-prefs-text-font/src/js/TextFont.js"></script-symbolic>
+            <script synthetic src="../../preferences/textFont/src/js/TextFont.js"></script>
+        <script-symbolic src="%fluid-prefs-text-font/src/js/TextFontEnactor.js"></script-symbolic>
+            <script synthetic src="../../preferences/textFont/src/js/TextFontEnactor.js"></script>
+        <script-symbolic src="%fluid-prefs-text-font/src/js/TextFontPanel.js"></script-symbolic>
+            <script synthetic src="../../preferences/textFont/src/js/TextFontPanel.js"></script>
+
+        <script-symbolic src="%fluid-prefs-contrast/src/js/Contrast.js"></script-symbolic>
+            <script synthetic src="../../preferences/contrast/src/js/Contrast.js"></script>
+        <script-symbolic src="%fluid-prefs-contrast/src/js/ContrastEnactor.js"></script-symbolic>
+            <script synthetic src="../../preferences/contrast/src/js/ContrastEnactor.js"></script>
+        <script-symbolic src="%fluid-prefs-contrast/src/js/ContrastPanel.js"></script-symbolic>
+            <script synthetic src="../../preferences/contrast/src/js/ContrastPanel.js"></script>
+
+        <script-symbolic src="%fluid-prefs-table-of-contents/src/js/TableOfContents.js"></script-symbolic>
+            <script synthetic src="../../preferences/tableOfContents/src/js/TableOfContents.js"></script>
+        <script-symbolic src="%fluid-prefs-table-of-contents/src/js/TableOfContentsEnactor.js"></script-symbolic>
+            <script synthetic src="../../preferences/tableOfContents/src/js/TableOfContentsEnactor.js"></script>
+        <script-symbolic src="%fluid-prefs-table-of-contents/src/js/TableOfContentsPanel.js"></script-symbolic>
+            <script synthetic src="../../preferences/tableOfContents/src/js/TableOfContentsPanel.js"></script>
+
+        <script-symbolic src="%fluid-prefs-letter-space/src/js/LetterSpace.js"></script-symbolic>
+            <script synthetic src="../../preferences/letterSpace/src/js/LetterSpace.js"></script>
+        <script-symbolic src="%fluid-prefs-letter-space/src/js/LetterSpaceEnactor.js"></script-symbolic>
+            <script synthetic src="../../preferences/letterSpace/src/js/LetterSpaceEnactor.js"></script>
+        <script-symbolic src="%fluid-prefs-letter-space/src/js/LetterSpacePanel.js"></script-symbolic>
+            <script synthetic src="../../preferences/letterSpace/src/js/LetterSpacePanel.js"></script>
+
+        <script-symbolic src="%fluid-prefs-word-space/src/js/WordSpace.js"></script-symbolic>
+            <script synthetic src="../../preferences/wordSpace/src/js/WordSpace.js"></script>
+        <script-symbolic src="%fluid-prefs-word-space/src/js/WordSpaceEnactor.js"></script-symbolic>
+            <script synthetic src="../../preferences/wordSpace/src/js/WordSpaceEnactor.js"></script>
+        <script-symbolic src="%fluid-prefs-word-space/src/js/WordSpacePanel.js"></script-symbolic>
+            <script synthetic src="../../preferences/wordSpace/src/js/WordSpacePanel.js"></script>
+
+        <script-symbolic src="%fluid-prefs-syllabification/src/js/Syllabification.js"></script-symbolic>
+            <script synthetic src="../../preferences/syllabification/src/js/Syllabification.js"></script>
+        <script-symbolic src="%fluid-prefs-syllabification/src/js/SyllabificationEnactor.js"></script-symbolic>
+            <script synthetic src="../../preferences/syllabification/src/js/SyllabificationEnactor.js"></script>
+        <script-symbolic src="%fluid-prefs-syllabification/src/js/SyllabificationPanel.js"></script-symbolic>
+            <script synthetic src="../../preferences/syllabification/src/js/SyllabificationPanel.js"></script>
+
+        <script-symbolic src="%fluid-prefs-captions/src/js/Captions.js"></script-symbolic>
+            <script synthetic src="../../preferences/captions/src/js/Captions.js"></script>
+        <script-symbolic src="%fluid-prefs-captions/src/js/CaptionsEnactor.js"></script-symbolic>
+            <script synthetic src="../../preferences/captions/src/js/CaptionsEnactor.js"></script>
+        <script-symbolic src="%fluid-prefs-captions/src/js/CaptionsPanel.js"></script-symbolic>
+            <script synthetic src="../../preferences/captions/src/js/CaptionsPanel.js"></script>
+
+        <!-- Special dependencies for SelfVoicingEnactor - note - we should have a way to express this in package.json etc! -->
+        <script-symbolic src="%infusion/src/components/textToSpeech/js/TextToSpeech.js"></script-symbolic>
+            <script synthetic src="../../node_modules/infusion/src/components/textToSpeech/js/TextToSpeech.js"></script>
+        <script-symbolic src="%infusion/src/components/orator/js/Orator.js"></script-symbolic>
+            <script synthetic src="../../node_modules/infusion/src/components/orator/js/Orator.js"></script>
+
+        <script-symbolic src="%fluid-prefs-self-voicing/src/js/SelfVoicing.js"></script-symbolic>
+            <script synthetic src="../../preferences/selfVoicing/src/js/SelfVoicing.js"></script>
+        <script-symbolic src="%fluid-prefs-self-voicing/src/js/SelfVoicingEnactor.js"></script-symbolic>
+            <script synthetic src="../../preferences/selfVoicing/src/js/SelfVoicingEnactor.js"></script>
+        <script-symbolic src="%fluid-prefs-self-voicing/src/js/SelfVoicingPanel.js"></script-symbolic>
+            <script synthetic src="../../preferences/selfVoicing/src/js/SelfVoicingPanel.js"></script>
+
+        <script-symbolic src="%fluid-prefs-localization/src/js/Localization.js"></script-symbolic>
+            <script synthetic src="../../preferences/localization/src/js/Localization.js"></script>
+        <script-symbolic src="%fluid-prefs-localization/src/js/LocalizationEnactor.js"></script-symbolic>
+            <script synthetic src="../../preferences/localization/src/js/LocalizationEnactor.js"></script>
+        <script-symbolic src="%fluid-prefs-localization/src/js/LocalizationPanel.js"></script-symbolic>
+            <script synthetic src="../../preferences/localization/src/js/LocalizationPanel.js"></script>
+
+        <script-symbolic src="%fluid-prefs-editor/src/js/ArrowScrolling.js"></script-symbolic>
+            <script synthetic src="../../preferences/prefsEditor/src/js/ArrowScrolling.js"></script>
+        <script-symbolic src="%fluid-prefs-editor/src/js/Enactor.js"></script-symbolic>
+            <script synthetic src="../../preferences/prefsEditor/src/js/Enactor.js"></script>
+        <script-symbolic src="%fluid-prefs-editor/src/js/Enhancer.js"></script-symbolic>
+            <script synthetic src="../../preferences/prefsEditor/src/js/Enhancer.js"></script>
+        <script-symbolic src="%fluid-prefs-editor/src/js/Indexer.js"></script-symbolic>
+            <script synthetic src="../../preferences/prefsEditor/src/js/Indexer.js"></script>
+        <script-symbolic src="%fluid-prefs-editor/src/js/Panel.js"></script-symbolic>
+            <script synthetic src="../../preferences/prefsEditor/src/js/Panel.js"></script>
+        <script-symbolic src="%fluid-prefs-editor/src/js/PreferencesHolder.js"></script-symbolic>
+            <script synthetic src="../../preferences/prefsEditor/src/js/PreferencesHolder.js"></script>
+        <script-symbolic src="%fluid-prefs-editor/src/js/PrefsEditor.js"></script-symbolic>
+            <script synthetic src="../../preferences/prefsEditor/src/js/PrefsEditor.js"></script>
+        <script-symbolic src="%fluid-prefs-editor/src/js/Store.js"></script-symbolic>
+            <script synthetic src="../../preferences/prefsEditor/src/js/Store.js"></script>
+        <script-symbolic src="%fluid-prefs-editor/src/js/Weaver.js"></script-symbolic>
+            <script synthetic src="../../preferences/prefsEditor/src/js/Weaver.js"></script>
+        <script-symbolic src="%fluid-prefs-editor/src/js/StarterPanels.js"></script-symbolic>
+            <script synthetic src="../../preferences/prefsEditor/src/js/StarterPanels.js"></script>
+        <script-symbolic src="%fluid-prefs-editor/src/js/WithSeparatedPanel.js"></script-symbolic>
+            <script synthetic src="../../preferences/prefsEditor/src/js/WithSeparatedPanel.js"></script>
+        <script-symbolic src="%fluid-prefs-editor/src/js/WithSlidingPanel.js"></script-symbolic>
+            <script synthetic src="../../preferences/prefsEditor/src/js/WithSlidingPanel.js"></script>
+
+        <script-symbolic src="%fluid-ui-options/src/js/UIOptions.js"></script-symbolic>
+            <script synthetic src="../../uiOptions/src/js/UIOptions.js"></script>
+            <script module-index synthetic src="../../infusionModuleIndex.js"></script>
 
         <script src="js/prefsEditorDemo.js"></script>
 
         <!-- for Overview Panel -->
-        <script src="../../src/components/overviewPanel/js/OverviewPanel.js"></script>
+        <script src="%infusion/src/components/overviewPanel/js/OverviewPanel.js"></script>
         <script src="../shared/js/overviewWrapper.js"></script>
 
         <title>NOAA Education Resources: Climate Change Impacts Collection</title>
@@ -94,40 +234,56 @@
         <!-- The page-wide UI Enhancer needs to be initialized right away -->
         <script>
             $(function () {
-                prefsEditor = fluid.uiOptions(".flc-prefsEditor-separatedPanel", {
-                    gradeNames: ["demo.prefsEditor.progressiveEnhancement"],
-                    preferences: [
-                        "fluid.prefs.textSize",
-                        "fluid.prefs.lineSpace",
-                        "fluid.prefs.textFont",
-                        "fluid.prefs.contrast",
-                        "fluid.prefs.tableOfContents",
-                        "fluid.prefs.enhanceInputs",
-                        "fluid.prefs.letterSpace",
-                        "fluid.prefs.wordSpace",
-                        "fluid.prefs.syllabification",
-                        "demo.prefs.simplify"
-                    ],
-                    auxiliarySchema: {
-                        terms: {
-                            // adjust paths
-                            templatePrefix: "../../src/framework/preferences/html",  // Must match the keyword used below to identify the common path to settings panel templates.
-                            messagePrefix: "../../src/framework/preferences/messages"  // Must match the keyword used below to identify the common path to message files.
+                fluid.defaults("demo.prefsEditor.panelHolder", {
+                    model: {
+                        selfVoicingAvailable: "@expand:fluid.textToSpeech.isSupported()"
+                    },
+	                components: {
+	                    textSize: {
+	                        type: "fluid.prefs.panel.textSize"
+	                    },
+	                    lineSpace: {
+	                        type: "fluid.prefs.panel.lineSpace"
+	                    },
+                        textFont: {
+                            type: "fluid.prefs.panel.textFont"
                         },
-                        "fluid.prefs.tableOfContents": {
-                            enactor: {
-                                tocTemplate: "../../src/components/tableOfContents/html/TableOfContents.html",
-                                tocMessage: "../../src/framework/preferences/messages/tableOfContents-enactor.json"
-                            }
-                        },
-                        "fluid.prefs.syllabification": {
-                            enactor: {
-                                terms: {
-                                    patternPrefix: "../../src/lib/hypher/patterns"
-                                }
-                            }
+	                    contrast: {
+	                        type: "fluid.prefs.panel.contrast"
+	                    },
+	                    tableOfContents: {
+	                        type: "fluid.prefs.panel.tableOfContents"
+	                    },
+	                    enhanceInputs: {
+	                        type: "fluid.prefs.panel.enhanceInputs"
+	                    },
+	                    letterSpace: {
+	                        type: "fluid.prefs.panel.letterSpace"
+	                    },
+	                    wordSpace: {
+	                        type: "fluid.prefs.panel.wordSpace"
+	                    },
+	                    syllabification: {
+	                        type: "fluid.prefs.panel.syllabification"
+	                    },
+                        /* We probably want this since it works nicely now
+                        localization: {
+                            type: "fluid.prefs.panel.localization"
+                        }, */
+	                    simplify: {
+	                        type: "demo.prefsEditor.simplifyPanel"
+	                    }
+	                },
+	                dynamicComponents: {
+	                    selfVoicing: {
+                            type: "fluid.prefs.panel.selfVoicing",
+                            source: "{that}.model.selfVoicingAvailable"
                         }
                     }
+	            });
+                prefsEditor = fluid.uiOptions(".flc-prefsEditor-separatedPanel", {
+                    gradeNames: ["fluid.prefs.withSeparatedPanel", "fluid.prefs.withSlidingPanel", "demo.prefsEditor.progressiveEnhancement"],
+                    panelHolderGrades: ["demo.prefsEditor.panelHolder", "fluid.prefs.dynamicPanelHolder"]                    
                 });
             });
         </script>
@@ -673,7 +829,7 @@
                                 </ul>
 
                                 <!-- Soft hyphen (&shy;) included to test https://issues.fluidproject.org/browse/FLUID-6554 -->
-                                <h2 style="padding:5px; padding-bottom:0px; background-color:#F0F8FF">Back&shy;ground Informa&shy;tion</h2>
+                                <h2 style="padding:5px; padding-bottom:0px; background-color:#F0F8FF">Back­ground Informa­tion</h2>
                                 <ul>
 
                                     <li>
@@ -908,7 +1064,7 @@
 
             <footer id="footer">
                 <a href="#">Privacy Policy</a> | <a href="#">FOIA</a> | <a href="#">Information Quality</a> | <a href="#">Disclaimer</a> | <a href="#">USA.gov</a> | <a href="#">Ready.gov</a> | <a href="#">Contact Webmaster</a>
-                <br/>
+                <br>
                 Full Site | <a href="#">Mobile Site</a>
             </footer>
         </div>

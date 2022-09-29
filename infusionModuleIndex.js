@@ -8,6 +8,11 @@ fluid.infusionModuleIndex = [
         "prefix": ""
     },
     {
+        "moduleName": "fluid-prefs-demo",
+        "suffix": "",
+        "prefix": "demos/prefsFramework/"
+    },
+    {
         "moduleName": "fluid-switch-demo",
         "suffix": "",
         "prefix": "demos/switch/"

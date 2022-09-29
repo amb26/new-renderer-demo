@@ -107,6 +107,14 @@ fluid.prefs.indexer.filterPrefsEditorEnactors = function (enactorRegistry) {
     });
 };
 
+fluid.prefs.indexer.collectBlockingClasses = function (enactorRegistry) {
+    var clazzes = fluid.transform(enactorRegistry, function (record) {
+        var upDefaults = fluid.defaults(record.type);
+        return fluid.hasGrade(upDefaults, "fluid.prefs.enactor.withBlockingClass") ? upDefaults.blockingClass : fluid.NO_VALUE;
+    });
+    return Object.values(clazzes);
+};
+
 /*******************************************************************************
  * Base primary schema grade
  *******************************************************************************/

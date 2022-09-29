@@ -24,6 +24,7 @@ https://github.com/fluid-project/infusion/raw/main/Infusion-LICENSE.txt
  *******************************************************************************/
 
 fluid.defaults("fluid.prefs.enactor.localization", {
+    // TODO: AMB this used to supply "fluid.resolveRoot", try to find what would try to find it there
     gradeNames: ["fluid.prefs.enactor", "fluid.contextAware", "fluid.resolveRoot"],
     preferenceMap: {
         "fluid.prefs.localization": {
@@ -33,18 +34,7 @@ fluid.defaults("fluid.prefs.enactor.localization", {
     contextAwareness: {
         localeChange: {
             checks: {
-                // This check determines if the enactor is being run inside of the separated panel's iframe.
-                // At the moment, all enactors are copied into the iframe to apply settings to the panel as well.
-                // However, the strings for the panel will be localized through the prefsEditorLoader and do not
-                // require the iframe URL to change. When in the panel, we do not run the urlPathLocale changes.
-                inPanel: {
-                    contextValue: "{iframeRenderer}.id",
-                    // The following undefined grade is needed to prevent the `urlPath` check from supplying its
-                    // grade even when the `inPanel` check passes.
-                    gradeNames: "fluid.prefs.enactor.localization.inPanel"
-                },
                 urlPath: {
-                    // TODO: AMB - bit odd, what is this meant to match? The enactor itself?
                     contextValue: "{localization}.options.localizationScheme",
                     equals: "urlPath",
                     gradeNames: "fluid.prefs.enactor.localization.urlPathLocale",
@@ -55,6 +45,7 @@ fluid.defaults("fluid.prefs.enactor.localization", {
     }
 });
 
+// contextAwareness grade which is applied to the localization enactor, if it finds that localizationScheme is set equal to "urlPath"
 /*******************************************************************************
  * URL Path
  *

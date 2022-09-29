@@ -32,6 +32,13 @@ fluid.defaults("fluid.prefs.enactor.ignorableSelectorHolder", {
     // ignoreSelectorForEnactor - an enactor receives a selector in this field which marks material in the document to be ignored
 });
 
+// Applied to an enactor to encode that it needs a "blocking class" applied to the root element of a preference editor
+// in order to prevent leakage of styling applied to the main document
+fluid.defaults("fluid.prefs.enactor.withBlockingClass", {
+    gradeNames: "fluid.component"
+    // blockingClass - a class name which must be applied to the root element of the prefs editor interface to insulate it
+});
+
 /**********************************************************************************
  * styleElements
  *

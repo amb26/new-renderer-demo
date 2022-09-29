@@ -13,6 +13,11 @@ https://github.com/fluid-project/infusion/raw/main/Infusion-LICENSE.txt
 
 "use strict";
 
+/** Look up all messages in a supplied source array in a message bundle
+ * @param {String[]} sourceArray - The array of keys to be looked up
+ * @param {Object<String, String>} messages - The message bundle the keys are to be looked up in
+ * @return {String[]} The `sourceArray` elements indirected into `messages`
+ */
 fluid.transforms.messageLookup = function (sourceArray, messages) {
     return sourceArray.map(function (key) {
         return messages && messages[key] || "[Message string for key " + key + " not found]";
@@ -31,6 +36,9 @@ fluid.defaults("fluid.prefs.panel", {
         label: ".flc-prefsEditor-label",
         description: ".flc-prefsEditor-description"
     },
+    resourceOptions: {
+        defaultLocale: "{fluid.prefs.localeHolder}.options.defaultLocale"
+    },
     templateHasRoot: false,
     modelRelay: {
         label: {
@@ -44,6 +52,10 @@ fluid.defaults("fluid.prefs.panel", {
         descr: {
             source: "messages.description",
             target: "dom.description.text"
+        },
+        locale: {
+            source: "{fluid.prefs.localeHolder}.model.locale",
+            target: "resourceLoader.locale"
         }
     },
     labelId: "@expand:fluid.allocateGuid()"
@@ -85,22 +97,28 @@ fluid.defaults("fluid.prefs.panel.switchAdjuster", {
     }
 });
 
+fluid.defaults("fluid.prefs.panel.localisedEnumLabels", {
+    modelRelay: {
+        lookupLabels: {
+            target: "optionLabels",
+            func: "fluid.transforms.messageLookup",
+            args: ["{panel}.model.enumLabels", "{panel}.model.messages"]
+        }
+    }
+});
+
 /************************************************
  * A base grade for themePicker adjuster panels *
  ************************************************/
 
 fluid.defaults("fluid.prefs.panel.themePicker", {
-    gradeNames: ["fluid.prefs.panel"],
+    gradeNames: ["fluid.prefs.panel", "fluid.prefs.panel.localisedEnumLabels"],
     model: {
-        // optionValues: String[] produced by subclass
+        // optionValues: String[] produced by subclass, consumed by select control
         // enumLabels: String[] produced by subclass
+        // optionLabels: String[] produced by relay from optionValues, consumed by select control
     },
     modelRelay: {
-        lookupLabels: {
-            target: "optionLabels",
-            func: "fluid.transforms.messageLookup",
-            args: ["{textFont}.model.enumLabels", "{textFont}.model.messages"]
-        },
         produceRows: {
             target: "rowSource",
             func: "fluid.prefs.panel.produceThemeRows",

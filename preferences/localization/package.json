@@ -10,7 +10,7 @@
         "jsCommonFiles": [
             "./src/js/Localization.js",
             "./src/js/LocalizationEnactor.js",
-            "./src/js/LocaliztionPanel.js"
+            "./src/js/LocalizationPanel.js"
         ],
         "htmlFiles": [
             "./src/html/Localization.html"

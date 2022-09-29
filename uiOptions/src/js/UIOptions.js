@@ -15,16 +15,11 @@ https://github.com/fluid-project/infusion/raw/main/Infusion-LICENSE.txt
 
 fluid.defaults("fluid.uiOptions", {
     gradeNames: ["fluid.prefs.weaver", "fluid.viewComponent"],
-    prefsEditorContainer: "{that}.options.container"
-
-/*    preferences: [
-        "fluid.prefs.textSize",
-        "fluid.prefs.lineSpace",
-        "fluid.prefs.textFont",
-        "fluid.prefs.contrast",
-        "fluid.prefs.tableOfContents",
-        "fluid.prefs.enhanceInputs"
-    ]*/
+    prefsEditorContainer: "{that}.options.container",
+    model: {
+        prefsEditor: true
+    },
+    autoSave: true
 });
 
 /** A configuration of UIOptions which is suitable for statically localised contexts. It accepts two additional
