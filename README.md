@@ -21,14 +21,30 @@ changed in a project, or a project is moved around in the filesyste - consult it
 
 There is an in-progress port of the Infusion preferences framework in [preferences](preferences).
 
+## Component Demos
+
+Standard demos of components are available at:
+
+### Switch Component Demo
+
+[demos/switch](demos/switch)
+
+### Textfield Controls demo
+
+[demos/textfieldControls](demos/textfieldControls)
+
 ## Preferences Framework Demos
 
-Right now the most functional driver demonstrating a prefs editor is at
-[examples/framework/preferences/minimalPreview/index.html](examples/framework/preferences/withPreview/index.html).
-This fires up a "grouped-style" preferences editor with a preview box. The starter six panels are now functional,
-with an issue with the text size enactor which currently spills out of its preview container.
+[demos/prefsFramework](demos/prefsFramework) - Demonstrates external addition of a "simplify" enactor and panel,
+as well as conditional activation of the selfVoicing panel depending on browser TTS support.
 
-The 2nd most functional driver is
+[demos/uiOptions](demos/uiOptions) - Demonstrates the "out of the box" UIOptions configuration with the standard
+six panels, with minimal configuration.
+
+[examples/framework/preferences/minimalPreview/index.html](examples/framework/preferences/withPreview/index.html).
+This fires up a "grouped-style" preferences editor with a preview box. Features the "starter" six panels - issue
+with text size enactor which does not act on the preview. 
+
 [examples/framework/preferences/fullPagePanelStyle/index.html](examples/framework/preferences/fullPagePanelStyle/index.html) -
 This fires up a "separated panel" style preferences editor with no preview and the same six panels as before,
 only with an auto-generated overall template that is produced simply from a "lookahead" at what panels are configured.
@@ -36,15 +52,11 @@ This demonstration differs from the previous one only through swapping out a few
 
 A full demonstration of the "sliding panel with separated panel" configuration, which is the most
 widely deployed UIOptions configuration, is at [examples/framework/preferences/slidingPanel/index.html](examples/framework/preferences/slidingPanel/index.html).
-Whilst this is technically functional, there is a lot of "spillover" of preference application into the editor UI itself,
-since I have made this integration looking ahead to the "iframeless model" where we will be able to use CSS custom
-variables for scoping. The enactor strategies for these will need updates in order to allow the prefs editior and
-preview UIs to be insulated from changes in the parent document.
 
-A variant of the previous demo showing all currently implemented panels, rather than just the "starter" set of 6, is at
+A variant of the previous demo showing all 12 implemented panels, rather than just the "starter" set of 6, is at
 [examples/framework/preferences/slidingPanelAll/index.html](examples/framework/preferences/slidingPanelAll/index.html).
-
-The following panels are roughly ported but untested/nonfunctional - captions, localization,
-self voicing, syllabification.
+This also demonstrates in-place localisation - by activating the localisation preference, the prefs framework interface
+will localise itself when reopened.
 
 Coming soon - test cases!
+

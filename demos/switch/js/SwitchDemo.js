@@ -80,7 +80,7 @@ fluid.defaults("demo.faces", {
                 modelRelay: {
                     controlAttrs: {
                         source: "controlAttrs",
-                        target: "dom.control.attrs"
+                        target: "dom.control.attr"
                     }
                 }
             }
