@@ -1,0 +1,10 @@
+{
+    "textFont-default": "Default",
+    "textFont-times": "Times New Roman",
+    "textFont-comic": "Comic Sans",
+    "textFont-arial": "Arial",
+    "textFont-verdana": "Verdana",
+    "textFont-open-dyslexic": "Open Dyslexic",
+    "label": "text style",
+    "description": "Change the font used"
+}

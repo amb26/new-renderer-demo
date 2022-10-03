@@ -1,0 +1,51 @@
+<style>
+body {
+    font-family: Arial;
+}
+</style>
+<h1>FLUID-5047 new renderer demo</h1>
+<p>This demonstrates in-progress work implementing the new Infusion renderer which is lightly described at
+<a href="https://issues.fluidproject.org/browse/FLUID-5047">FLUID-5047</a>.
+This project houses several demonstrations and implementations -</p>
+<ul>
+<li>Reimplementations of the existing <a href="switch">Switch</a>, <a href="textfieldControl/src/js/TextfieldSlider.js">TextfieldSlider</a>,
+<a href="textfieldControl/src/js/TextfieldStepper.js">TextfieldStepper</a> and <a href="tableOfContents">TableOfContents</a> components with identical
+functionality and near-identical interfaces to those in Infusion trunk</li>
+<li>Isomorphic rendering demo of the TextfieldSlider at <a href="demos/textfieldControlsMutation">demos/textfieldControlsMutation</a></li>
+<li>Port of standard TableOfContents demo at <a href="demos/tableOfContents">demos/tableOfContents</a></li>
+<li>DOM manipulation performance test at <a href="perftest">perftest</a></li>
+</ul>
+<p>This work is packaged as a set of addons to the current (Infusion 4.x) <a href="https://github.com/fluid-project/infusion">main</a>
+branch of Infusion.</p>
+<p>You may run the browser tests by opening <a href="all-tests.html">all-tests.html</a> after hosting this project from the filesystem.</p>
+<p>The build script <a href="resolveIncludes.js">resolveIncludes.js</a> should be run whenever any included scripts or CSS are
+changed in a project, or a project is moved around in the filesyste - consult its header contents for details.</p>
+<p>There is an in-progress port of the Infusion preferences framework in <a href="preferences">preferences</a>.</p>
+<h2>Component Demos</h2>
+<p>Standard demos of components are available at:</p>
+<h3>Switch Component Demo</h3>
+<p><a href="demos/switch">demos/switch</a></p>
+<h3>Textfield Controls demo</h3>
+<p><a href="demos/textfieldControls">demos/textfieldControls</a></p>
+<h2>Preferences Framework Demos</h2>
+<p><a href="demos/prefsFramework">demos/prefsFramework</a> - Demonstrates external addition of a &quot;simplify&quot; enactor and panel,
+as well as conditional activation of the selfVoicing panel depending on browser TTS support.</p>
+<p><a href="demos/uiOptions">demos/uiOptions</a> - Demonstrates the &quot;out of the box&quot; UIOptions configuration with the standard
+six panels, with minimal configuration.</p>
+<p><a href="examples/framework/preferences/withPreview/index.html">examples/framework/preferences/minimalPreview/index.html</a>.
+This fires up a &quot;grouped-style&quot; preferences editor with a preview box. Features the &quot;starter&quot; six panels - issue
+with text size enactor which does not act on the preview.</p>
+<p><a href="examples/framework/preferences/fullPagePanelStyle/index.html">examples/framework/preferences/fullPagePanelStyle/index.html</a> -
+This fires up a &quot;separated panel&quot; style preferences editor with no preview and the same six panels as before,
+only with an auto-generated overall template that is produced simply from a &quot;lookahead&quot; at what panels are configured.
+This demonstration differs from the previous one only through swapping out a few grade names.</p>
+<p>A full demonstration of the &quot;sliding panel with separated panel&quot; configuration, which is the most
+widely deployed UIOptions configuration, is at <a href="examples/framework/preferences/slidingPanel/index.html">examples/framework/preferences/slidingPanel/index.html</a>.</p>
+<p>A variant of the previous demo showing all 12 implemented panels, rather than just the &quot;starter&quot; set of 6, is at
+<a href="examples/framework/preferences/slidingPanelAll/index.html">examples/framework/preferences/slidingPanelAll/index.html</a>.
+This also demonstrates in-place localisation - by activating the localisation preference, the prefs framework interface
+will localise itself when reopened.</p>
+<h2>To build</h2>
+<p>After running <code>node resolveIncludes.js</code>, run <code>node build.js</code> which will publish this project to GitHub Pages
+in the <code>docs</code> directory. Then commit and push to GitHub.</p>
+<p>Coming soon - test cases!</p>

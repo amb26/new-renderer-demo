@@ -1,0 +1,22 @@
+{
+    "name": "fluid-prefs-word-space",
+    "description": "The word space preference for the Fluid preferences editor",
+    "version": "1.0.0",
+    "license": "BSD-3-Clause",
+    "infusion": {
+        "bundleType": ["fluid-renderer-module", "fluid-preference-module"],
+        "cssFiles": [
+        ],
+        "jsCommonFiles": [
+            "./src/js/WordSpace.js",
+            "./src/js/WordSpaceEnactor.js",
+            "./src/js/WordSpacePanel.js"
+        ],
+        "htmlFiles": [
+            "./src/html/WordSpace.html"
+        ],
+        "sassFiles": [
+            "./src/css/sass/WordSpace.scss"
+        ]
+    }
+}

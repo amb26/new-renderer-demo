@@ -1,0 +1,20 @@
+{
+    "name": "fluid-table-of-contents",
+    "description": "Presents an automatic table of contents from any HTML page.",   
+    "version": "1.0.0",
+    "license": "BSD-3-Clause",
+    "infusion": {
+        "bundleType": "fluid-renderer-module",
+        "cssFiles": [
+            "./src/css/TableOfContents.css"
+        ],
+        "jsCommonFiles": [
+            "./src/js/TableOfContents.js"
+        ],
+        "htmlFiles": [
+            "./src/html/TableOfContents.html"
+        ],
+        "staticMountBase": "./src/",
+        "testStaticMountBase": "./test"
+    }
+}

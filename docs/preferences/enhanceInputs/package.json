@@ -1,0 +1,25 @@
+{
+    "name": "fluid-prefs-enhance-inputs",
+    "description": "The enhance inputs preference for the Fluid preferences editor",
+    "version": "1.0.0",
+    "license": "BSD-3-Clause",
+    "infusion": {
+        "bundleType": ["fluid-renderer-module", "fluid-preference-module"],
+        "cssFiles": [
+        ],
+        "jsCommonFiles": [
+            "./src/js/EnhanceInputs.js",
+            "./src/js/EnhanceInputsEnactor.js",
+            "./src/js/EnhanceInputsPanel.js"
+        ],
+        "htmlFiles": [
+            "./src/html/EnhanceInputs.html"
+        ],
+        "sassFiles": [
+            "./src/css/sass/EnhanceInputs.scss"
+        ],
+        "baseSassFiles": [
+            "./src/css/sass/EnhanceInputs.scss"
+        ]
+    }
+}

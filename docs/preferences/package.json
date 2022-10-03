@@ -1,0 +1,10 @@
+{
+    "name": "fluid-preferences",
+    "description": "Framework for implementing user preference editing and persistence.",
+    "version": "3.0.0",
+    "license": "(BSD-3-Clause OR ECL-2.0)",
+    "infusion": {
+    },
+    "dependencies": {
+    }
+}

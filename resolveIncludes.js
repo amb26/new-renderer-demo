@@ -36,7 +36,7 @@ var fs = require("fs"),
     linkedom = require("linkedom"),
     fluid = require("infusion");
 
-var local = glob.sync("!(node_modules)/**/package.json");
+var local = glob.sync("!(node_modules|docs)/**/package.json");
 
 var direct = glob.sync("node_modules/*/package.json");
 
@@ -137,6 +137,9 @@ var rewriteTags = function (document, tag, attr, prefix, lastNodeHolder) {
 
         fluid.each(symbolic, function (oneSymbol) {
             var src = oneSymbol.getAttribute(attr);
+            if (!src) {
+                fluid.fail("Missing attribute " + attr + " for " + tag + " at ", oneSymbol);
+            } 
             var replaced = stringTemplate(src, function (match) {
                 var looked = moduleTable[match];
                 return prefix + looked;

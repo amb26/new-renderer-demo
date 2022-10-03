@@ -1,0 +1,22 @@
+{
+    "name": "fluid-prefs-letter-space",
+    "description": "The letter spacing preference for the Fluid preferences editor",
+    "version": "1.0.0",
+    "license": "BSD-3-Clause",
+    "infusion": {
+        "bundleType": ["fluid-renderer-module", "fluid-preference-module"],
+        "cssFiles": [
+        ],
+        "jsCommonFiles": [
+            "./src/js/LetterSpace.js",
+            "./src/js/LetterSpaceEnactor.js",
+            "./src/js/LetterSpacePanel.js"
+        ],
+        "htmlFiles": [
+            "./src/html/LetterSpace.html"
+        ],
+        "sassFiles": [
+            "./src/css/sass/LetterSpace.scss"
+        ]
+    }
+}

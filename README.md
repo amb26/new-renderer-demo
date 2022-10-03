@@ -1,3 +1,9 @@
+<style>
+body {
+    font-family: Arial;
+}
+</style>
+
 # FLUID-5047 new renderer demo
 
 This demonstrates in-progress work implementing the new Infusion renderer which is lightly described at
@@ -57,6 +63,11 @@ A variant of the previous demo showing all 12 implemented panels, rather than ju
 [examples/framework/preferences/slidingPanelAll/index.html](examples/framework/preferences/slidingPanelAll/index.html).
 This also demonstrates in-place localisation - by activating the localisation preference, the prefs framework interface
 will localise itself when reopened.
+
+## To build
+
+After running ``node resolveIncludes.js``, run ``node build.js`` which will publish this project to GitHub Pages
+in the `docs` directory. Then commit and push to GitHub.
 
 Coming soon - test cases!
 

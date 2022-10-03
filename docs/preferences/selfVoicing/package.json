@@ -1,0 +1,19 @@
+{
+    "name": "fluid-prefs-self-voicing",
+    "description": "The self voicing preference for the Fluid preferences editor",
+    "version": "1.0.0",
+    "license": "BSD-3-Clause",
+    "infusion": {
+        "bundleType": ["fluid-renderer-module", "fluid-preference-module"],
+        "cssFiles": [
+        ],
+        "jsCommonFiles": [
+            "./src/js/SelfVoicing.js",
+            "./src/js/SelfVoicingEnactor.js",
+            "./src/js/SelfVoicingPanel.js"
+        ],
+        "htmlFiles": [
+            "./src/html/SelfVoicing.html"
+        ]
+    }
+}

@@ -1,0 +1,17 @@
+{
+    "name": "fluid-toc-demo",
+    "description": "A demonstration of Infusion client-side rendering.",
+    "version": "1.0.0",
+    "license": "BSD-3-Clause",
+    "infusion": {
+        "bundleType": "fluid-renderer-module",
+        "cssFiles": [
+        ],
+        "jsCommonFiles": [
+            "./DemoPage.js"
+        ],
+        "htmlFiles": [
+            "./DemoPage.html"
+        ]
+    }
+}
