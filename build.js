@@ -15,7 +15,7 @@ fs.ensureDirSync("docs");
 fs.writeFileSync("docs/index.html", rendered);
 
 var toCopy = ["demos", "examples", "preferences", "switch", "uiOptions", "slidingPanel", "tableOfContents", "tests",
-    "textfieldControl", "src", "node_modules/infusion", "infusionModuleIndex.js", "all-tests.html"]
+    "textfieldControl", "src", "node_modules/infusion", "infusionModuleIndex.js", "all-tests.html", ".nojekyll"]
 
 toCopy.forEach(function (path) {
     fs.copySync(path, "docs/" + path);

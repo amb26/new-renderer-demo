@@ -83,7 +83,7 @@ var rebaseModuleIndex = function () {
 writeFile("./infusionModuleIndex.js", "\"use strict\";\n\nvar fluid = fluid || {};\nfluid.infusionModuleIndex = " + JSON.stringify(staticMountTable, null, 4)
     + ";\n(" + rebaseModuleIndex.toString() + ")();\n");
 
-var htmls = glob.sync("{!(node_modules)/**/*.html,*.html}");
+var htmls = glob.sync("{!(node_modules|docs)/**/*.html,*.html}");
 
 var templateRegex = /%([\w-_\.]*)\//g; // Note we have an extra / at the end of this pattern to replace only e.g. %infusion/
 
